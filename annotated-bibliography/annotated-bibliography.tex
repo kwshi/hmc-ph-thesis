@@ -21,22 +21,105 @@
 }
 \pagestyle{annotated-bibliography}
 
+\usepackage{fontspec}
 \usepackage{mathtools}
 \usepackage{libertinus}
 \usepackage{microtype}
 \usepackage{parskip}
 \renewcommand\familydefault\sfdefault
 
+\setmonofont{Fira Code}[Scale=MatchLowercase]
+
 \usepackage{hyperref}
 \usepackage{url}
 
+\usepackage[style=authortitle]{biblatex}
+\addbibresource{bibliography.bib}
+
+\usepackage{tcolorbox}
+\newtcolorbox{annotation}{
+  sharp corners,
+  opacityframe=0,
+  opacityback=0,
+  boxsep=0pt,
+  right=0em,
+  left=2em,
+  parbox=false,
+}
+
 \begin{document}
+
+The topic of my thesis is \emph{puzzle generation}.  When we talk about
+complexity problems \& algorithms, we mostly focus on \emph{solving} problems
+(i.e., ``given so-and-so setup, find so-and-so satisfying some conditions'').
+But what does it take to \emph{make} a good puzzle?  How hard is it to generate
+a good Sudoku puzzle?  What does \emph{good} even mean?  Are there general ways
+to generate arbitrary, NP-complete/NP-hard ``flavored'' puzzles?
+
+\paragraph{Annotated bibliography}
 
 \begin{itemize}
 
-  \item
+  \item \fullcite{language-instances}
 
-  \item
+    \begin{annotation}
+      This paper introduces the simplest formal model for efficient puzzle
+      generators.  A \emph{polynomial time constructor} (PTC) for a language
+      \(L\) is a deterministic program that, on input \(1^n\), runs in
+      polynomial-time and returns a string in \(L\) with length \(n\) iff one
+      exists.  \emph{Polynomial time generators} (PTGs) is the nondeterministic
+      analog of PTCs, with the additional requirement that every string in
+      \(L\) of length \(n\) must be reachable.  PTCs and PTGs could be thought
+      of as programs that produce solvable puzzles of given sizes (e.g., given
+      \(n\), generate a solvable \(n^2 \times n^2\) Sudoku board).
+
+      The main question explored here is: which classes of languages
+      (puzzles/problems) have PTCs and PTGs?  Relevant results include:
+      \begin{itemize}
+        \item Every language that has a PTG is in NP.
+        \item For any language \(L\) in NP, \(L\) has a PTC iff it has a PTG.
+        \item Every P language has a PTG iff every NP language has a PTG.
+      \end{itemize}
+      Surprisingly enough, that last result indicates that we don't know
+      whether every P language has a PTG.  This paper goes on to define various
+      special types of PTGs (e.g., categorical, lexicographical, etc.) and
+      establishes various connections between PTG-existence questions and
+      polynomial-hierarchy relations.
+    \end{annotation}
+
+  \item \fullcite{test-gen-complexity}
+
+    \begin{annotation}
+      In this paper, Sanchis generalizes the notion of puzzle generators
+      introduced in \textcite{language-instances}.  Define a \emph{Test
+      Instance Construction Method} (TICM) with respect to some fixed problem
+      \(\Pi\) as a non-deterministic, polynomial-time program that, given a
+      \emph{desired} answer \(\alpha\) (along with some desired parameters on
+      the input, e.g., length), attempts to return an instance/input of \(\Pi\)
+      that has answer \(\alpha\) and which meets the target parameters.
+
+      The key result from this paper is that, unless NP = co-NP, most NP-hard
+      problems do \emph{not} have efficient TICMs that can generate all input
+      instances (with given known answers).  This establishes theoretical upper
+      bounds on how comprehensive we can reasonably expect a puzzle generator
+      to be in its coverage of available/possible inputs.
+    \end{annotation}
+
+  \item \fullcite{hard-diverse-graph-tests}
+
+    \begin{annotation}
+      In this paper, Sanchis
+    \end{annotation}
+
+  \item \fullcite{stable-marriage-generation}
+
+  \item \fullcite{random-latin-squares-sudoku}
+
+  \item \fullcite{strategy-solvable-sudoku}
+
+  \item \fullcite{sudoku-education}
+
+  \item \fullcite{conp-approximation}
 
 \end{itemize}
 
