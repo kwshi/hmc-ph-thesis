@@ -163,7 +163,47 @@ to generate arbitrary, NP-complete/NP-hard ``flavored'' puzzles?
 
   \item \fullcite{random-latin-squares-sudoku}
 
+    \begin{annotation}
+      This paper describes relatively simple algorithms that randomly generate
+      Sudoku boards and Latin Squares (\(n \times n\) grids in which each row
+      and column contains each number \(1, \dotsc, n\)) with supposedly uniform
+      probability.  There is not much theoretical discussion on complexity
+      topics, but this paper discusses connections/reductions between
+      Sudoku/Latin-Squares and the maximum clique problem, which in turn is
+      examined at length from both theoretical and experimental perspectives in
+      \textcite{maximum-clique-generators}.
+    \end{annotation}
+
   \item \fullcite{strategy-solvable-sudoku}
+
+    \begin{annotation}
+      Computers generally solve Sudoku by reducing to SAT or other
+      well-optimized NP-complete problem solvers, brute-force/backtracking,
+      etc.  These approaches are quite different than the approaches taken by
+      humans, which tend to entail various ``reduction'' rules, or
+      \emph{strategies}.  An example of such a strategy is the \emph{naked
+      singles} rule: for each given cell, start by writing out all the possible
+      values (\(1, \dots, 9\)); eliminate from these possibilities values
+      already taken by other cells in the same row/column/block; when only one
+      possibility remains, finalize that cell with that value.
+
+      While strategy-based approaches better represent how humans solve puzzles
+      and are more intuitive, they lack the generality that NP-complete puzzles
+      usually require.  In particular, not all Sudoku puzzles are
+      strategy-solvable.  The empty starting board, for instance, is not
+      strategy-solvable because \emph{strategic} approaches are predicated on
+      the assumption that the final solution is unique---which is not the case
+      for an empty starting board.
+
+      This paper details an algorithm (along with a framework for generalizing)
+      for generating \emph{strategy-solvable} Sudoku puzzles.  The focus of
+      this paper is applied, rather than pure---there is minimal emphasis on
+      theoretical complexity or absolute coverage/generalizability.  Instead,
+      the emphasis here is on generating puzzles that are solvable by these
+      ``human-oriented'' strategies.  The algorithm proposed performs well on
+      most grids but hits bottlenecks as the number of starting clues
+      (pre-filled cells) shrinks to around \(20\).
+    \end{annotation}
 
   \item \fullcite{sudoku-education}
 
