@@ -37,7 +37,9 @@
 \addbibresource{bibliography.bib}
 
 \usepackage{tcolorbox}
+\tcbuselibrary{breakable}
 \newtcolorbox{annotation}{
+  breakable,
   sharp corners,
   opacityframe=0,
   opacityback=0,
@@ -108,10 +110,56 @@ to generate arbitrary, NP-complete/NP-hard ``flavored'' puzzles?
   \item \fullcite{hard-diverse-graph-tests}
 
     \begin{annotation}
-      In this paper, Sanchis
+      In this paper, Sanchis continues to tackle the question, which problems
+      have efficient TICMs?  This time, she further relaxes the desired TICM
+      criterion---instead of looking for TICMs that can generate \emph{all}
+      matching input instances, simply look for TICMs that generate a
+      representative, or \emph{diverse}, set of inputs.  For a given problem
+      optimization problem \(P\) and with respect to parameters (computable
+      functions on \((\text{input}, \text{solution})\) pairs) \(l_1, \dots,
+      l_k\), a set \(S\) of \((\text{input}, \text{solution})\) pairs is
+      \emph{diverse} if every optimal pair in \(P\) has a corresponding pair in
+      \(S\) with the same parameter values.
+
+      The parameters \(l_1, \dotsc, l_k\) capture the way in which we can
+      control properties of the generated puzzle instance.  Taking Sudoku as an
+      example, \(l_i\) may be used to control the size of the board, the number
+      of pre-filled squares, etc.  As another example, graph-based problems
+      (e.g., traveling salesman, Hamiltonian path) may set \(l_i\) to be the
+      number of vertices, edges, weights, etc. in the input graph.  In this
+      sense, a diverse set contains representative puzzles for each
+      (attainable) property combination; a diverse \emph{generator} is one
+      capable of \emph{producing} puzzles for each such combination.
+
+      This paper takes the TICM question in a concrete and exciting direction
+      by \emph{constructing} efficient, hard (technical definition that roughly
+      means ``doesn't only output trivially-solvable puzzles''), and diverse
+      puzzle generators for three graph problems: minimum vertex cover,
+      domination number, and chromatic number.
     \end{annotation}
 
   \item \fullcite{stable-marriage-generation}
+
+    \begin{annotation}
+      This paper explores puzzle generation for the Stable Matching (SM)
+      problem allowing for ties and incomplete preference lists.  The SM
+      problem is stated as follows: given \(n\) people and \(n\) pets, and
+      given a strictly-ordered preference list for each person and each pet,
+      pair up people with pets so that no person and no pets simultaneously
+      prefer each other to their currently-assigned partners; such a matching
+      is called \emph{stable}.  The SM problem is solvable in quadratic time;
+      the SMT variation, in which preference orderings are non-strict (i.e.,
+      allowing ties), as well as the SMI variation, in which preferences lists
+      may be incomplete (unspecified preferences are unacceptable; matchings
+      may be partial), are also both solvable within quadratic time.  However,
+      the \emph{SMTI} variation, in which both ties and incomplete lists are
+      allowed, is NP-complete.
+
+      This paper explores several proposed methods for generating SMTI puzzles,
+      evaluating them by the criterion laid out in
+      \textcite{test-gen-complexity}, and demonstrates the theoretical
+      shortcomings of each approach
+    \end{annotation}
 
   \item \fullcite{random-latin-squares-sudoku}
 
