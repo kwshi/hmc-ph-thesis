@@ -157,8 +157,9 @@ to generate arbitrary, NP-complete/NP-hard ``flavored'' puzzles?
 
       This paper explores several proposed methods for generating SMTI puzzles,
       evaluating them by the criterion laid out in
-      \textcite{test-gen-complexity}, and demonstrates the theoretical
-      shortcomings of each approach
+      \textcite{test-gen-complexity}, observes theoretical shortcomings of each
+      approach, and discusses connections between limitations in these
+      algorithms to relationships between complexity-classes, e.g. NP = co-NP.
     \end{annotation}
 
   \item \fullcite{random-latin-squares-sudoku}
@@ -205,21 +206,86 @@ to generate arbitrary, NP-complete/NP-hard ``flavored'' puzzles?
       (pre-filled cells) shrinks to around \(20\).
     \end{annotation}
 
-  \item \fullcite{sudoku-education}
-
   \item \fullcite{conp-approximation}
 
     \begin{annotation}
-      An algorithm \emph{approximates} a solution to a particular
-      problem/language \(L\) if the set of problem instances/inputs the
-      algorithm successfully solves is a subset of \(L\).  Naturally, for a
-      given approximation, another one is \emph{better} if it can solve
-      infinitely many more problems in \(L\) (being able to solve finitely many
-      more problems is does not constitute ``better'', because one can always
-      finitely-improve an algorithm by hard-coding in extra solutions).  
+      An set \(S\) of inputs \emph{approximates} a particular problem/language
+      \(L\) if the \(S \subseteq L\).  Naturally, for a given approximation,
+      another one is \emph{better} if it can solve infinitely many more
+      problems in \(L\) (being able to solve finitely many more problems is
+      does not constitute better, because any algorithm can always be finitely
+      ``improved'' by hard-coding in additional solutions).
 
-      This paper exploits the connections between 
+      \textcite{language-instances} and \textcite{test-gen-complexity}
+      established several connections between puzzle generation and complexity
+      theory---in particular, the relevant result: if a puzzle has a
+      polynomial-time generator, it is in NP.  As such, if all co-NP problems
+      have polynomial-time generators (PTGs), then co-NP = NP.
+
+      Previous work leverages that connection the other way: instead of trying
+      to find perfect co-NP PTGs (a doubtful pursuit, since it implies co-NP =
+      NP), we can search for \emph{approximate} PTGs---those that, for a given
+      problem \(L\) in co-NP, generate not necessarily all strings in \(L\) but
+      nevertheless large (ideally maximal) subsets of \(L\).  By doing so, the
+      corresponding NP algorithms \emph{induced by} those approximate PTGs are,
+      themselves, approximation algorithms for \(L\).
+
+      This paper focuses on the question of \emph{optimality} for such
+      approximations and proves, assuming NP \(\ne\) co-NP, a general
+      condition/test for the optimality of an NP-complete approximaton for
+      co-NP languages.
     \end{annotation}
+
+  \item \fullcite{unique-sudoku-poly}
+
+    To
+    guarantee \emph{uniqueness} of a Sudoku solution, many generation
+    algorithms take a trial-and-error approach---e.g., generate a puzzle,
+    attempt to find multiple solutions, pre-fill additional cells as necessary
+    to narrow the possibilities.  While this approach is more generalizable, it
+    is not very performant (solving must be attempted after each revision to
+    the board).
+
+    This paper takes an alternate approach, summarized as follows: start with a
+    fully-finished Sudoku board, then cleverly apply various reduction rules
+    \emph{in reverse} (i.e., deleting the value in a cell when the surroundings
+    fit a certain condition) in a manner that ensures uniqueness is preserved.
+
+    Like \textcite{strategy-solvable-sudoku}, this paper does not delve into
+    theoretical complexity topics and is geared towards more applied,
+    ``ergonomics''-focused contexts.
+
+  \item \fullcite{difficulty-driven-sudoku}
+
+
+
+  \item \fullcite{sudoku-difficulty-oracle}
+
+  \item \fullcite{steiner-graph-generator}
+
+    The Steiner tree problem in graphs is stated as follows: given a
+    (non-negatively) weighted, undirected graph \(G\) and a subset \(V\) of its
+    vertices, find a minimum-weight subtree of \(G\) connecting all of \(V\).
+    (When \(\lvert V \rvert = 2\), this is a shortest-path problem; when \(V\)
+    contains all vertices of \(G\), this is the minimum-spanning-tree problem.
+    Surprisingly enough, while both those problems are
+    polynomial-time-solvable, this problem is NP-hard.)
+
+    This paper proposes a (purportedly linear-time) algorithm to generate test
+    cases for the Steiner tree problem in graphs.  The key technique involved
+    in this algorithm is applying the so-called ``Karush-Kuhn-Tucker''
+    optimality conditions (which appear to be a sort of generalization of the
+    Lagrange-multipliers method for solving an optimization-with-constraints
+    problem).
+
+    This paper does not contain much discussion on theoretical complexity
+    topics but is instead valuable as a ``deep dive'' into a particular NP-hard
+    problem (and, perhaps, the broader category of combinatorial-optimization
+    problems).
+
+  \item \fullcite{maximum-clique-generators}
+
+  \item \fullcite{sudoku-education}
 
 \end{itemize}
 
