@@ -238,22 +238,24 @@ to generate arbitrary, NP-complete/NP-hard ``flavored'' puzzles?
 
   \item \fullcite{unique-sudoku-poly}
 
-    To
-    guarantee \emph{uniqueness} of a Sudoku solution, many generation
-    algorithms take a trial-and-error approach---e.g., generate a puzzle,
-    attempt to find multiple solutions, pre-fill additional cells as necessary
-    to narrow the possibilities.  While this approach is more generalizable, it
-    is not very performant (solving must be attempted after each revision to
-    the board).
+    \begin{annotation}
+      To guarantee \emph{uniqueness} of a Sudoku solution, many generation
+      algorithms take a trial-and-error approach---e.g., generate a puzzle,
+      attempt to find multiple solutions, pre-fill additional cells as
+      necessary to narrow the possibilities.  While this approach is more
+      generalizable, it is not very performant (solving must be attempted after
+      each revision to the board).
 
-    This paper takes an alternate approach, summarized as follows: start with a
-    fully-finished Sudoku board, then cleverly apply various reduction rules
-    \emph{in reverse} (i.e., deleting the value in a cell when the surroundings
-    fit a certain condition) in a manner that ensures uniqueness is preserved.
+      This paper takes an alternate approach, summarized as follows: start with
+      a fully-finished Sudoku board, then cleverly apply various reduction
+      rules \emph{in reverse} (i.e., deleting the value in a cell when the
+      surroundings fit a certain condition) in a manner that ensures uniqueness
+      is preserved.
 
-    Like \textcite{strategy-solvable-sudoku}, this paper does not delve into
-    theoretical complexity topics and is geared towards more applied,
-    ``ergonomics''-focused contexts.
+      Like \textcite{strategy-solvable-sudoku}, this paper does not delve into
+      theoretical complexity topics and is geared towards more applied,
+      ``ergonomics''-focused contexts.
+    \end{annotation}
 
   \item \fullcite{difficulty-driven-sudoku}
 
@@ -263,25 +265,27 @@ to generate arbitrary, NP-complete/NP-hard ``flavored'' puzzles?
 
   \item \fullcite{steiner-graph-generator}
 
-    The Steiner tree problem in graphs is stated as follows: given a
-    (non-negatively) weighted, undirected graph \(G\) and a subset \(V\) of its
-    vertices, find a minimum-weight subtree of \(G\) connecting all of \(V\).
-    (When \(\lvert V \rvert = 2\), this is a shortest-path problem; when \(V\)
-    contains all vertices of \(G\), this is the minimum-spanning-tree problem.
-    Surprisingly enough, while both those problems are
-    polynomial-time-solvable, this problem is NP-hard.)
+    \begin{annotation}
+      The Steiner tree problem in graphs is stated as follows: given a
+      (non-negatively) weighted, undirected graph \(G\) and a subset \(V\) of
+      its vertices, find a minimum-weight subtree of \(G\) connecting all of
+      \(V\). (When \(\lvert V \rvert = 2\), this is a shortest-path problem;
+      when \(V\) contains all vertices of \(G\), this is the
+      minimum-spanning-tree problem. Surprisingly enough, while both those
+      problems are polynomial-time-solvable, this problem is NP-hard.)
 
-    This paper proposes a (purportedly linear-time) algorithm to generate test
-    cases for the Steiner tree problem in graphs.  The key technique involved
-    in this algorithm is applying the so-called ``Karush-Kuhn-Tucker''
-    optimality conditions (which appear to be a sort of generalization of the
-    Lagrange-multipliers method for solving an optimization-with-constraints
-    problem).
+      This paper proposes a (purportedly linear-time) algorithm to generate
+      test cases for the Steiner tree problem in graphs.  The key technique
+      involved in this algorithm is applying the so-called
+      ``Karush-Kuhn-Tucker'' optimality conditions (which appear to be a sort
+      of generalization of the Lagrange-multipliers method for solving an
+      optimization-with-constraints problem).
 
-    This paper does not contain much discussion on theoretical complexity
-    topics but is instead valuable as a ``deep dive'' into a particular NP-hard
-    problem (and, perhaps, the broader category of combinatorial-optimization
-    problems).
+      This paper does not contain much discussion on theoretical complexity
+      topics but is instead valuable as a ``deep dive'' into a particular
+      NP-hard problem (and, perhaps, the broader category of
+      combinatorial-optimization problems).
+    \end{annotation}
 
   \item \fullcite{maximum-clique-generators}
 
