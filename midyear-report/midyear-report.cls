@@ -4,6 +4,16 @@
 
 \LoadClass{extarticle}
 
+\RequirePackage{geometry}
+\RequirePackage{fancyhdr}
+\geometry{
+  left=1in,
+  right=1in,
+  includeheadfoot,
+  top=.5in,
+  bottom=.5in,
+}
+
 \RequirePackage{mathtools}
 \RequirePackage{microtype}
 \RequirePackage{libertinus}
