@@ -1,65 +1,99 @@
 \documentclass{presentation}
 
+\tikzset{
+  not demo/.pic={
+    \matrix[gates] {
+      \coordinate[input](x); \& \node[not gate](n){}; \& \coordinate[output](o); \\
+    };
+    \draw[wire] (x) to (n.input);
+    \draw[wire] (n.output) to (o);
+  },
+}
+
+\title{You can solve it, but can you play it?}
+\author{Kye Shi}
+\date{2021 November 30}
+
 \begin{document}
-  
+
 \begin{frame}
-  title slide: you can solve it but can you play it?
+  \maketitle
 \end{frame}
 
 \begin{frame}
-  what is it?
-
-  sudoku---rules.
+  not gates and or gates
+  \begin{center}
+    \begin{tikzpicture}
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 \begin{frame}
-  sudoku, example solution approach.  
+  circuit satisfiability puzzle
+  \begin{center}
+    \begin{tikzpicture}
+      \matrix[gates]{
+        \coordinate[input](x); \\
+        \& \node[not gate](nx){}; \& \node[or gate](o1){}; \& \node[not gate](n1){}; 
+        \& \node[or gate](o4){}; \& \coordinate[output](out);
+        \& \coordinate[output](y); \\
+        \coordinate[input](y);
+        \& \node[not gate](ny){}; \& \node[or gate](o2){}; \& \node[not gate](n2){}; \\
+        \& \node[or gate](o3){}; \\
+        \coordinate[input](z); \\
+      };
+
+
+      \draw[wire] (x) to (o1.input 1) (x) to (nx.input);
+      \draw[wire] (y) to (ny.input) (y) to (o3.input 1);
+      \draw[wire] (z) to (o3.input 2);
+
+      \draw[wire] (nx.output) to (o2.input 1);
+      \draw[wire] (ny.output) to (o1.input 2);
+
+      \draw[wire] (o3.output) to (o2.input 2);
+
+      \draw[wire] (o1.output) to (n1.input);
+      \draw[wire] (o2.output) to (n2.input);
+
+      \draw[wire] (n1.output) to (o4.input 1);
+      \draw[wire] (n2.output) to (o4.input 2);
+
+      \draw[wire] (o4.output) to (out);
+
+      \node[left] at (x){\(x\)};
+      \node[left] at (y){\(y\)};
+      \node[left] at (z){\(z\)};
+
+    \end{tikzpicture}
+  \end{center}
+
+  remarks: can compute any boolean function.  "complete", which means any
+  puzzle (solution can be obtained by guess-and-check) can be reduced to it.
+
 \end{frame}
 
 \begin{frame}
-  arbitrary size generalization.  formal statement of problem, existence
-  question.  (mention not-necessarily-unique? prob not.)
+  enter jon jacobsen
 \end{frame}
 
-%\begin{frame}
-%  on hold!  graph coloring puzzle.  given a graph, a set of colors, a few
-%  pre-colored nodes, does there exist?
-%\end{frame}
-%
-%\begin{frame}
-%  example puzzle and solution.
-%\end{frame}
-%
-%\begin{frame}
-%  pause.  why did I describe two puzzles?  are they related?  yes.  here is a
-%  claim: if I know how to solve graph coloring, I can easily solve sudoku.
-%
-%  what does this mean?  how can I go about showing this?
-%  suppose I know how to solve graph coloring.  then, given a sudoku puzzle...
-%
-%  construct a graph coloring puzzle out of it; solve the graph coloring puzzle;
-%  trivially back-convert solution.
-%\end{frame}
-%
-%\begin{frame}
-%  given a sudoku puzzle (size n, nsquare board + pre-filled cells), how to
-%  "convert" to graph coloring puzzle (n colors, graph + pre-colored nodes)?
-%
-%  natural translation: size -> colors, board -> graph, pre-filled cells -> nodes.
-%\end{frame}
-%
-%\begin{frame}
-%  demo of reduction.
-%\end{frame}
-%
-%\begin{frame}
-%  sudoku is "easier than" graph coloring.  no harder than.  less-equals.
-%
-%  also, turns out, by a far more convoluted argument, gcp le sudoku.
-%\end{frame}
+\begin{frame}
+  statement of general game version, hierarchy.  take as characterization,
+  "definition"
+\end{frame}
 
 \begin{frame}
-  ask the question: in general, how hard is it to solve it?
+  another puzzle: graph coloring.
+
+  how hard is it?
+\end{frame}
+
+\begin{frame}
+  reduction to circuit sat.
+\end{frame}
+
+\begin{frame}
+  conclusion.
 \end{frame}
 
 \end{document}
