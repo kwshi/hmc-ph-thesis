@@ -1,12 +1,26 @@
 \documentclass{presentation}
 
 \tikzset{
+  every circuit symbol/.style={
+    anchor=output,
+  },
   not demo/.pic={
     \matrix[gates] {
       \coordinate[input](x); \& \node[not gate](n){}; \& \coordinate[output](o); \\
     };
     \draw[wire] (x) to (n.input);
     \draw[wire] (n.output) to (o);
+  },
+  demo/.pic={
+    \matrix[gates] {
+      \coordinate[input](x); \& \node[not gate](not){}; \\ 
+      \&\& \node[or gate](or){}; \& \coordinate[output](out); \\
+      \coordinate[input](y); \& \coordinate(y'); \\
+    };
+    \draw[wire] (x) to (not.input);
+    \draw[wire] (not.output) to (or.input 1);
+    \draw[wire] (y) to (y') to (or.input 2);
+    \draw[wire] (or.output) to (out);
   },
 }
 
@@ -21,10 +35,15 @@
 \end{frame}
 
 \begin{frame}
-  not gates and or gates
+  Circuits
   \begin{center}
-    \begin{tikzpicture}
+    \begin{tikzpicture}[scale=3]
+      \pic{demo};
     \end{tikzpicture}
+    %\\
+    %\begin{tabular}{cc}
+    %  \tikz{\node[or gate]{}} &
+    %\end{tabular}
   \end{center}
 \end{frame}
 
@@ -33,7 +52,7 @@
   \begin{center}
     \begin{tikzpicture}
       \matrix[gates]{
-        \coordinate[input](x); \\
+        \coordinate[input](x); \& \coordinate(x'); \\
         \& \node[not gate](nx){}; \& \node[or gate](o1){}; \& \node[not gate](n1){}; 
         \& \node[or gate](o4){}; \& \coordinate[output](out);
         \& \coordinate[output](y); \\
@@ -44,7 +63,7 @@
       };
 
 
-      \draw[wire] (x) to (o1.input 1) (x) to (nx.input);
+      \draw[wire] (x) to (x') to (o1.input 1) (x) to (nx.input);
       \draw[wire] (y) to (ny.input) (y) to (o3.input 1);
       \draw[wire] (z) to (o3.input 2);
 

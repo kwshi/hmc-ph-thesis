@@ -11,6 +11,7 @@
 \RequirePackage{cancel}
 \RequirePackage{array}
 \RequirePackage{booktabs}
+\RequirePackage{multicol}
 
 \RequirePackage{parskip}
 \RequirePackage{enumitem}
@@ -33,7 +34,7 @@
   },
   gates/.style={
     row sep=1em/2,
-    column sep=2em,
+    column sep=3em,
   },
   every matrix/.style={ampersand replacement=\&},
   every circuit symbol/.style={
@@ -58,10 +59,10 @@
     thick,
     rounded corners=1em/4,
     to path={
-      (\tikztostart) coordinate[joint]
+      %(\tikztostart) coordinate[joint]
       -- ($ (\tikztostart)!1/4!(\tikztostart -| \tikztotarget) $) 
       -- ($ (\tikztotarget)!1/4!(\tikztostart |- \tikztotarget) $) 
-      -- (\tikztotarget) coordinate[joint]
+      -- (\tikztotarget) %coordinate[joint]
     },
     %preaction={
     %  draw=white,
