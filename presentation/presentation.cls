@@ -4,6 +4,7 @@
 
 \LoadClass{beamer}
 
+\RequirePackage{fontspec}
 \RequirePackage{mathtools}
 \RequirePackage{microtype}
 \RequirePackage{libertinus}
@@ -15,8 +16,13 @@
 
 \RequirePackage{parskip}
 \RequirePackage{enumitem}
+\setlist[itemize]{label=\usebeamerfont*{itemize item}\usebeamercolor[fg]{itemize item}\usebeamertemplate{itemize item}}
+\setlist[enumerate]{label=(\arabic*)\usebeamercolor[fg]{itemize item}\usebeamertemplate{itemize item}}
+\RequirePackage{soul}
+\RequirePackage[export]{adjustbox}
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
+\usetikzlibrary{matrix}
 \usetikzlibrary{positioning}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{circuits}
@@ -29,44 +35,4 @@
 \RequirePackage{tcolorbox}
 
 \tikzset{
-  every picture/.style={
-    circuit logic US
-  },
-  gates/.style={
-    row sep=1em/2,
-    column sep=3em,
-  },
-  every matrix/.style={ampersand replacement=\&},
-  every circuit symbol/.style={
-    fill, fill opacity=1/16,
-  },
-  input/.style={
-  },
-  output/.style={
-  },
-  input/.pic={
-  },
-  joint/.style={
-    circle,
-    fill=black,
-    inner sep=0pt,
-    minimum size=1.5pt,
-  },
-  on/.style={
-    red,
-  },
-  wire/.style={
-    thick,
-    rounded corners=1em/4,
-    to path={
-      %(\tikztostart) coordinate[joint]
-      -- ($ (\tikztostart)!1/4!(\tikztostart -| \tikztotarget) $) 
-      -- ($ (\tikztotarget)!1/4!(\tikztostart |- \tikztotarget) $) 
-      -- (\tikztotarget) %coordinate[joint]
-    },
-    %preaction={
-    %  draw=white,
-    %  line width=1.5pt,
-    %},
-  },
 }
