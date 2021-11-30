@@ -8,6 +8,11 @@
 \renewcommand\P{\mathbf{P}}
 \newcommand\COL{\mathrm{COL}}
 
+\AtBeginDocument{
+  \setlength\abovedisplayskip{0pt}
+  \setlength\belowdisplayskip{0pt}
+}
+
 \definecolor{red}{HTML}{e00060}
 \definecolor{green}{HTML}{f0b000}
 \definecolor{blue}{HTML}{0050c0}
@@ -178,7 +183,7 @@
       %\node[left] at (y){\(y\)};
       %\node[left] at (z){\(z\)};
 
-      \pic at (gates.south east) {gate legend};
+      \pic[above left] at (gates.south east) {gate legend};
 
     },
   },
@@ -354,7 +359,7 @@
   \end{center}
 
   \visible<3->{
-    How hard is CSAT?
+    How hard is \(\CSAT\)?
     \begin{itemize}[nosep]
       \item Not as easy: solution obtained by \emph{guess}-and-check
         \begin{itemize}[nosep]
@@ -372,7 +377,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{The two-turn \(\CSAT\) \emph{game}}
+  \frametitle{The two-turn \emph{game} (\(\CSAT_2\))}
   \begin{center}
     \begin{tikzpicture}
       \only<1-2>{\pic{csat=100}};
@@ -382,15 +387,14 @@
 
       \visible<2->{
         \pic{box inputs=zz};
-        \node[right] (jon) at ($ (z-se) + (2em,-1em) $)
-        {mine};
+        \node[above right] (jon) at (z-se) {mine};
         %{\includegraphics[width=2em, valign=m]{jj-crop.jpg}: \dots but these are mine.};
-        \draw[box inputs] (jon) -| ($ (z-se)!1/2!(z-se -| z-nw) $);
+        %\draw[box inputs] (jon) -| ($ (z-se)!1/2!(z-se -| z-nw) $);
 
         \pic{box inputs=xy};
         %\node[right] (you) at ($ (x-nw -| y-se) + (2em,1em) $) {These are yours\dots};
-        \node[right] (you) at ($ (x-nw -| y-se) + (2em,1em) $) {yours};
-        \draw[box inputs] (you) -| ($ (x-nw)!1/2!(x-nw -| y-se) $);
+        \node[below right] (you) at (x-nw -| y-se) {yours};
+        %\draw[box inputs] (you) -| ($ (x-nw)!1/2!(x-nw -| y-se) $);
       }
     \end{tikzpicture}
 
@@ -400,8 +404,14 @@
         [\exists x, y \quad \forall z \quad \operatorname{circuit}(x,y,z) = 1]?
       \]
     }
-
   \end{center}
+  \visible<3->{
+    How hard is \(\CSAT_2\)?
+    \begin{itemize}[nosep]
+      \item Probably harder than \(\CSAT_1\) (the puzzle)!
+      \item \(\Sigma_2 \P\)-complete
+    \end{itemize}
+  }
 \end{frame}
 
 \begin{frame}
@@ -420,9 +430,6 @@
     \item[] \(\vdotswithin{\text{\(n\) turns}}\)
   \end{itemize}
 
-  How difficult are these games to play?
-
-  \pause
   \[
     \underbrace{\CSAT_0}_{\P}
     \le \underbrace{\CSAT_1}_{\NP}
