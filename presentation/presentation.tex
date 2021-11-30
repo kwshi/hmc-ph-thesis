@@ -319,6 +319,14 @@
   \frametitle{A ``trivial'' problem}
   \begin{center}
     \begin{tikzpicture}
+      \alt<2>{}{
+        \tikzset{
+          wire 0/.style={wire, color=gray},
+          wire 1/.style={wire, color=gray},
+          pics/output 0/.style={output={gray}{gray}{1/2}},
+          pics/output 1/.style={output={gray}{gray}{1/2}},
+        }
+      }
       \pic{csat=000};
     \end{tikzpicture}
 
