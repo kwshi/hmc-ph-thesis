@@ -29,7 +29,7 @@
     circle,
     draw,
     inner sep=0pt,
-    minimum size=1em/2,
+    minimum size=2em/3,
   },
   every matrix/.style={ampersand replacement=\&},
   every circuit symbol/.style={
@@ -127,8 +127,8 @@
   },
   gate legend/.pic={
     \matrix[gate legend grid, left]{
-      |[not gate]| \& \(\NOT\)\\
-      |[or gate]| \& \(\OR\) \\
+      |[not gate]| \& \(\NOT\) \& \draw[wire, color=blue](0,0) -- (1em,0); \& \(0\) \\
+      |[or gate]| \& \(\OR\)   \& \draw[wire, color=red](0,0) -- (1em,0); \& \(1\) \\
     };
   },
   pics/csat/.style n args={3}{
@@ -215,7 +215,7 @@
     \draw (v0) -- (v1) -- (v2) -- (v3) -- (v4) -- (v0);
   },
   uncolorable 1/.pic={
-    \pic{color base={white}{red}{blue}{white}{white}{white}};
+    \pic{color base={blue!50}{red}{blue}{blue!50}{red!50}{green!50}};
     \draw (v0) -- (v1) -- (v2) -- (v3) -- (v4) -- (v0);
     \node[above left, inner sep=0pt] at (4em,-4em){no :(};
   },
