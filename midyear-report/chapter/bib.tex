@@ -1,0 +1,357 @@
+\chapter{Annotated bibliography}
+\label{ch:bib}
+
+\section{Puzzle generation}
+
+\todo{fix formatting/combine with automatically-generated bibliography}
+
+\todo{this is basically my full annotated bibliography from before on the topic
+  of puzzle generation.  the focus of my topic has shifted somewhat since then
+  away from generation and towards \PH{} and general games; is it still worth
+keeping all these sources here in detail?}
+
+\begin{itemize}
+
+  \item \fullcite{language-instances}
+
+    \begin{annotation}
+      This paper introduces the simplest formal model for efficient puzzle
+      generators.  A \emph{polynomial time constructor} (PTC) for a language
+      \(L\) is a deterministic program that, on input \(1^n\), runs in
+      polynomial-time and returns a string in \(L\) with length \(n\) iff one
+      exists.  \emph{Polynomial time generators} (PTGs) is the nondeterministic
+      analog of PTCs, with the additional requirement that every string in
+      \(L\) of length \(n\) must be reachable.  PTCs and PTGs could be thought
+      of as programs that produce solvable puzzles of given sizes (e.g., given
+      \(n\), generate a solvable \(n^2 \times n^2\) Sudoku board).
+
+      The main question explored here is: which classes of languages
+      (puzzles/problems) have PTCs and PTGs?  Relevant results include:
+      \begin{itemize}
+        \item Every language that has a PTG is in \NP.
+        \item For any language \(L\) in \NP, \(L\) has a PTC iff it has a PTG.
+        \item Every \P{} language has a PTG iff every \NP{} language has a PTG.
+      \end{itemize}
+      Surprisingly enough, that last result indicates that we don't know
+      whether every \P{} language has a PTG.  This paper goes on to define
+      various special types of PTGs (e.g., categorical, lexicographical, etc.)
+      and establishes various connections between PTG-existence questions and
+      polynomial-hierarchy relations.
+    \end{annotation}
+
+  \item \fullcite{test-gen-complexity}
+
+    \begin{annotation}
+      In this paper, Sanchis generalizes the notion of puzzle generators
+      introduced in \textcite{language-instances}.  Define a \emph{Test
+      Instance Construction Method} (TICM) with respect to some fixed problem
+      \(\Pi\) as a non-deterministic, polynomial-time program that, given a
+      \emph{desired} answer \(\alpha\) (along with some desired parameters on
+      the input, e.g., length), attempts to return an instance/input of \(\Pi\)
+      that has answer \(\alpha\) and which meets the target parameters.
+
+      The key result from this paper is that, unless \(\NP = \co\NP\), most
+      \NP-hard problems do \emph{not} have efficient TICMs that can generate
+      all input instances (with given known answers).  This establishes
+      theoretical upper bounds on how comprehensive we can reasonably expect a
+      puzzle generator to be in its coverage of available/possible inputs.
+    \end{annotation}
+
+  \item \fullcite{hard-diverse-graph-tests}
+
+    \begin{annotation}
+      In this paper, Sanchis continues to tackle the question, which problems
+      have efficient TICMs?  This time, she further relaxes the desired TICM
+      criterion---instead of looking for TICMs that can generate \emph{all}
+      matching input instances, simply look for TICMs that generate a
+      representative, or \emph{diverse}, set of inputs.  For a given problem
+      optimization problem \(P\) and with respect to parameters (computable
+      functions on \((\text{input}, \text{solution})\) pairs) \(l_1, \dots,
+      l_k\), a set \(S\) of \((\text{input}, \text{solution})\) pairs is
+      \emph{diverse} if every optimal pair in \(P\) has a corresponding pair in
+      \(S\) with the same parameter values.
+
+      The parameters \(l_1, \dotsc, l_k\) capture the way in which we can
+      control properties of the generated puzzle instance.  Taking Sudoku as an
+      example, \(l_i\) may be used to control the size of the board, the number
+      of pre-filled squares, etc.  As another example, graph-based problems
+      (e.g., traveling salesman, Hamiltonian path) may set \(l_i\) to be the
+      number of vertices, edges, weights, etc. in the input graph.  In this
+      sense, a diverse set contains representative puzzles for each
+      (attainable) property combination; a diverse \emph{generator} is one
+      capable of \emph{producing} puzzles for each such combination.
+
+      This paper takes the TICM question in a concrete and exciting direction
+      by \emph{constructing} efficient, hard (technical definition that roughly
+      means ``doesn't only output trivially-solvable puzzles''), and diverse
+      puzzle generators for three graph problems: minimum vertex cover,
+      domination number, and chromatic number.
+    \end{annotation}
+
+  \item \fullcite{maximum-clique-generators}
+
+    \begin{annotation}
+      This paper, like \textcite{hard-diverse-graph-tests}, offers another
+      deep-dive into a specific \NP-hard problem---the maximum clique problem
+      (given an arbitrary graph, what is its largest complete subgraph?).  This
+      paper describes several approximation algorithms for the maximum clique
+      problem, as well as a ``hard and diverse'' algorithm generating test
+      cases for any given number of vertices, edges, and maximum clique size.
+    \end{annotation}
+
+  \item \fullcite{stable-marriage-generation}
+
+    \begin{annotation}
+      This paper explores puzzle generation for the Stable Matching (SM)
+      problem allowing for ties and incomplete preference lists.  The SM
+      problem is stated as follows: given \(n\) people and \(n\) pets, and
+      given a strictly-ordered preference list for each person and each pet,
+      pair up people with pets so that no person and no pets simultaneously
+      prefer each other to their currently-assigned partners; such a matching
+      is called \emph{stable}.  The SM problem is solvable in quadratic time;
+      the SMT variation, in which preference orderings are non-strict (i.e.,
+      allowing ties), as well as the SMI variation, in which preferences lists
+      may be incomplete (unspecified preferences are unacceptable; matchings
+      may be partial), are also both solvable within quadratic time.  However,
+      the \emph{SMTI} variation, in which both ties and incomplete lists are
+      allowed, is NP-complete.
+
+      This paper explores several proposed methods for generating SMTI puzzles,
+      evaluating them by the criterion laid out in
+      \textcite{test-gen-complexity}, observes theoretical shortcomings of each
+      approach, and discusses connections between limitations in these
+      algorithms to relationships between complexity-classes, e.g. \(\NP = \co\NP\).
+    \end{annotation}
+
+  \item \fullcite{random-latin-squares-sudoku}
+
+    \begin{annotation}
+      This paper describes relatively simple algorithms that randomly generate
+      Sudoku boards and Latin Squares (\(n \times n\) grids in which each row
+      and column contains each number \(1, \dotsc, n\)) with supposedly uniform
+      probability.  There is not much theoretical discussion on complexity
+      topics, but this paper discusses connections/reductions between
+      Sudoku/Latin-Squares and the maximum clique problem, which in turn is
+      examined at length from both theoretical and experimental perspectives in
+      \textcite{maximum-clique-generators}.
+    \end{annotation}
+
+  \item \fullcite{strategy-solvable-sudoku}
+
+    \begin{annotation}
+      Computers generally solve Sudoku by reducing to \Problem{sat} or other
+      well-optimized \NP-complete problem solvers, brute-force/backtracking,
+      etc.  These approaches are quite different than the approaches taken by
+      humans, which tend to entail various ``reduction'' rules, or
+      \emph{strategies}.  An example of such a strategy is the \emph{naked
+      singles} rule: for each given cell, start by writing out all the possible
+      values (\(1, \dots, 9\)); eliminate from these possibilities values
+      already taken by other cells in the same row/column/block; when only one
+      possibility remains, finalize that cell with that value.
+
+      While strategy-based approaches better represent how humans solve puzzles
+      and are more intuitive, they lack the generality that \NP-complete puzzles
+      usually require.  In particular, not all Sudoku puzzles are
+      strategy-solvable.  The empty starting board, for instance, is not
+      strategy-solvable because \emph{strategic} approaches are predicated on
+      the assumption that the final solution is unique---which is not the case
+      for an empty starting board.
+
+      This paper details an algorithm (along with a framework for generalizing)
+      for generating \emph{strategy-solvable} Sudoku puzzles.  The focus of
+      this paper is applied, rather than pure---there is minimal emphasis on
+      theoretical complexity or absolute coverage/generalizability.  Instead,
+      the emphasis here is on generating puzzles that are solvable by these
+      ``human-oriented'' strategies.  The algorithm proposed performs well on
+      most grids but hits bottlenecks as the number of starting clues
+      (pre-filled cells) shrinks to around \(20\).
+    \end{annotation}
+
+  \item \fullcite{conp-approximation}
+
+    \begin{annotation}
+      An set \(S\) of inputs \emph{approximates} a particular problem/language
+      \(L\) if the \(S \subseteq L\).  Naturally, for a given approximation,
+      another one is \emph{better} if it can solve infinitely many more
+      problems in \(L\) (being able to solve finitely many more problems is
+      does not constitute better, because any algorithm can always be finitely
+      ``improved'' by hard-coding in additional solutions).
+
+      \textcite{language-instances} and \textcite{test-gen-complexity}
+      established several connections between puzzle generation and complexity
+      theory---in particular, the relevant result: if a puzzle has a
+      polynomial-time generator, it is in \NP.  As such, if all \co\NP{}
+      problems have polynomial-time generators (PTGs), then \(\co\NP = \NP\).
+
+      Previous work leverages that connection the other way: instead of trying
+      to find perfect \(\co\NP\) PTGs (a doubtful pursuit, since it implies
+      \(\co\NP = \NP\)), we can search for \emph{approximate} PTGs---those
+      that, for a given problem \(L \in \co\NP\), generate not necessarily all
+      strings in \(L\) but nevertheless large (ideally maximal) subsets of
+      \(L\).  By doing so, the corresponding \NP{} algorithms \emph{induced by}
+      those approximate PTGs are, themselves, approximation algorithms for
+      \(L\).
+
+      This paper focuses on the question of \emph{optimality} for such
+      approximations and proves, assuming \(\NP \ne \co\NP\), a general
+      condition/test for the optimality of an \(\NP\)-complete approximaton for
+      \(\co\NP\) languages.
+    \end{annotation}
+
+  \item \fullcite{unique-sudoku-poly}
+
+    \begin{annotation}
+      To guarantee \emph{uniqueness} of a Sudoku solution, many generation
+      algorithms take a trial-and-error approach---e.g., generate a puzzle,
+      attempt to find multiple solutions, pre-fill additional cells as
+      necessary to narrow the possibilities.  While this approach is more
+      generalizable, it is not very performant (solving must be attempted after
+      each revision to the board).
+
+      This paper takes an alternate approach, summarized as follows: start with
+      a fully-finished Sudoku board, then cleverly apply various reduction
+      rules \emph{in reverse} (i.e., deleting the value in a cell when the
+      surroundings fit a certain condition) in a manner that ensures uniqueness
+      is preserved.
+
+      Like \textcite{strategy-solvable-sudoku}, this paper does not delve into
+      theoretical complexity topics and is geared towards more applied,
+      ``ergonomics''-focused contexts.
+    \end{annotation}
+
+  \item \fullcite{difficulty-driven-sudoku}
+
+    \begin{annotation}
+      This paper, authored under the advice of our very own Prof. Dodds, takes
+      a strategy-based approach to generating puzzles, its intentions
+      reminiscent of \textcite{strategy-solvable-sudoku}.  The
+      ``difficulty-driven'' generation algorithm proposed by this paper is,
+      however, different: it is more similar to traditional trial-and-error
+      (generate, try to solve, add/remove clues) Sudoku generation methods,
+      with the key difference being that the verify/check solution step is done
+      via strategies (as opposed to backtracking/brute-force) to mirror human
+      solving capabilities.  In addition, this paper introduces notions of
+      \emph{difficulty metrics} for Sudoku (e.g., ``most difficult required
+      technique'') that may be used in the generation process to control/tune
+      the difficulty-level of the resulting Sudoku board.
+    \end{annotation}
+
+  \item \fullcite{sudoku-difficulty-oracle}
+
+    \begin{annotation}
+      This paper, authored under the advice of our \emph{very} very own Prof.
+      Jakes, also examines the problem of generating Sudoku boards with
+      controlled difficulty.  Similarly to \textcite{difficulty-driven-sudoku},
+      this paper attempts to model the difficulty of a Sudoku board in terms of
+      the \emph{strategies} it uses.  More interestingly, it describes a more
+      generalizable difficulty metric that abstracts specific choices of
+      strategies into an \emph{oracle}, assessing difficulty in relation to
+      number of oracle invocations, amount of work done by each oracle
+      invocation, etc.
+    \end{annotation}
+
+  \item \fullcite{steiner-graph-generator}
+
+    \begin{annotation}
+      The Steiner tree problem in graphs is stated as follows: given a
+      (non-negatively) weighted, undirected graph \(G\) and a subset \(V\) of
+      its vertices, find a minimum-weight subtree of \(G\) connecting all of
+      \(V\). (When \(\Abs V = 2\), this is a shortest-path problem; when \(V\)
+      contains all vertices of \(G\), this is the minimum-spanning-tree
+      problem. Surprisingly enough, while both those problems are
+      polynomial-time-solvable, this problem is \NP-hard.)
+
+      This paper proposes a (purportedly linear-time) algorithm to generate
+      test cases for the Steiner tree problem in graphs.  The key technique
+      involved in this algorithm is applying the so-called
+      ``Karush-Kuhn-Tucker'' optimality conditions (which appear to be a sort
+      of generalization of the Lagrange-multipliers method for solving an
+      optimization-with-constraints problem).
+
+      This paper does not contain much discussion on theoretical complexity
+      topics but is instead valuable as a ``deep dive'' into a particular
+      \NP-hard problem (and, perhaps, the broader category of
+      combinatorial-optimization problems).
+    \end{annotation}
+
+  \item \fullcite{sudoku-education}
+
+    \begin{annotation}
+      This paper examines the problem of Sudoku puzzle generation in
+      \emph{educational} contexts---in particular, not just generation
+      algorithms but also exercises, classroom activities, etc. for students to
+      do to explore the Sudoku generation problem.  Additionally, the
+      mathematical concepts in this paper are meant to be approachable to
+      high-schoolers (or even younger).  Given its educational/elementary
+      focus, I don't expect to gather very deep/technical results from this
+      paper, but I included it anyway because it's nevertheless adjacent to my
+      topic, and I personally have tremendous interest in exploring innovative,
+      inquiry-based mathematics teaching methods.
+    \end{annotation}
+
+\end{itemize}
+
+\section{\PSPACE-complete games}
+
+\todo[inline]{incomplete}
+
+\begin{itemize}
+  \item \fullcite{schaefer.deriving}
+
+    \begin{annotation}
+      In this paper, Schaefer gives a catalog of several \PSPACE-complete
+      games, with the goal of finding an extensive list of \PSPACE-complete
+      problems useful for showing other problems to be \PSPACE-complete,
+      analogous to Karp's 21 \NP-complete problems.
+
+      Furthermore, Schaefer argues that many \NP-complete problems have natural
+      \PSPACE-complete counterparts, demonstrating on the Hamiltonian-path
+      puzzle as example how the proof of \NP-completeness is translated into a
+      proof of \PSPACE-completeness of a Hamiltonian-path game.
+    \end{annotation}
+
+  \item \fullcite{schaefer.games}
+
+    \begin{annotation}
+      Here, Schaefer gives another catalog (overlapping in parts with
+      \textcite{schaefer.deriving}) of combinatorial games and poses a few open
+      questions on certain games' complexities.
+    \end{annotation}
+
+  \item \fullcite{demaine.acgt}
+  \item \fullcite{bodlaender.coloring}
+  \item \fullcite{bh.placement}
+  \item \fullcite{kbd.impartial}
+  \item \fullcite{cpss.coloring}
+\end{itemize}
+
+\section{Fixed-turn games}
+
+\todo[inline]{incomplete}
+
+\begin{itemize}
+  \item \fullcite{ddls.sat-variants-ph}
+
+    \begin{annotation}
+      This paper studies a few \emph{quantifications} of several \SAT{}
+      variants, such as not-all-equal-\Problem{3sat}, etc., in relation to the
+      polynomial hierarchy.  This provides a useful catalog (and useful example
+      proofs) of other problems characterizing the polynomial hierarchy beyond
+      the standard \(\Problem{qsat}_i\) problems.
+    \end{annotation}
+
+  \item \fullcite{stockmeyer.ph}
+
+    \begin{annotation}
+
+    \end{annotation}
+
+  \item \fullcite{papadimitriou.cc}
+
+    \begin{annotation}
+
+    \end{annotation}
+
+\end{itemize}
+
+

@@ -1,0 +1,118 @@
+\chapter{Introduction}
+
+Famously central to complexity theory is the \P-vs-\NP{} question, and
+essential to our understanding of that question is the study of \NP-complete
+problems such as the \Problem{boolean-satisfiability} puzzle, the
+\Problem{graph-colorability} puzzle, and countless more.  Puzzles like these,
+which nearly any lay-person can appreciate, offer a particularly insightful,
+intuitive, and \emph{fun} lens through which to study computational complexity.
+Explorations of more complex problem-classes such as \PSPACE{} can be similarly
+approached through the study of strategic decision \emph{games} such as
+Othello, Solitaire, and even Super Mario Bros.\todo{I found this on wikipedia
+  and thought it was fun, but this could be really replaced by anything that is
+popularly recognizable}
+
+What lies in the interstices between \emph{puzzles} and \emph{games}?  How do
+we take a puzzle and generalize it into a game, and what are the puzzle-games
+we encounter along the way?  And how hard exactly are these puzzle-games to
+decide?  These questions are the focus of my thesis.
+
+So far, I have explored these questions from three angles:
+\begin{enumerate}
+
+  \item \label{itm:intro.q.generation} Puzzle generation.  If I wish to solve a
+    puzzle, you can play a game with me by constructing puzzle \emph{instances}
+    for me to solve.  For instance, \emph{solving} Sudoku is an \NP-complete
+    problem; your task is to \emph{generate} (partially-filled) Sudoku boards
+    for me to solve.
+
+    How hard is it to do so?  Moreover, how hard is it to generate \emph{good}
+    puzzle instances, for various definitions of \emph{good} (sufficiently
+    challenging to solve, or having unique solutions, or solvable/unsolvable by
+    certain strategies)?
+
+    % lauren sanchis
+
+  \item \label{itm:intro.q.pspace} \PSPACE-complete games derived from
+    \NP-complete puzzles.  A canonical \NP-complete puzzle is the \Problem{sat}
+    (Boolean Satisfiability) puzzle: given a Boolean formula \(\phi(x_1, \dots,
+    x_n)\), does there exist an assignment to its inputs \(x_1, \dots, x_n\)
+    such that \(\phi(\dots) = 1\)? In an analogous game, two players alternate
+    turns assigning \(x_1, \dots, x_n\); player 1 wins if \(\phi(\dots)=1\),
+    and player 2 wins if \(\phi(\dots)=0\).  Does either player have a
+    (guaranteed) winning strategy?  This game, known as \Problem{qsat}
+    (Quantified Satisfiability), is a canonical example of a \PSPACE-complete
+    game.
+
+    Can other \NP-complete puzzles be similarly generalized into games?  Will
+    those games also be \PSPACE-complete?
+
+    % schaefer
+
+  \item \label{itm:intro.q.ph} Fixed-turn games and the polynomial hierarchy.
+    In between the complexity classes \NP{} and \PSPACE{} lies a chain of
+    increasingly-complex problem-classes known as the \emph{polynomial
+    hierarchy}.  In some cases, problems in the polynomial hierarchy may be
+    thought of as game generalizations of \NP-complete puzzles with a
+    \emph{fixed} number of turns.  For instance, in a two-turn version of
+    \Problem{sat}, inputs are partitioned into two (disjoint) groups \(X_1\)
+    and \(X_2\); on turn 1, player 1 assigns \(X_1\), and on turn 2, player 2
+    assigns \(X_2\).  As before, player 1 (respectively 2) wins if
+    \(\phi(\dots) = 1\) (respectively \(0\)).  Determining whether player 1 has
+    a winning strategy is complete for a complexity class known as
+    \(\SigmaP2\), which lies just above \NP{} in the hierarchy, and analogous
+    games with \(k\) turns are \(\SigmaP k\)-complete.
+
+    Do polynomial-hierarchy generalizations of other \NP-complete puzzles
+    exist?
+
+\end{enumerate}
+
+\Cref{ch:progress} discusses my progress so far in each of these areas.
+Questions \ref{itm:intro.q.generation} and \ref{itm:intro.q.pspace} have been
+explored in-depth by others, while question \ref{itm:intro.q.ph} appears to be
+scarcely explored.  As such, I provide only brief summaries of/reflections on
+the existing work pertaining to \ref{itm:intro.q.generation} and
+\ref{itm:intro.q.pspace}.  Meanwhile, I describe in greater detail question
+\ref{itm:intro.q.ph}, which is the focus of my explorations so far.
+
+\Cref{ch:future} summarizes the primary questions \& goals that will guide
+my exploration next semester.
+
+Finally, \cref{ch:bib} contains an annotated bibliography of existing work
+pertaining to each of these topics.
+
+\section{Background on computational complexity}
+
+\todo[inline]{unfinished.  formalism of turing machines, decision problems,
+  oracles \& the definition of polynomial hierarchy, proofs of completeness of
+  SAT \& QSAT for classes in the polynomial hierarchy.  I imagine this stuff
+  will be needed in the final thesis; is it needed also for the midyear
+report?}
+
+\begin{definition}[decision problem/language]%
+  A \textbf{decision problem} is a yes/no question posed on binary input
+  strings, or problem \textbf{instances}.  As such, we may think of a decision
+  problem as a mapping
+  \[
+    \Pi \colon \Set{0, 1}^* \to \Set{\text{yes}, \text{no}}.
+  \]
+
+  More commonly, we associate a problem with its ``yes'' instances, the set of
+  which is a \textbf{language}:
+  \[
+    L(\Pi) = \SetBuilder* {x \in \Set{0, 1}^*} {\Pi(x) = \text{yes}}.
+  \]
+  Here, for clarity, we are distinguishing notationally between \(\Pi\) and
+  \(L(\Pi)\), but in general we conflate the two notions and refer to both as
+  the problem \(\Pi\).
+\end{definition}
+
+\begin{definition}[\NP]
+  \NP{} is the class of problems solvable by a \emph{non-deterministic} Turing
+  machine in \emph{polynomial time}.
+\end{definition}
+
+
+
+

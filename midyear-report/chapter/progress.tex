@@ -1,0 +1,135 @@
+\chapter{Current progress}
+
+\label{ch:progress}
+
+\section{Puzzle generation}
+
+\label{sec:progress.generation}
+
+The topic of puzzle generation difficulty has been explored in detail by Laura
+Sanchis
+\parencite{language-instances,test-gen-complexity,hard-diverse-graph-tests}.
+
+\todo[inline]{incomplete; i'm focusing my effort on the fixed-turn section first
+because that's more novel/interesting}
+
+\subsection{Puzzles with unique solutions}
+
+In many popularly-known puzzle games, one criterion for ``good'' puzzle
+generation is that the generated puzzle instance should have a unique solution.
+For example, given a \(9\times9\) Sudoku grid (partially pre-filled with
+numbers \(1,\dotsc,9\)), there should be \emph{exactly one} way to complete the
+grid---no more, no less.
+
+This formulation is incompatible with our
+
+\section{\PSPACE-complete games}
+
+\label{sec:progress.pspace}
+
+\todo[inline]{incomplete}
+
+\section{Fixed-turn games}
+
+\label{sec:progress.ph}
+
+\subsection{Oracles, and the polynomial hierarchy}
+
+\todo[inline]{expository definitions on oracles and the polynomial hierarchy}
+
+\subsection{Boolean Satisfiability}
+
+\subsubsection{The Satisfiability puzzle}
+
+\todo{context on what booleans are?}
+
+Our puzzles-and-games characterization of the polynomial hierarchy begins with
+a well-known family of problems generally referred to as Boolean Satisfiability
+problems.  Here is perhaps the simplest, most well-known Satisfiability puzzle:
+
+\begin{definition}[\Problem{sat}]%
+  Given a Boolean formula \(\phi(x_1, \dots, x_n)\), does there exist an
+  assignment of Boolean values to inputs \(x_1, \dots, x_n\) such that
+  \(\phi(x_1, \dots, x_n) = 1\)?  \Problem{sat} consists of the formula
+  instances for which the answer is \emph{yes}.
+
+  Formally:
+  \[
+    \Problem{sat} = \SetBuilder \phi {
+      \exists (x_1, \dots, x_n) \in \Set{0,1}^n \quad \phi(x_1, \dots, x_n) = 1
+    }.
+  \]
+\end{definition}
+
+The \SAT{} puzzle is particularly useful and worth studying because of its
+generality.  Booleans form the foundation of mathematical logic: every logical
+statement can be encoded, in some manner, as a Boolean formula.  Consequently,
+\SAT{} is, on an intuitive level, the most general possible puzzle---given any
+other puzzle, encoding its rules in terms of Booleans reveals that it is merely
+a special case of \SAT.  This idea is expressed formally as the Cook-Levin
+theorem:
+
+\begin{theorem}[Cook-Levin]
+  \SAT{} is \NP-complete.
+\end{theorem}
+
+%\begin{proof}
+%  \todo[inline]{put proof.  the most important reason to have the proof here is
+%  to illustrate}
+%\end{proof}
+
+\subsubsection{Satisfiability games}
+
+\begin{definition}[The two-turn \SAT{} games]%
+  The two-turn \SAT{} game is played on a Boolean formula \(\phi(x_1, \dots,
+  x_n, y_1, \dots, y_n)\) with inputs partitioned into two groups \(X =
+  \Set{x_i}\) and \(Y = \Set{y_i}\).  The two turns proceed as follows:
+  \begin{enumerate}
+    \item Player 1 assigns values to \(X\).
+    \item Player 2 assigns values to \(Y\).
+  \end{enumerate}
+  Player 1 wins if \(\phi\) is satisfied (\(\phi(\dots) = 1\)), and player 2
+  wins if \(\phi\) is falsified.
+
+  Who wins?  Two decision problems arise from this game:
+  \begin{itemize}
+    \item Does player 1 have a winning strategy?  That is, can player 1 make
+      some first move so that no matter what player 2 does, player 1 always
+      wins?
+
+    \item Does player 2 have a winning strategy?  That is, no matter what
+      player 1 plays, can player 2 respond with some move guaranteeing a win?
+  \end{itemize}
+
+\end{definition}
+
+
+\subsection{Graph coloring}
+
+\begin{definition}[\Problem{3col}]%
+  Given a graph \(\Gamma\), is there a way to color each vertex in  \(\Gamma\)
+  with one of three colors so that every pair of adjacent vertices has distinct
+  colors?
+\end{definition}
+
+\begin{theorem}
+  \Problem{3col} is \NP-complete.
+\end{theorem}
+
+\subsubsection{Graph coloring games}
+
+\begin{definition}[Two-turn \Problem{3col}]%
+  The two-turn \Problem{3col} game is played on a graph \(\Gamma\) whose
+  vertices are partitioned into two (disjoint) groups \(X\) and \(Y\).  Two
+  players take turns assigning one of three colors to vertices.  First, player
+  1 colors vertices in \(X\); second, player 2 colors  vertices in \(Y\).
+  Player 1 wins if the resulting coloring is \emph{invalid}---that is, there
+  exists a pair of vertices sharing the same color; player 2 wins if the
+  resulting coloring is valid.
+
+\end{definition}
+
+\begin{conjecture}
+  Two-turn \Problem{3col} is complete for \SigmaP2 (or \PiP2, depending on
+  which player's winning strategy we examine).
+\end{conjecture}

@@ -1,23 +1,51 @@
 \documentclass{midyear-report}
 
-\title{You can solve it, but can you play it?\\Midyear report draft}
-\author{Kye Shi\\Nicholas Pippenger, Advisor}
+\title{You can solve it, but can you play it?}
+
+\subtitle{Puzzles, games, and the polynomial hierarchy\\Midyear report draft}
+
+\author{Kye Shi}
+\advisor{Nick Pippenger}
+\reader{Art Benjamin}
 \date{2021 November}
+
+\newcommand\ComplexityClass[1]{\ensuremath{\mathbf{#1}}}
+\newcommand\NP{\ComplexityClass{NP}}
+\renewcommand\P{\ComplexityClass{P}}
+\newcommand\PSPACE{\ComplexityClass{PSPACE}}
+\newcommand\PH{\ComplexityClass{PH}}
+\newcommand\EXP{\ComplexityClass{EXPTIME}}
+\newcommand\co[1]{\ensuremath{\operatorname{co}\!{#1}}}
+\newcommand\pro[1]{\ensuremath{\operatorname{pro}\!{#1}}}
+\newcommand\SigmaP[1]{\ensuremath{\Sigma_{#1}\mathbf{P}}}
+\newcommand\PiP[1]{\ensuremath{\Pi_{#1}\mathbf{P}}}
+\newcommand\Problem[1]{\ensuremath{\mathrm{\scriptstyle\MakeUppercase{#1}}}}
+
+\newcommand\SAT[1][]{\Problem{sat}}
+\newcommand\QSAT{\Problem{qsat}}
+
+\bibliography{bibliography.bib}
+\bibliography{newbib.bib}
+
+\usepackage[textwidth=1in]{todonotes}
 
 \begin{document}
 
+\frontmatter
 \maketitle
+\tableofcontents
 
-\section*{intro}
+% it is a means of updating your advisor on your results to date; an initial
+% draft of your final report; and an introduction to the tools, skills, and
+% outlook required when writing professional reports.
 
-\section*{simple reductions}
+\mainmatter
 
-\section*{one antagonistic move}
+\include{chapter/intro}
+\include{chapter/progress}
+\include{chapter/future}
+\include{chapter/bib}
 
-\section*{arbitrary games}
-
-\section*{general framework for game-ifying puzzles}
-
-\section*{the uniqueness question}
+\printbibliography[heading=bibnumbered]
 
 \end{document}
