@@ -259,9 +259,34 @@ to generate arbitrary, NP-complete/NP-hard ``flavored'' puzzles?
 
   \item \fullcite{difficulty-driven-sudoku}
 
-
+    \begin{annotation}
+      This paper, authored under the advice of our very own Prof. Dodds, takes
+      a strategy-based approach to generating puzzles, its intentions
+      reminiscent of \textcite{strategy-solvable-sudoku}.  The
+      ``difficulty-driven'' generation algorithm proposed by this paper is,
+      however, different: it is more similar to traditional trial-and-error
+      (generate, try to solve, add/remove clues) Sudoku generation methods,
+      with the key difference being that the verify/check solution step is done
+      via strategies (as opposed to backtracking/brute-force) to mirror human
+      solving capabilities.  In addition, this paper introduces notions of
+      \emph{difficulty metrics} for Sudoku (e.g., ``most difficult required
+      technique'') that may be used in the generation process to control/tune
+      the difficulty-level of the resulting Sudoku board.
+    \end{annotation}
 
   \item \fullcite{sudoku-difficulty-oracle}
+
+    \begin{annotation}
+      This paper, authored under the advice of our \emph{very} very own Prof.
+      Jakes, also examines the problem of generating Sudoku boards with
+      controlled difficulty.  Similarly to \textcite{difficulty-driven-sudoku},
+      this paper attempts to model the difficulty of a Sudoku board in terms of
+      the \emph{strategies} it uses.  More interestingly, it describes a more
+      generalizable difficulty metric that abstracts specific choices of
+      strategies into an \emph{oracle}, assessing difficulty in relation to
+      number of oracle invocations, amount of work done by each oracle
+      invocation, etc.
+    \end{annotation}
 
   \item \fullcite{steiner-graph-generator}
 
@@ -289,7 +314,29 @@ to generate arbitrary, NP-complete/NP-hard ``flavored'' puzzles?
 
   \item \fullcite{maximum-clique-generators}
 
+    \begin{annotation}
+      This paper, like \textcite{hard-diverse-graph-tests}, offers another
+      deep-dive into a specific NP-hard problem---the maximum clique problem
+      (given an arbitrary graph, what is its largest complete subgraph?).  This
+      paper describes several approximation algorithms for the maximum clique
+      problem, as well as a ``hard and diverse'' algorithm generating test
+      cases for any given number of vertices, edges, and maximum clique size.
+    \end{annotation}
+
   \item \fullcite{sudoku-education}
+
+    \begin{annotation}
+      This paper examines the problem of Sudoku puzzle generation in
+      \emph{educational} contexts---in particular, not just generation
+      algorithms but also exercises, classroom activities, etc. for students to
+      do to explore the Sudoku generation problem.  Additionally, the
+      mathematical concepts in this paper are meant to be approachable to
+      high-schoolers (or even younger).  Given its educational/elementary
+      focus, I don't expect to gather very deep/technical results from this
+      paper, but I included it anyway because it's nevertheless adjacent to my
+      topic, and I personally have tremendous interest in exploring innovative,
+      inquiry-based mathematics teaching methods.
+    \end{annotation}
 
 \end{itemize}
 

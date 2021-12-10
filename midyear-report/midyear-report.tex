@@ -15,11 +15,15 @@
 \newcommand\PSPACE{\ComplexityClass{PSPACE}}
 \newcommand\PH{\ComplexityClass{PH}}
 \newcommand\EXP{\ComplexityClass{EXPTIME}}
-\newcommand\co[1]{\ensuremath{\operatorname{co}\!{#1}}}
-\newcommand\pro[1]{\ensuremath{\operatorname{pro}\!{#1}}}
+\renewcommand\C{\ensuremath{\mathbfit C}}
+\newcommand\co[1]{\ensuremath{\operatorname{co-}\!{#1}}}
+\newcommand\pro[1]{\ensuremath{\operatorname{pro-}\!{#1}}}
 \newcommand\SigmaP[1]{\ensuremath{\Sigma_{#1}\mathbf{P}}}
 \newcommand\PiP[1]{\ensuremath{\Pi_{#1}\mathbf{P}}}
-\newcommand\Problem[1]{\ensuremath{\mathrm{\scriptstyle\MakeUppercase{#1}}}}
+\newcommand\Problem[1]{\ensuremath{\text{\textsc{\MakeLowercase{#1}}}}}
+
+\let\O\relax
+\DeclareMathOperator\O{O}
 
 \newcommand\SAT[1][]{\Problem{sat}}
 \newcommand\QSAT{\Problem{qsat}}
@@ -44,7 +48,7 @@
 \include{chapter/intro}
 \include{chapter/progress}
 \include{chapter/future}
-\include{chapter/bib}
+%\include{chapter/bib}
 
 \printbibliography[heading=bibnumbered]
 

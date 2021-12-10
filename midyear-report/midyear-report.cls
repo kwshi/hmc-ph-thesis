@@ -215,3 +215,19 @@
   left=2em,
   parbox=false,
 }
+\newtcolorbox{nested}{
+  breakable,
+  parbox=false,
+  % TODO fix spacing, maybe try `before skip balanced`, requires newer
+  % tcolorbox.  or use a list with empty labels instead!
+  before skip=1em/2,
+  sharp corners,
+  opacityback=0,
+  opacityframe=0,
+  boxsep=0pt,
+  boxrule=0pt,
+  right=0em,
+  top=0em,
+  bottom=0em,
+  left=2em,
+}

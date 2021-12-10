@@ -2,44 +2,117 @@
 
 \label{ch:progress}
 
-\section{Puzzle generation}
+\section{\NP{} as puzzles, or one-move games}
 
-\label{sec:progress.generation}
+Recall that \NP{} is the class of problems solvable by guess-and-check, with a
+\emph{check} problem in \P{} (\cref{defn:np}):
+\[
+  \NP = \SetBuilder{L}{
+    \exists \underbrace{\mathstrut L' \in \P}_{\mathclap{\text{the ``check'' problem}}} \;
+    \forall x \quad
+    x \in L \iff \underbrace{\exists g \; (x, g) \in L'}_{\mathclap{\text{guess-and-check}}}
+  }.
+\]
+(In the above, it is \emph{implicitly} required that \(\Abs g\) be
+polynomially-bounded with respect to \(\Abs x\), but we have omitted it in
+notation for readability.)
 
-The topic of puzzle generation difficulty has been explored in detail by Laura
-Sanchis
-\parencite{language-instances,test-gen-complexity,hard-diverse-graph-tests}.
+Another famous example of a problem in \NP{} is \Problem{sudoku}, framed as the
+following decision problem:
+\begin{definition}[\Problem{sudoku}]%
+  We are given a square grid with dimensions \(n^2\times n^2\), some of whose
+  cells are filled in with numbers in \(\{1,\dotsc,n^2\}\).  The grid is
+  evenly partitioned into \(n\) chunks along each axis, resulting in \(n^2\)
+  \emph{blocks} each with dimensions \(n\times n\).
 
-\todo[inline]{incomplete; i'm focusing my effort on the fixed-turn section first
-because that's more novel/interesting}
+  Does there exist a way to fill in the rest of the cells so that each row,
+  column, and block on the grid contains each number in \(\{1,\dotsc,n^2\}\)
+  exactly once?
+\end{definition}
 
-\subsection{Puzzles with unique solutions}
+\todo[inline]{TODO add illustration of Sudoku board}
 
-In many popularly-known puzzle games, one criterion for ``good'' puzzle
-generation is that the generated puzzle instance should have a unique solution.
-For example, given a \(9\times9\) Sudoku grid (partially pre-filled with
-numbers \(1,\dotsc,9\)), there should be \emph{exactly one} way to complete the
-grid---no more, no less.
+For this problem, a ``guess'' \(g\) consists of a list of numbers in
+\(\{1,\dotsc,n^2\}\) specifying the values with which to fill in the empty
+cells in the given grid.  The ``check'' problem, then, is stated as follows:
+\begin{nested}
+  Given a fully-filled-in Sudoku board, does each row, column, and block on the
+  grid contain each of \(\{1,\dotsc,n^2\}\) exactly once?
+\end{nested}
 
-This formulation is incompatible with our
 
-\section{\PSPACE-complete games}
 
-\label{sec:progress.pspace}
 
-\todo[inline]{incomplete}
+%Also recall an example of an \NP{} problem, \Problem{hamiltonian-path}
+%(\cref{def:hamiltonian-path}), which asks: given a graph, does it have a
+%Hamiltonian path?  Here, the ``check'' problem \(L'\) can be stated as follows:
+%\begin{nested}
+%  Given a graph \(x = \Gamma\) with vertices \(v_1,\dotsc,v_n\), along with a
+%  permutation \(g = \phi(1),\dotsc,\phi(n)\), does the sequence
+%  \(v_{\phi(1)},\dotsc,v_{\phi(n)}\) specify a valid path on \(\Gamma\)?
+%\end{nested}
+%
+%We can now intuitively reframe \Problem{hamiltonian-path} as a one-player
+%``game'', played on an input ``board'' in the form
 
-\section{Fixed-turn games}
+%in which the player writes down some
+%permutation \(\phi\).  They ``win'' if it meets the validity condition \((x, g)
+%\in L'\) and ``lose'' if it doesn't.  Under this framing, the decision problem
+%becomes the following question: does the player have a winning \emph{strategy}?
 
-\label{sec:progress.ph}
+\section{Multi-turn games and the polynomial hierarchy}
 
-\subsection{Oracles, and the polynomial hierarchy}
+Consider, now, a two player, a ``solver'' and an
+``adversary'', in two turns:
+\begin{itemize}
+  \item First, the solver
+  \item Next, the adversary
+\end{itemize}
 
-\todo[inline]{expository definitions on oracles and the polynomial hierarchy}
+This ``guess-and-check'' extension of \P{} may be continued
 
-\subsection{Boolean Satisfiability}
+to define higher
+and higher complexity classes, known as the \emph{polynomial hierarchy}:
+\begin{definition}[polynomial hierarchy]
+  \begin{align*}
+    \SigmaP1 &= \NP = \SetBuilder{L}{\exists L' \in \P \; \forall x \quad
+      x \in L \iff \exists g \; (x, g) \in L'
+    }, \\
+    \SigmaP2 &= \NP = \SetBuilder{L}{\exists L' \in \P \; \forall x \quad
+      x \in L \iff \exists g \; (x, g) \in L'
+    }, \\
+  \end{align*}
+\end{definition}
 
-\subsubsection{The Satisfiability puzzle}
+
+
+
+%In general, any complexity class has a guess-and-check equivalent, called its
+%\emph{projection}:
+%\begin{definition}[projection]
+%  Let \(\C\) be a complexity class.  Its \emph{projection} is the class of
+%  problems
+%  \[
+%    \pro\C = \SetBuilder*{L}{
+%      \exists L' \in \C, \text{polynomial \(p\)}; \; \forall x \quad
+%      x \in L \iff
+%      \exists g \; \text{\(\Abs g \le p(\Abs x)\) and \((x, g) \in L'\)}
+%    }.
+%  \]
+%
+%  (Observe, then, that \(\NP = \pro\P\).)
+%\end{definition}
+
+
+
+
+
+
+
+
+\section{Boolean Satisfiability}
+
+\subsection{The Satisfiability puzzle}
 
 \todo{context on what booleans are?}
 
@@ -78,7 +151,7 @@ theorem:
 %  to illustrate}
 %\end{proof}
 
-\subsubsection{Satisfiability games}
+\subsection{Satisfiability games}
 
 \begin{definition}[The two-turn \SAT{} games]%
   The two-turn \SAT{} game is played on a Boolean formula \(\phi(x_1, \dots,
@@ -104,7 +177,7 @@ theorem:
 \end{definition}
 
 
-\subsection{Graph coloring}
+\section{Graph coloring}
 
 \begin{definition}[\Problem{3col}]%
   Given a graph \(\Gamma\), is there a way to color each vertex in  \(\Gamma\)
@@ -116,7 +189,7 @@ theorem:
   \Problem{3col} is \NP-complete.
 \end{theorem}
 
-\subsubsection{Graph coloring games}
+\subsection{Graph coloring games}
 
 \begin{definition}[Two-turn \Problem{3col}]%
   The two-turn \Problem{3col} game is played on a graph \(\Gamma\) whose
@@ -133,3 +206,45 @@ theorem:
   Two-turn \Problem{3col} is complete for \SigmaP2 (or \PiP2, depending on
   which player's winning strategy we examine).
 \end{conjecture}
+
+
+
+
+
+
+
+
+
+
+%\section{Puzzle generation}
+%
+%\label{sec:progress.generation}
+%
+%The topic of puzzle generation difficulty has been explored in detail by Laura
+%Sanchis
+%\parencite{language-instances,test-gen-complexity,hard-diverse-graph-tests}.
+%
+%\todo[inline]{incomplete; i'm focusing my effort on the fixed-turn section first
+%because that's more novel/interesting}
+%
+%\subsection{Puzzles with unique solutions}
+%
+%In many popularly-known puzzle games, one criterion for ``good'' puzzle
+%generation is that the generated puzzle instance should have a unique solution.
+%For example, given a \(9\times9\) Sudoku grid (partially pre-filled with
+%numbers \(1,\dotsc,9\)), there should be \emph{exactly one} way to complete the
+%grid---no more, no less.
+%
+%This formulation is incompatible with our
+%
+%\section{\PSPACE-complete games}
+%
+%\label{sec:progress.pspace}
+%
+%\todo[inline]{incomplete}
+%
+%\section{Fixed-turn games}
+%
+%\label{sec:progress.ph}
+%
+%
