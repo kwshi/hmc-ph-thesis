@@ -39,6 +39,8 @@
 \RequirePackage{isomath}
 \RequirePackage{microtype}
 \RequirePackage{libertinus}
+%\RequirePackage{lmodern}
+%\RequirePackage{unicode-math}
 \renewcommand\familydefault\sfdefault
 
 \setmonofont{JuliaMono}[Scale=MatchLowercase]
@@ -49,6 +51,7 @@
 \RequirePackage{cancel}
 \RequirePackage{array}
 \RequirePackage{booktabs}
+\RequirePackage{xfrac}
 \RequirePackage{xpatch}
 \RequirePackage{etoolbox}
 \RequirePackage[style=authoryear]{biblatex}
@@ -57,6 +60,7 @@
 \RequirePackage{enumitem}
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
+\usetikzlibrary{matrix}
 \usetikzlibrary{positioning}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{decorations}
@@ -64,6 +68,19 @@
 \usetikzlibrary{circuits.logic}
 \usetikzlibrary{circuits.logic.US}
 
+\usetikzlibrary{external}
+\tikzexternalize[
+  system call={
+    xelatex %
+    \tikzexternalcheckshellescape %
+    -halt-on-error %
+    -interaction='batchmode' %
+    -output-directory='_build' %
+    -jobname="\image" %
+    "\texsource"
+  },
+  prefix=_tikz/
+]
 
 \RequirePackage{amsthm}
 \RequirePackage{thmtools}

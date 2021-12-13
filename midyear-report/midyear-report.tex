@@ -10,28 +10,35 @@
 \date{2021 November}
 
 \newcommand\ComplexityClass[1]{\ensuremath{\mathbf{#1}}}
-\newcommand\NP{\ComplexityClass{NP}}
-\renewcommand\P{\ComplexityClass{P}}
-\newcommand\PSPACE{\ComplexityClass{PSPACE}}
+\newcommand\NP{\texorpdfstring{\ComplexityClass{NP}}{𝐍𝐏}}
+\renewcommand\P{\texorpdfstring{\ComplexityClass{P}}{𝐏}}
+\newcommand\PSPACE{\texorpdfstring{\ComplexityClass{PSPACE}}{𝐏𝐒𝐏𝐀𝐂𝐄}}
 \newcommand\PH{\ComplexityClass{PH}}
 \newcommand\EXP{\ComplexityClass{EXPTIME}}
 \renewcommand\C{\ensuremath{\mathbfit C}}
-\newcommand\co[1]{\ensuremath{\operatorname{co-}\!{#1}}}
-\newcommand\pro[1]{\ensuremath{\operatorname{pro-}\!{#1}}}
-\newcommand\SigmaP[1]{\ensuremath{\Sigma_{#1}\mathbf{P}}}
-\newcommand\PiP[1]{\ensuremath{\Pi_{#1}\mathbf{P}}}
+\newcommand\co{\ensuremath{\operatorname{co-}\!}}
+\newcommand\pro{\ensuremath{\operatorname{pro-}\!}}
+\newcommand\SigmaP[1]{\ensuremath{Σ_{#1}\mathbf{P}}}
+\newcommand\PiP[1]{\ensuremath{Π_{#1}\mathbf{P}}}
+\newcommand\DeltaP[1]{\ensuremath{\Delta_{#1}\mathbf{P}}}
 \newcommand\Problem[1]{\ensuremath{\text{\textsc{\MakeLowercase{#1}}}}}
 
 \let\O\relax
 \DeclareMathOperator\O{O}
 
-\newcommand\SAT[1][]{\Problem{sat}}
+\newcommand\SAT{\Problem{sat}}
+\newcommand\CSAT{\Problem{csat}}
 \newcommand\QSAT{\Problem{qsat}}
 
 \bibliography{bibliography.bib}
 \bibliography{newbib.bib}
 
 \usepackage[textwidth=1in]{todonotes}
+
+% https://tex.stackexchange.com/questions/42486/todonotes-and-tikzexternalize
+\makeatletter
+\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+\makeatother
 
 \begin{document}
 

@@ -1,0 +1,21 @@
+setup:
+  @find 'chapter' -type 'd' | while read dir; do mkdir -p "_build/$dir"; done
+  @mkdir -p '_build/_tikz'
+  @ln -sf '_build/_tikz'
+
+build: setup
+  xelatex \
+    -interaction='nonstopmode' \
+    -output-directory='_build' \
+    -halt-on-error \
+    -shell-escape \
+    'midyear-report.tex'
+
+dev: setup
+  watchexec -e 'tex,cls,bib' -- \
+    xelatex \
+      -interaction=nonstopmode \
+      -output-directory='_build' \
+      -halt-on-error \
+      -shell-escape \
+      'midyear-report.tex'

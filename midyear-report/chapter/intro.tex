@@ -178,7 +178,8 @@ define what easier/harder means---intuitively, we think of a problem \(L_1\) as
 easier than another problem \(L_2\) if knowing how to solve \(L_2\)
 automatically also tells us how to solve \(L_1\), with minimal
 (polynomially-bounded) overhead.  More precisely:
-\begin{definition}
+\begin{definition}[reductions]
+  \label{def:reduction}
   Let \(L_1\) and \(L_2\) be decision problems.  We say \(L_1\) is
   \emph{reducible to} \(L_2\), or that \(L_1\) is \emph{at least as easy as}
   \(L_2\)'', denoted \(L_1 \le L_2\), if\dots
@@ -206,6 +207,7 @@ automatically also tells us how to solve \(L_1\), with minimal
 This notion of comparison also gives us a good way of comparing problems to
 entire classes:
 \begin{definition}[hardness and completeness]%
+  \label{def:hard-complete}
   Let \(\mathbfit C\) be a complexity class.
   \begin{itemize}[nosep]
     \item A problem \(L\) is \emph{hard for \(\mathbfit C\)}, or
