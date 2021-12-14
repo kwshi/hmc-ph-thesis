@@ -87,6 +87,8 @@
 \RequirePackage{tcolorbox}
 \tcbuselibrary{breakable}
 
+\RequirePackage{minted}
+
 %\xpatchbibdriver{article}{%
 %  \usebibmacro{finentry}%
 %  }{%
@@ -132,7 +134,7 @@
 \DeclarePairedDelimiterX\SetBuilder[2]\{\}{#1 \;\delimsize\vert\; #2}
 
 \declaretheoremstyle[%
-  spaceabove=0pt,
+  %spaceabove=0pt,
   bodyfont=\normalfont,
 ]{theorem}
 
@@ -144,7 +146,7 @@
   thm/.style={
     before upper=\vspace{-2\parskip},
     boxrule=0pt,
-    top=1em/2,
+    top=1em,
     bottom=1em,
     sharp corners,
     breakable,

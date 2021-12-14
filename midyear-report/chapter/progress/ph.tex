@@ -1,0 +1,149 @@
+\section{Multi-turn games and the polynomial hierarchy}
+
+We think of \NP{} problems as one-turn games (``puzzles'') and \SigmaP2
+problems as two-turn games.  If we go backwards by a step, and imagine games
+with \emph{zero} turns (i.e., neither player moves; the input automatically
+determines who wins), we simply obtain \P.
+
+It is natural for us to now extend this reasoning to \(k\)-turn games.  If two
+players alternate turns making moves \(g_1, g_2, \dotsc, g_k\), with victory
+decided by \((x, g_1, g_2, \dotsc, g_k) \overset{?}{\in} L'\) (with
+\(\L'\in\P\)), does the starting player have a winning strategy?  For each
+\(k\), this question and its complement (whether the second player has a
+winning strategy) define classes \SigmaP{k} and \PiP{k}.  This chain of
+complexity classes is known as the \emph{polynomial hierarchy}:
+
+\begin{definition}[polynomial hierarchy]%
+  The \emph{polynomial hierarchy} refers to the collection of complexity
+  classes
+  \begin{align*}
+    \SigmaP0 = \P, \\
+    \SigmaP1 = \NP &= \SetBuilder{L}{
+      ∃\mathstrut L'∈\P \; ∀x \quad
+      x∈L ⟺ ∃g \; (x, g)∈L'
+    }, \\
+    \SigmaP2 &= \SetBuilder* L {
+      ∃ L'∈\P \; ∀x \quad
+      x∈L ⟺ ∃g_1 \; ∀g_2 \; (x, g_1, g_2)∈L'
+    }, \\
+    \SigmaP3 &= \SetBuilder* L {
+      ∃ L'∈\P \; ∀x \quad
+      x∈L ⟺ ∃g_1 \; ∀g_2 \; ∃ g_3 \; (x, g_1, g_2, g_3)∈L'
+    }, \\
+    &\vdotswithin{=} \\
+    \SigmaP k &= \SetBuilder* L {
+      ∃ L'∈\P \; ∀x \quad
+      x∈L ⟺ ∃g_1 \; ∀g_2 \; \dotsb \sfrac∃∀\, g_k
+      \; (x, g_1, g_2, \dotsc, g_k)∈L'
+    },
+  \end{align*}
+  along with their complement classes
+  \begin{align*}
+    \PiP0 = \co\SigmaP0 = \co\P &= \P, \\
+    \PiP1 = \co\SigmaP1 = \co\NP &= \SetBuilder*{L}{
+      ∃ \mathstrut L'∈\P \; ∀x \quad
+      x∈L ⟺ ∀g \; (x, g) ∉ L'
+    }, \\
+    \PiP2 = \co\SigmaP2 &= \SetBuilder*{L}{
+      ∃ \mathstrut L'∈\P \; ∀x \quad
+      x∈L ⟺ ∀g_1 \; ∃g_2 \; (x, g_1, g_2) ∉ L'
+    }, \\
+    &\vdotswithin{=} \\
+    \PiP k = \co\SigmaP k &= \SetBuilder*{L}{
+      ∃ \mathstrut L'∈\P \; ∀x \quad
+      x∈L ⟺ ∀g_1 \; ∃g_2 \dotsb \sfrac∀∃ \, g_k
+      \; (x, g_1, g_2, \dotsc, g_k) ∉ L'
+    }.
+  \end{align*}
+  Also note, just as in \cref{def:np}, that each of the guesses \(g_1, \dotsc,
+  g_k\) must be bounded in length by polynomial functions of \(\Abs x\); we
+  have omitted these requirements from the definitions stated above only for
+  sake of brevity.  Again, these conditions are not central to the intuition of
+  these definitions but an important technicality.
+
+  As an aside, observe that \(∉ L'\) means the same thing as \(∈ L'^c\)
+  and that \(L'\in\P\) if and only if \(L'^c\in\P\) as well (since, in general,
+  \(\co\P=\P\)).  Thus we can equivalently define \(\PiP k\) without negation,
+  as
+  \[
+    \PiP k = \SetBuilder*{L}{
+      ∃\mathstrut L' ∈ \P \; ∀x \quad
+      x ∈ L ⟺ ∀g_1 \; ∃g_2 \dotsb \sfrac∀∃ \, g_k
+      \; (x, g_1, g_2, \dotsc, g_k)
+      \smash[b]{\underset{\substack{\uparrow\\\mathclap{\text{not negated}}}}{{}∈{}}} L'
+    }.
+    \vphantom{\underset{\substack{\uparrow\\\text{not negated}}}{∈}}
+  \]
+
+  Note that this definition differs in presentation from
+  \textcite{papadimitriou.cc}.  Here, we formulate these classes explicitly
+  from the perspective of games.  \textcite[Definition 17.2]{papadimitriou.cc}
+  defines an additional chain of classes named \DeltaP{k} and does so
+  recursively via a concept called \emph{oracles}.  While also insightful and
+  interesting, those ideas are somewhat less pertinent to our games-and-puzzles
+  treatment, so for now we will set them aside.
+\end{definition}
+
+How complex is each class in the polynomial hierarchy?
+
+First, we can observe that any game with \(k\) turns can also be played as a
+\(k+1\)-turn game, in which the last (or first) player's move is ignored in
+deciding the outcome of the game.  In other words, any \(k\)-turn game is
+\emph{reducible} (\cref{def:reduction}) to a \(k+1\)-turn game, and therefore
+\[
+  \SigmaP k, \PiP k ⊆ \SigmaP{k+1}, \PiP{k+1}.
+\]
+Thus, in general, \(k\)-turn games are at least as easy as \(k+1\)-turn games.
+But are they strictly easier?  Similar to \P-vs-\NP, this is an open question:
+it isn't known whether any of these containments are strict, though many
+suspect they are.  Relatedly, it is also not known, but suspected to be the
+case, whether \(\SigmaP k \ne \PiP k\) at all levels \(k\ge1\).  The
+containment relations in the polynomial hierarchy may be visualized as follows:
+
+\begin{center}
+  \begin{tikzpicture}
+    \tikzset{
+      subset/.style={
+        ->,
+        draw opacity=1/2,
+        out looseness=.5,
+      },
+      unknown/.style={
+        draw opacity=1/2,
+        text opacity=1/2,
+        densely dotted,
+      },
+      hierarchy/.style={
+        row sep=1em, column sep=4em, matrix of math nodes,
+        nodes={
+          anchor=base,
+          text height=2em/3,
+          text depth=1em/3,
+        },
+      },
+    }
+
+    \matrix[hierarchy]{
+      & |(Σ1)|\SigmaP1 = \NP & |(Σ2)|\SigmaP2 & |(Σ3)|\SigmaP3 & |(Σ)|\dotso \\
+      |(0)| \SigmaP0 = \PiP0 = \P \\
+      & |(Π1)|\PiP1 = \co\NP & |(Π2)|\PiP2 & |(Π3)|\PiP3 & |(Π)|\dotso \\
+    };
+
+    \draw[subset, out=+45, in=west] (0) to (Σ1);
+    \draw[subset, out=-45, in=west] (0) to (Π1);
+    \foreach \i/\j in {1/2,2/3,3/} {
+      \draw[subset] (Σ\i) -- (Σ\j);
+      \draw[subset] (Π\i) -- (Π\j);
+      \draw[subset] (Σ\i) -- (Π\j);
+      \draw[subset] (Π\i) -- (Σ\j);
+      \draw[unknown] (Σ\i) -- (Π\i) node[fill=white, midway]{?};
+    }
+  \end{tikzpicture}
+\end{center}
+
+To concretely develop a sense of how difficult these classes are, we shall
+search for good ``representative'' problems from each class.  In particular,
+what are some \emph{complete} (\cref{def:hard-complete}) problems for each
+class in the polynomial hierarchy?
+
+

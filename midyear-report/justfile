@@ -1,21 +1,13 @@
 setup:
-  @find 'chapter' -type 'd' | while read dir; do mkdir -p "_build/$dir"; done
   @mkdir -p '_build/_tikz'
   @ln -sf '_build/_tikz'
 
 build: setup
-  xelatex \
-    -interaction='nonstopmode' \
-    -output-directory='_build' \
-    -halt-on-error \
-    -shell-escape \
-    'midyear-report.tex'
+  latexmk -interaction='nonstopmode' -xelatex 'midyear-report.tex'
 
 dev: setup
-  watchexec -e 'tex,cls,bib' -- \
-    xelatex \
-      -interaction=nonstopmode \
-      -output-directory='_build' \
-      -halt-on-error \
-      -shell-escape \
-      'midyear-report.tex'
+  latexmk -pvc -interaction='nonstopmode' -xelatex 'midyear-report.tex'
+
+view:
+  nohup zathura '_build/midyear-report.pdf' > '/dev/null' 2> '/dev/null' &
+

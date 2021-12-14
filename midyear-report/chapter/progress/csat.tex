@@ -1,0 +1,213 @@
+\section{Boolean circuit games}
+
+\todo[inline]{this section onward is untouched since our last meeting.  what
+  remains to be filled out are: concrete examples of \SigmaP k-complete
+  problems, i.e., satisfiability games; bits and pieces of our discussions on
+  graph coloring games; a brief discussion of future work, in which I will
+  gently mention the other branches I read about near the start of the
+  semester, and summarize the main direction of open questions continuing the
+current ``main'' thread of ideas.}
+
+A Boolean circuit consists of a set of \emph{inputs}, which each take on a
+value \(0\) or \(1\), and wired into a network of \emph{logic gates}, which
+each take in one or two Boolean values (\(0\) or \(1\)) and output another
+according to certain fixed rules.  Together, the logic gates compute some
+Boolean function \(C\colon\Set{0,1}^m\to\Set{0,1}^n\).
+
+\todo[inline]{example, also note that circuit should be acyclic}
+
+A simple decision problem arising from Boolean circuits is known as the
+\Problem{circuit-value} problem:
+\begin{definition}[\Problem{circuit-value}]%
+  Given an \(n\)-input circuit \(C\) together with fixed inputs \(v_1, v_2,
+  \dotsc, v_n\), does the output of the circuit \(C(v_1,\dotsc,v_n)\) evaluate
+  to \(1\)?
+  \[
+    \Problem{circuit-value} = \SetBuilder{
+      (\text{Boolean circuit \(C\)}, \text{inputs \((v_1,\dotsc,v_n)\)})
+      }{
+      C(v_1, \dotsc, v_n) = 1
+    }.
+  \]
+
+\end{definition}
+This problem is fairly straightforward.  To solve it, start by attempting to
+evaluate the right-most gate, whose output is the overall output of \(C\).  If
+its inputs are not yet evaluated, recursively do so, \emph{marking} each gate
+with its output value once it is computed, so that on repeated visits to the
+same gate its output doesn't need to be recomputed.  Thus each gate in \(C\) is
+evaluated at most once, taking \(\O(1)\) time, so evaluating the overall
+circuit value takes \(\O(n)\) time.  Thus \(\Problem{circuit-value}\in\P\).
+
+\subsection{The circuit satisfiability puzzle}
+
+Given that \(\Problem{circuit-value}\in\P\), we can use it as a ``check''
+problem from which to derive puzzles and games whose decision problems lie in
+the polynomial hierarchy.  An input to the \Problem{circuit-value} decision
+problem consists of two parts:
+\begin{itemize}[nosep]
+  \item a Boolean circuit \(C\), and
+  \item assignments to \(C\)'s input variables, \(v_1, v_2, \dotsc, v_n\).
+\end{itemize}
+Now consider a puzzle in which the player is given only \(C\) (the game
+``board''); their task is to \emph{guess} assignments to its inputs so that
+\(C(\dotsc)\) evaluates to \(1\).  This puzzle is called the \emph{Circuit
+Satisfiability} puzzle, or \CSAT{} for short:
+\begin{definition}[\CSAT]%
+  \label{def:csat}
+  Given a Boolean circuit \(C\), does there exist an assignment to \(C\)'s
+  inputs so that \(C\) evaluates to \(1\)?
+  \begin{align*}
+    \CSAT
+    &= \SetBuilder{\text{Boolean circuit \(C\)}}{
+      ∃(v_1,\dotsc,v_n) \quad C(v_1,\dotsc,v_n) = 1
+    } \\
+    &= \SetBuilder{C}{∃V \; (C,V)∈\Problem{circuit-value}}.
+  \end{align*}
+\end{definition}
+It is straightforward to see, immediately following from the definition of
+\NP{} (\cref{def:np}) and the fact that \(\Problem{circuit-value}∈\P\), that
+\(\CSAT∈\NP\).
+
+What makes \CSAT{} an especially interesting puzzle is its generality.  Boolean
+circuits literally underpin the design of all modern computer architectures,
+and consequently, any algorithm we can conceivably implement in some
+programming language can, theoretically, be encoded as a Boolean circuit.  What
+this fact implies for puzzles is that any \P{} problem can be reduced to the
+Boolean \Problem{circuit-value} problem, and, in a similar manner, any \NP{}
+problem (``puzzle'') \CSAT.  Consequently, \CSAT{} is \NP-complete
+\parencite{cook.np}.  This fact is commonly known as the \emph{Cook--Levin}
+theorem.
+\begin{theorem}[Cook--Levin]
+  \CSAT{} is \NP-complete \parencite{cook.np}.
+
+  Technically, the actual Cook--Levin theorem concerns Boolean \emph{formula}
+  satisfiability rather than \emph{circuit} satisfiability.  Nevertheless,
+  since any formula can be represented as a circuit (every formula is a circuit
+  where each gate's output is used only once), \NP-completeness of \CSAT{} is a
+  straightforward corollary of the ``real'' Cook--Levin theorem.
+
+  Alternatively, \textcite{ladner.cval} demonstrates a process of converting
+  any algorithm (formalized as a Turing Machine) directly to a Boolean circuit.
+  Consequently, I suspect (but haven't made sure) that a proof of \CSAT's
+  \NP-completeness can be obtained via a simple generalization of this process.
+\end{theorem}
+
+\subsection{The circuit satisfiability games}
+
+We now define the two-player circuit satisfiability \emph{games}.
+\begin{definition}[\(\CSAT_k\)]%
+  The game is played on a given circuit \(C\).  The inputs of \(C\) are
+  partitioned into \(k\) (disjoint) groups \(V_1, \dotsc, V_k\).  The players
+  alternate turns, assigning values to \emph{groups} of inputs at a time:
+  \begin{enumerate}[nosep]
+    \item Player 1 assigns values to all inputs in \(V_1\).
+    \item Player 2 assigns values to all inputs in \(V_2\).
+    \item Player 1 assigns values to all inputs in \(V_3\).
+    \item[] \dots
+    \item[{[\(k\)]}] Player 1 if \(k\) is odd, or player 2 if \(k\) is
+      even, assigns values to inputs in \(V_k\).
+  \end{enumerate}
+  After all inputs have been assigned, the final output of the circuit
+  determines the victor of the game.  In particular, player \(1\) wins if and
+  only if \(C(V_1, \dotsc, V_k) = 1\).
+
+  Define the decision problem \(\CSAT_k\) specifically as the question: does
+  \emph{player 1} have a winning strategy?
+  \begin{align*}
+    \CSAT_k
+    &= \SetBuilder* {(C, V_1, V_2, \dotsc, V_k)} {
+      ∃V_1 \; ∀V_2 \; ∃V_3 \; \dotso \; \sfrac∃∀ \, V_k \quad
+      C(V_1, V_2, \dotsc, V_k) = 1
+    } \\
+    &= \SetBuilder* {(C, V_1, V_2, \dotsc, V_k)} {
+      ∃V_1 \; ∀V_2 \; ∃V_3 \; \dotso \; \sfrac∃∀ \, V_k \quad
+      (C, (V_1, V_2, \dotsc, V_k)) ∈ \Problem{circuit-value}
+    }.
+  \end{align*}
+
+  Note that \(\CSAT_1 = \CSAT\) is just the (one-player, one-turn) circuit
+  satisfiability \emph{puzzle} (\cref{def:csat}).
+\end{definition}
+
+How difficult is \(\CSAT_k\)?  Again, it follows straightforwardly from its
+definition that \(\CSAT_k ∈ \SigmaP k\).  More interesting is that, due to the
+generality of Boolean circuits, each \(\CSAT_k\) is also \(\SigmaP k\)
+complete:
+
+\begin{theorem}
+  For each \(k = 1, 2, 3, \dotsc\),
+  \begin{itemize}[nosep]
+    \item \(\CSAT_k\) is complete for \(\SigmaP k\), and
+    \item (equivalently) \(\CSAT_k^c\) is complete for \(\PiP k\).
+  \end{itemize}
+
+  The version of this theorem in terms of identical games played on Boolean
+  \emph{formulas} is proved in \textcite{wrathall.qsat}, but one can easily
+  show the same holds for \emph{circuits} by a simple reduction converting
+  formulas to circuits.
+\end{theorem}
+
+
+%\subsection{The Circuit Satisfiability puzzle}
+%
+%Our puzzles-and-games characterization of the polynomial hierarchy begins with
+%a well-known family of problems generally referred to as Boolean Satisfiability
+%problems.  Here is perhaps the simplest, most well-known Satisfiability puzzle:
+%
+%\begin{definition}[\SAT]%
+%  Given a Boolean formula \(\phi(x_1, \dots, x_n)\), does there exist an
+%  assignment of Boolean values to inputs \(x_1, \dots, x_n\) such that
+%  \(\phi(x_1, \dots, x_n) = 1\)?  \Problem{sat} consists of the formula
+%  instances for which the answer is \emph{yes}.
+%
+%  Formally:
+%  \[
+%    \Problem{sat} = \SetBuilder \phi {
+%      \exists (x_1, \dots, x_n) \in \Set{0,1}^n \quad \phi(x_1, \dots, x_n) = 1
+%    }.
+%  \]
+%\end{definition}
+%
+%The \SAT{} puzzle is particularly useful and worth studying because of its
+%generality.  Booleans form the foundation of mathematical logic: every logical
+%statement can be encoded, in some manner, as a Boolean formula.  Consequently,
+%\SAT{} is, on an intuitive level, the most general possible puzzle---given any
+%other puzzle, encoding its rules in terms of Booleans reveals that it is merely
+%a special case of \SAT.  This idea is expressed formally as the Cook-Levin
+%theorem:
+%
+%\begin{theorem}[Cook-Levin]
+%  \SAT{} is \NP-complete.
+%\end{theorem}
+%
+%%\begin{proof}
+%%  \todo[inline]{put proof.  the most important reason to have the proof here is
+%%  to illustrate}
+%%\end{proof}
+%
+%\subsection{Satisfiability games}
+%
+%\begin{definition}[The two-turn \SAT{} games]%
+%  The two-turn \SAT{} game is played on a Boolean formula \(\phi(x_1, \dots,
+%  x_n, y_1, \dots, y_n)\) with inputs partitioned into two groups \(X =
+%  \Set{x_i}\) and \(Y = \Set{y_i}\).  The two turns proceed as follows:
+%  \begin{enumerate}
+%    \item Player 1 assigns values to \(X\).
+%    \item Player 2 assigns values to \(Y\).
+%  \end{enumerate}
+%  Player 1 wins if \(\phi\) is satisfied (\(\phi(\dots) = 1\)), and player 2
+%  wins if \(\phi\) is falsified.
+%
+%  Who wins?  Two decision problems arise from this game:
+%  \begin{itemize}
+%    \item Does player 1 have a winning strategy?  That is, can player 1 make
+%      some first move so that no matter what player 2 does, player 1 always
+%      wins?
+%
+%    \item Does player 2 have a winning strategy?  That is, no matter what
+%      player 1 plays, can player 2 respond with some move guaranteeing a win?
+%  \end{itemize}
+%
+%\end{definition}
+%

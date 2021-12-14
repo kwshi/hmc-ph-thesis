@@ -1,0 +1,31 @@
+\section{Graph coloring}
+
+\begin{definition}[\Problem{3col}]%
+  Given a graph \(\Gamma\), is there a way to color each vertex in  \(\Gamma\)
+  with one of three colors so that every pair of adjacent vertices has distinct
+  colors?
+\end{definition}
+
+\begin{theorem}
+  \Problem{3col} is \NP-complete.
+\end{theorem}
+
+\subsection{Graph coloring games}
+
+\begin{definition}[Two-turn \Problem{3col}]%
+  The two-turn \Problem{3col} game is played on a graph \(\Gamma\) whose
+  vertices are partitioned into two (disjoint) groups \(X\) and \(Y\).  Two
+  players take turns assigning one of three colors to vertices.  First, player
+  1 colors vertices in \(X\); second, player 2 colors vertices in \(Y\).
+  Player 1 wins if the resulting coloring is \emph{invalid}---that is, there
+  exists a pair of vertices sharing the same color; player 2 wins if the
+  resulting coloring is valid.
+
+\end{definition}
+
+\begin{conjecture}
+  Two-turn \Problem{3col} is complete for \SigmaP2 (or \PiP2, depending on
+  which player's winning strategy we examine).
+\end{conjecture}
+
+
