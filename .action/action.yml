@@ -1,0 +1,12 @@
+name: "build"
+author: "kwshi"
+description: "builds thesis PDFs"
+inputs:
+  name:
+    description: "name of project to build"
+    required: true
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - "${{inputs.name}}"

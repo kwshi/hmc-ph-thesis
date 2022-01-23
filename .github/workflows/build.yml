@@ -1,0 +1,23 @@
+name: "build"
+on:
+  push:
+    branches:
+      - "main"
+jobs:
+  "build:midyear-report":
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "./.action"
+        with:
+          name: "midyear-report"
+  release:
+    needs: ["build:midyear-report"]
+    steps:
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          title: "PDFs"
+          automatic_release_tag: "latest"
+          repo_token: "${{secrets.GITHUB_TOKEN}}"
+          files: |
+            midyear-report/_build/midyear-report.pdf
