@@ -28,4 +28,5 @@ jobs:
           title: "PDFs"
           automatic_release_tag: "latest"
           repo_token: "${{secrets.GITHUB_TOKEN}}"
-          files: "/tmp/out/*.pdf"
+          files: |
+            /tmp/out/*.pdf
