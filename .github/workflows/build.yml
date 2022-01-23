@@ -4,7 +4,7 @@ on:
     branches:
       - "main"
 jobs:
-  "build:midyear-report":
+  build-midyear-report:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
@@ -13,7 +13,7 @@ jobs:
           name: "midyear-report"
   release:
     runs-on: "ubuntu-latest"
-    needs: ["build:midyear-report"]
+    needs: ["build-midyear-report"]
     steps:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
