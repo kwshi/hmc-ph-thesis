@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd "$1"
-latexmk -lualatex "$1.tex"
+latexmk -interaction='nonstopmode' -lualatex "$1.tex"
