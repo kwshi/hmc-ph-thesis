@@ -3,10 +3,10 @@ setup:
   @ln -sf '_build/_tikz'
 
 build: setup
-  latexmk -interaction='nonstopmode' -xelatex 'midyear-report.tex'
+  latexmk -interaction='nonstopmode' -lualatex 'midyear-report.tex'
 
 dev: setup
-  latexmk -pvc -interaction='nonstopmode' -xelatex 'midyear-report.tex'
+  latexmk -pvc -interaction='nonstopmode' -lualatex 'midyear-report.tex'
 
 view:
   nohup zathura '_build/midyear-report.pdf' > '/dev/null' 2> '/dev/null' &

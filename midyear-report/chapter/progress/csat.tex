@@ -1,20 +1,12 @@
 \section{Boolean circuit games}
 
-\todo[inline]{this section onward is untouched since our last meeting.  what
-  remains to be filled out are: concrete examples of \SigmaP k-complete
-  problems, i.e., satisfiability games; bits and pieces of our discussions on
-  graph coloring games; a brief discussion of future work, in which I will
-  gently mention the other branches I read about near the start of the
-  semester, and summarize the main direction of open questions continuing the
-current ``main'' thread of ideas.}
-
 A Boolean circuit consists of a set of \emph{inputs}, which each take on a
 value \(0\) or \(1\), and wired into a network of \emph{logic gates}, which
 each take in one or two Boolean values (\(0\) or \(1\)) and output another
 according to certain fixed rules.  Together, the logic gates compute some
 Boolean function \(C\colon\Set{0,1}^m\to\Set{0,1}^n\).
 
-\todo[inline]{example, also note that circuit should be acyclic}
+%\todo[inline]{example, also note that circuit should be acyclic}
 
 A simple decision problem arising from Boolean circuits is known as the
 \Problem{circuit-value} problem:
@@ -79,6 +71,7 @@ problem (``puzzle'') \CSAT.  Consequently, \CSAT{} is \NP-complete
 \parencite{cook.np}.  This fact is commonly known as the \emph{Cook--Levin}
 theorem.
 \begin{theorem}[Cook--Levin]
+  \label{thm:cook-levin}
   \CSAT{} is \NP-complete \parencite{cook.np}.
 
   Technically, the actual Cook--Levin theorem concerns Boolean \emph{formula}
@@ -148,6 +141,12 @@ complete:
   formulas to circuits.
 \end{theorem}
 
+This result implies that the decision problems induced by circuit
+satisfiability games give us a total characterization of every class in the
+polynomial hierarchy.  Consequently, this allows us to assess the difficulty of
+other problems and place them within the polynomial hierarchy by simply
+comparing them to the (relatively intuitive) \(\CSAT_k\) games, bypassing the
+abstract formalism of Turing Machines.
 
 %\subsection{The Circuit Satisfiability puzzle}
 %

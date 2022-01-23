@@ -143,8 +143,7 @@
 \declaretheorem[style=theorem, numberwithin=chapter]{conjecture}
 
 \tcbsetforeverylayer{
-  thm/.style={
-    before upper=\vspace{-2\parskip},
+  shade box/.style={
     boxrule=0pt,
     top=1em,
     bottom=1em,
@@ -155,6 +154,10 @@
     opacityframe=0,
     opacityback=1/16,
     colback=#1,
+  },
+  thm/.style={
+    before upper=\vspace{-2\parskip},
+    shade box=#1,
   },
 }
 
@@ -202,8 +205,8 @@
       \vspace{\stretch{2}}%
       {\Large\@author}\par%
       \vspace{\stretch{2}}%
-      {\large\@advisor}\par%
-      {\large\@reader}\par%
+      {\large\@advisor, Advisor}\par%
+      {\large\@reader, Reader}\par%
     \end{center}%
     \vspace{\stretch{3}}%
     {\raggedleft%
@@ -249,4 +252,7 @@
   top=0em,
   bottom=0em,
   left=2em,
+}
+\newtcolorbox{aside}{
+  shade box=black,
 }

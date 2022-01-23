@@ -1,31 +1,431 @@
-\section{Graph coloring}
+\section{Graph \(3\)-coloring games}
 
+Having established the \SigmaP k/\PiP k-completeness of the circuit
+satisfiability games, we now move on to explore another collection of games,
+called the \emph{graph coloring games}.
+
+Consider an undirected graph \(G\), in which each vertex is assigned a color
+among \(\{0, 1, 2\}\).  The assignment of colors to the vertices of \(G\) is
+called a \emph{(vertex) \(3\)-coloring} of \(G\).  We say a coloring is
+\emph{proper} if every two adjacent vertices have different colors.
+
+Given a graph \(G\) along with a \(3\)-coloring on \(G\), is the coloring
+proper?  We can solve this problem by simply checking, for each edge, whether
+the two vertices on that edge have different colors.  The run-time of this
+solution is \(\O(e)\) and therefore polynomially-bounded in the size of \(G\).
+Thus the problem of \emph{checking} whether a given \(3\)-coloring is proper is
+in \P.
+
+\subsection{The \(3\)-coloring puzzle}
+
+The puzzle-ification of this problem comes in the following form:
 \begin{definition}[\Problem{3col}]%
-  Given a graph \(\Gamma\), is there a way to color each vertex in  \(\Gamma\)
-  with one of three colors so that every pair of adjacent vertices has distinct
-  colors?
+  Given a graph \(G\), is there a way to properly \(3\)-color the vertices of
+  \(G\)?
+  \[
+    \Problem{3col} = \SetBuilder* G {
+      ∃\,\text{coloring \(C = (c_1,\dotsc,c_n) ∈ \Set{0,1,2}^n\)} \quad \text{\(C\) is proper}
+    }
+  \]
 \end{definition}
+It is straightforward to see from its definition and the fact that
+properness-checking is in \P{} that \(\Problem{3col} ∈ \NP\).
 
+The natural question to ask is: is it also \NP-complete?  After all, earlier,
+we could confidently expect that \NP-completeness from \emph{Boolean} \CSAT{}
+because of the universality of Boolean logic, but, at a glance, it isn't
+obvious that graphs and proper colorings are somehow ``fundamental'' to
+computation as Booleans are.  But, in fact, that is exactly the case:
 \begin{theorem}
   \Problem{3col} is \NP-complete.
 \end{theorem}
 
-\subsection{Graph coloring games}
+An early proof of this result is given in \textcite{karp.np}, via a reduction
+from a variant of the Boolean satisfiability puzzle known as
+\Problem{cnf-3sat}.  Previously, I had come up with a more direct proof of this
+result by directly reducing to \Problem{3col} from \CSAT, inspired by
+\textcite{potapov.3col}, but I just realized a flaw in the proof that makes it
+incorrect.  I will sketch my proof idea below anyway and discuss where it
+fails.
 
-\begin{definition}[Two-turn \Problem{3col}]%
-  The two-turn \Problem{3col} game is played on a graph \(\Gamma\) whose
-  vertices are partitioned into two (disjoint) groups \(X\) and \(Y\).  Two
-  players take turns assigning one of three colors to vertices.  First, player
-  1 colors vertices in \(X\); second, player 2 colors vertices in \(Y\).
-  Player 1 wins if the resulting coloring is \emph{invalid}---that is, there
-  exists a pair of vertices sharing the same color; player 2 wins if the
-  resulting coloring is valid.
+%Here, we will
+%sketch a slightly different proof that directly proves this result, leveraging
+%\CSAT's \NP-completeness.
 
-\end{definition}
+\begin{aside}
+\begin{proof}
+  We will show that \(\CSAT \le \Problem{3col}\) by giving a reduction
+  (\cref{def:reduction}) from \CSAT{} to \Problem{3col}.  That is, given a
+  \CSAT{} input, which is a circuit \(C\), we convert it into a graph \(G\) so
+  that \(G\) is colorable if and only if \(C\) is satisfiable.
 
-\begin{conjecture}
-  Two-turn \Problem{3col} is complete for \SigmaP2 (or \PiP2, depending on
-  which player's winning strategy we examine).
-\end{conjecture}
+  First, construct a triangle \(t_0, t_1, t_2\) in \(G\).  For each \emph{wire}
+  \(w\) (including the input wires) in \(C\), construct a corresponding vertex
+  \(v(w)\) in \(G\), and connect that vertex to \(t_2\).  For each logic gate
+  in \(C\), we implement the gate as a subgraph, which we call a \emph{gadget},
+  in \(G\), as follows:
+  \begin{description}
+
+    \item[\NOT{} gate] Assume a \NOT{} gate takes as input a wire \(w\) and
+      produces its output on a wire \(w'\).  Then, in \(G\), introduce an edge
+      \(\Set{w, w'}\).
+
+      \begin{center}
+        \begin{tikzpicture}
+          \matrix[column sep=1em, row sep=2em]{
+            \coordinate[vertex](w); && \coordinate[vertex](w'); \\
+            & \coordinate[vertex, opacity=1/3](t2); \\
+          };
+          \draw[edge] (w) -- (w');
+          \draw[edge, opacity=1/3] (w) -- (t2) -- (w');
+          \draw[edge, opacity=1/3] foreach \i in {1,...,4} {
+            (w) -- +({180+15*(\i-5/2)}:2em)
+            (w') -- +({15*(\i-5/2)}:2em)
+          };
+          \node[left, opacity=1/3] at ($ (w)+(-2em,0) $) {\(\dots\)};
+          \node[right, opacity=1/3] at ($ (w')+(2em,0) $) {\(\dots\)};
+
+          \node[vertex label, above] at (w.north) {\(v(w)\)};
+          \node[vertex label, above] at (w'.north) {\(v(w')\)};
+          \node[vertex label, below, opacity=1/3] at (t2.south) {\(t_2\)};
+        \end{tikzpicture}
+      \end{center}
+
+    \item[\OR{} gate] Assume an \OR{} gate takes as input wires \(w_1, w_2\)
+      and produces its output on a wire \(w'\).  Then, in \(G\), introduce two
+      additional vertices \(v_1, v_2\) (note: \emph{not} \(v(w_1), v(w_2)\)),
+      and the following edges:
+      \[
+        \Set{v(w_1), v_1}, \quad
+        \Set{v(w_2), v_2}, \quad
+        \Set{v_1, v_2}, \quad
+        \Set{v_1, v'}, \quad
+        \Set{v_2, v'}.
+      \]
+
+      \begin{center}
+        \begin{tikzpicture}
+          \matrix[column sep=3em, row sep=1em]{
+            \coordinate[vertex](w1); & \coordinate[vertex](v1); \\
+            && \coordinate[vertex](w'); \\
+            \coordinate[vertex](w2); & \coordinate[vertex](v2); \\\\\\
+            & \coordinate[vertex, opacity=1/3](t2); \\
+          };
+          \draw[edge] (w1) -- (v1) -- (w') -- (v2) -- (w2) (v1) -- (v2);
+          \draw[edge, opacity=1/3] (w1) -- (t2) (w2) -- (t2) (w') -- (t2);
+          \draw[edge, opacity=1/3] foreach \i in {1,...,4} {
+            (w1) -- +({180+15*(\i-5/2)}:2em)
+            (w2) -- +({180+15*(\i-5/2)}:2em)
+            (w') -- +({15*(\i-5/2)}:2em)
+          };
+          \node[left, opacity=1/3] at ($ (w1)+(-2em,0) $) {\(\dots\)};
+          \node[left, opacity=1/3] at ($ (w2)+(-2em,0) $) {\(\dots\)};
+          \node[right, opacity=1/3] at ($ (w')+(2em,0) $) {\(\dots\)};
+
+          \node[vertex label, above] at (w1.north) {\(v(w_1)\)};
+          \node[vertex label, above] at (v1.north) {\(v_1\)};
+          \node[vertex label, below] at (w2.south) {\(v(w_2)\)};
+          \node[vertex label, below] at (v2.south) {\(v_2\)};
+          \node[vertex label, above] at (w'.north) {\(v(w')\)};
+          \node[vertex label, below, opacity=1/3] at (t2.south) {\(t_2\)};
+
+        \end{tikzpicture}
+      \end{center}
+
+    \item[\AND{} gate] Assume an \AND{} gate takes as input wires \(w_1, w_2\)
+      and produces its output on \(w'\).  We appeal to the fact that
+      \[
+        x \AND y = \NOT \Brack*{(\NOT x) \OR (\NOT y)},
+      \]
+      treating this \AND{} gate as though it were replaced by an equivalent
+      network of \NOT{} and \OR{} gates, and therefore generate components in
+      \(G\) accordingly.
+
+  \end{description}
+  Finally, connect the final output wire's corresponding vertex to \(t_0\).
+
+  We claim that this construction ensures \(G\) is colorable if and only if
+  \(C\) is satisfiable.
+  \begin{itemize}
+
+    \item[(\(⟹\))] \label{iff.3col.gc} First, suppose there exists a proper
+      coloring on \(G\).  We wish to show that \(C\) is satisfiable.
+
+      Without loss of generality, assume that the triangle \(t_0, t_1, t_2\) is
+      colored as
+      \[
+        t_0 ↦ 0, \quad t_1 ↦ 1, \quad t_2 ↦ 2.
+      \]
+      By construction, each wire \(w\)'s corresponding vertex \(v(w)\) is
+      connected to \(t_2\).  Since \(t_2\) has color \(2\), this ensures
+      \(v(w)∈\Set{0,1}\) for each wire \(w\) in the circuit.  For each
+      \emph{input wire} \(w\), assign the \emph{Boolean} value \(\Set{0,1}\)
+      matching the color of \(v(w)\).  We claim that the resulting Boolean
+      values on all other wires match their corresponding colorings.
+      Consequently, because
+
+      We show that this assignment of input values satisfies \(C\) by examining
+      the colorings for each gate's ``gadget'':
+      \begin{description}
+      \item[\NOT] Consider an arbitrary \NOT{} gate with input \(w\) and output
+        \(w'\).  As we noted above, both \(v(w)\) and \(v(w')\) must be colored
+        either \(0\) or \(1\).  Then, since they neighbor each other, they must
+        have opposite colors.  Thus \(v(w') = \NOT v(w)\), as desired.
+
+      \item[\OR] Consider an arbitrary \OR{} gate with input \(w_1, w_2\) and
+        output \(w'\).  Depending on the colors assigned to \(v(w_1), v(w_2)\),
+        the following colorings on the \OR{} gadget are possible:
+        \[
+          \begin{array}{cc|c|c}
+            v(w_1) & v(w_2) & (v_1, v_2) & v(w') \\ \midrule
+            0 & 0 & \text{\((1, 2)\) or \((2, 1)\)} & 0 \\
+            1 & 1 & \text{\((0, 2)\) or \((2, 0)\)} & 1 \\
+            0 & 1 & \text{\((1, 2)\) or \((2, 0)\) } & \text{\(0\) or \(1\)} \\
+            1 & 0 & \text{\((0, 2)\) or \((2, 1)\) } & \text{\(1\) or \(0\)}
+          \end{array}
+        \]
+        We see that this doesn't imply that \(v(w')\) is \emph{necessarily}
+        assigned the color corresponding to \(w_1 \OR w_2\), but rather that
+        there \emph{exists} an assignment to \(v(w')\) equal to \(w_1 \OR
+        w_2\).
+
+        It turns out that this distinction is the Achilles' heel of this
+        argument.  I'll explain why in detail at the end of the proof and
+        continue for now in the interest of finishing up the proof sketch.
+      \end{description}
+      Finally, since the output wire's vertex neighbors both \(t_0\) and
+      \(t_2\), it cannot be colored with either \(0\) or \(2\) and therefore
+      must be colored \(1\).  Thus the circuit is also satisfied.
+
+    \item[(\(⟸\))] \label{pf:3col.cg} Conversely, suppose \(C\) is satisfiable.
+      We wish to show that \(G\) is colorable.
+
+      Take a satisfying assignment on the inputs of \(C\), and color the
+      corresponding vertices \(v(\dots)\) with matching colors in
+      \(\Set{0,1}\).  As we demonstrated above, for each wire \(w\), the
+      coloring \(v(w)\) with the color matching the Boolean value of \(w\)
+      (filling in the rest appropriately) gives a proper coloring.  Thus \(G\)
+      is colorable.  \qedhere
+
+  \end{itemize}
+
+  Back to the Achilles' heel.  The fact that the \OR{} gadget allows either
+  color on the output when the two inputs differ implies that the coloring has
+  ``extra freedoms'' that the corresponding circuit does not.  That is, certain
+  proper colorings don't correspond to valid circuit states.  Per se, this
+  isn't the issue: we are only concerned with that \emph{existence} of
+  colorings/assignments is preserved, not that colorings correspond one-to-one
+  with assignments.  Hence I was convinced of this proof anyway, until I
+  realized, per the following example, that even \emph{existence} is not
+  preserved.  Consider the following circuit \(C\):
+  \begin{center}
+    \begin{tikzpicture}[circuit logic US]
+
+      \matrix[gates]{
+        |(x)| && |[or gate](tx)| & |[not gate](f)| & %|[or gate](o)| & |[not gate](n)| &
+        |(z)| \\
+        & |[not gate](nx)| \\
+        %|(y)| && |[or gate](ty)| \\
+        %& |[not gate](ny)| \\
+      };
+      \draw[wire]
+      (x) to (tx.input 1) (x) to (nx.input) (nx.output) to (tx.input 2)
+      %(y) to (ty.input 1) (y) to (ny.input) (ny.output) to (ty.input 2)
+      (tx.output) to (f.input)
+      %(f.output) to (o.input 1) (ty.output) to (o.input 2)
+      %(o.output) to (n.input)
+      %(n.output) to (z)
+      (f.output) to (z)
+      ;
+      \node[left] at (x) {\(x\)};
+      %\node[left] at (y) {\(y\)};
+      \node[right] at (z) {\(C(x,y)\) (output)};
+
+    \end{tikzpicture}
+  \end{center}
+  This circuit computes the Boolean function
+  \[
+    C(x) = x \OR (\NOT x) = 1
+  \]
+  regardless of the value of \(x\).  Thus \(C\) is unsatisfiable.  However, now
+  consider the graph \(G\) derived from \(C\), according to our construction
+  above.  The excess freedom to color each \OR{} gate's output with either
+  \(0\) or \(1\) enables a proper coloring, even when \(C\) is unsatisfiable:
+  \begin{center}
+    \begin{tikzpicture}
+
+      \tikzset{
+        pics/gadget/.style n args={3}{
+          code={
+            \coordinate(nw) at ($ (#2) + (-1em/2,1em/2) $);
+            \coordinate(se) at ($ (#3) + (1em/2,-1em/2) $);
+            \fill[fill opacity=1/8, rounded corners=1em/4]
+            (nw) rectangle (se);
+            \node[above, opacity=1/2] at ($ (nw)!1/2!(nw -| se) $) {#1};
+          },
+        },
+      }
+
+      \matrix[row sep=1em, column sep=3em, matrix of nodes]{
+        && |[vertex, fill=ks1](x')| \\
+        |[vertex, fill=ks0](x)| &&& |[vertex, fill=ks0](tx)| & |[vertex, fill=ks1](fx)| \\
+        & |[vertex, fill=ks1](nx)| & |[vertex, fill=ks2](nx')| \\%&&& |[vertex](fx')| \\
+        %&&&&&& |[vertex](o)| & |[vertex](n)| \\
+        %&& |[vertex](y')| &&& |[vertex](ty')| \\
+        %|[vertex, fill=ks0](y)| &&& |[vertex](ty)| \\
+        %& |[vertex, fill=ks1](ny)| & |[vertex](ny')| \\[6em]
+        %&&&& |[vertex, fill=ks2](t2)| && |[vertex, fill=ks0](t0)| \\
+        %&&&&& |[vertex, fill=ks1](t1)| \\
+        \\
+        && |[vertex, fill=ks2](t2)| && |[vertex, fill=ks0](t0)| \\
+        &&& |[vertex, fill=ks1](t1)| \\
+      };
+
+      \draw[edge]
+      (x) -- (x') -- (tx) -- (fx) %-- (fx') -- (o) -- (n)
+      (x) -- (nx) -- (nx') -- (tx)
+      %(y) -- (y') -- (ty) -- (ty') -- (o)
+      %(y) -- (ny) -- (ny') -- (ty)
+      (x') -- (nx') %(y') -- (ny') (fx') -- (ty')
+      ;
+
+      \draw[edge, opacity=1/2, in=south, out=north, out looseness=0]
+      %\draw[edge, opacity=1/4]
+      %foreach \t in {x,y,nx,ny,tx,ty,fx,o,n} { (t2) to (\t) }
+      foreach \t in {x,nx,tx,fx} { (t2) to (\t) }
+      %(t0) to (n)
+      (t0) to (fx)
+      ;
+
+      \draw[edge, opacity=1/2] (t0) -- (t2) -- (t1) -- (t0);
+
+      \node[left] at (x.west) {\(x\)};
+      %\node[left] at (y.west) {\(y\)};
+      \node[below] at (t2.south) {\(t_2\)};
+      \node[below] at (t1.south) {\(t_1\)};
+      \node[below] at (t0.south) {\(t_0\)};
+      %\node[right] at (n.east) {\(C(x)\) (output)};
+      \node[right] at (fx.east) {\(C(x)\) (output)};
+
+      \pic{gadget={\NOT}{nx}{nx}};
+      %\pic{gadget={\NOT}{ny}{ny}};
+      \pic{gadget={\OR}{x'}{nx'-|tx}};
+      %\pic{gadget={\OR}{y'}{ny'-|ty}};
+      \pic{gadget={\NOT}{fx}{fx}};
+      %\pic{gadget={\OR}{fx'}{ty'-|o}};
+      %\pic{gadget={\NOT}{n}{n}};
+
+    \end{tikzpicture}
+  \end{center}
+
+  Thus our proof fails.  Yet an almost identical construction is used in the
+  original proof \parencite{karp.np,potapov.3col}---why does that \emph{not}
+  fail?  That's because the original proof uses \Problem{cnfsat}
+  (conjunctive-normal-form Boolean formula satisfiability), rather than \CSAT{}
+  as we attempt here.  In particular, the ``shallow'' structure of
+  \Problem{cnfsat} formulas mitigates the ``\OR-gates have too much freedom''
+  problem we encounter here, thereby ensuring that coloring values \emph{do}
+  exactly match the actual \OR-gate output.
+
+\end{proof}
+\end{aside}
+
+So, unfortunately, while it \emph{is} true that \Problem{3col} is \NP-complete,
+we don't have a direct reduction from \CSAT{} demonstrating this result.  That
+will have to wait until next semester, it seems\dots
+
+\subsection{Two-player \(3\)-coloring games}
+
+Next, we attempt to define \emph{game} generalizations of the graph
+\(3\)-coloring problem.  So far, several alternatives have been considered:
+\begin{itemize}
+
+  \item A first attempt at defining such a game might be: partition vertices
+    into \(k\) groups \(V_1,\dotsc,V_k\); two players alternate turns assigning
+    colors to groups at a time.  Victory is decided by whether the finalized
+    coloring is proper.
+
+    Unfortunately, this game might be trivial for the ``adversarial'' player,
+    whose goal is to falsify/improper-ify the coloring.  On the \(i\)-th turn,
+    as long as any vertex \(v∈V_i\) neighbors any other vertex in
+    \(v'∈V_{≤i}\), this player can easily sabotage the coloring by matching the
+    color of \(v\) to \(v'\).  The only way to ensure that this doesn't occur,
+    then, is to ensure, in each game instance, that each of the adversary's
+    vertex groups do not neighbor any previous groups' vertices \emph{or each
+    other}. But if the adversary's vertices are totally disjoint from the rest
+    of the graph (and each other), then, once again, it is trivially impossible
+    for the adversary to influence the coloring's properness at all, and the
+    ``solver'' trivially wins.
+
+    In order to avoid both of these trivial situations, then, the following
+    must hold:
+    \begin{itemize}[nosep]
+      \item Each of the adversary's vertices must not neighbor each other or
+        any vertex from previous groups.  At the same time, the adversary's
+        vertices must be \emph{connected} to other vertices in the graph.
+        (Those that aren't can be trivially ignored.)
+      \item Because the adversary's vertices are connected to other vertices,
+        and yet cannot neighbor any of them from the same or previous turns,
+        the last player must be the \emph{solver}, who has control over
+        vertices in the ``boundaries'' between adversary's vertices and other
+        previously-colored vertices.
+    \end{itemize}
+    These conditions seem to significantly narrow the the kinds of graphs (and
+    vertex partitionings) whose games are interesting.  Additionally, still
+    more ``trivial'' attacks by the adversary might be possible---e.g.,
+    coloring three vertices who share a common neighbor with three different
+    colors.  So far, my attempts to convert the \CSAT{} games to this have
+    suffered from these problems, and I am not sure whether these games have
+    the desired completeness properties at all.
+
+  \item Instead of restricting the graphs on which interesting games can be
+    played, we can also try imposing a more aggressive restriction on the
+    adversary's abilities.  For instance, we can require that adversary never
+    makes any ``trivial'' falsifying-assignments, i.e., ones that immediately
+    contradict previously-colored vertices.  If they do so, they automatically
+    lose, and the solver automatically wins.  We can build this condition into
+    the ``check'' problem while still preserving its membership in \P, thereby
+    ensuring this game remains within the polynomial hierarchy.
+
+    However, the additional special treatment of the adversary here throws off
+    the apparent \emph{symmetry} between \SigmaP k and \PiP k (or, ordering of
+    \(∃\) vs. \(∀\) quantifiers in the winning-strategy conditions), making
+    this game somewhat less theoretically elegant.
+
+    Given the flaw I discovered in my \(\CSAT\le\Problem{3col}\) proof earlier,
+    I haven't yet been able to verify that this version of the game has the
+    desired completeness properties either, though it seems more promising, if
+    the \(\CSAT\le\Problem{3col}\) flaw is fixed, that the proof will be
+    straightforwardly adaptible to this game.
+
+  \item A third option is to also restrict the colors available to the
+    adversary.  I haven't thought very deeply about this option; based on my
+    attempts to reduce from \CSAT, this also seems plausible/promising, but
+    because of its special treatment against the adversary, is also an
+    aesthetic compromise.
+
+\end{itemize}
+
+We will have to see, next semester, whether ``nice'', theoretically simple,
+polynomial-hierarchy versions of the graph \(3\)-coloring game exist.  And, of
+course, we will have to prove that they are, indeed, \emph{interesting}.
+
+
+
+%\begin{definition}[Two-turn \Problem{3col}]%
+%  The two-turn \Problem{3col} game is played on a graph \(\Gamma\) whose
+%  vertices are partitioned into two (disjoint) groups \(X\) and \(Y\).  Two
+%  players take turns assigning one of three colors to vertices.  First, player
+%  1 colors vertices in \(X\); second, player 2 colors vertices in \(Y\).
+%  Player 1 wins if the resulting coloring is \emph{invalid}---that is, there
+%  exists a pair of vertices sharing the same color; player 2 wins if the
+%  resulting coloring is valid.
+%
+%\end{definition}
+%
+%\begin{conjecture}
+%  Two-turn \Problem{3col} is complete for \SigmaP2 (or \PiP2, depending on
+%  which player's winning strategy we examine).
+%\end{conjecture}
 
 

@@ -2,11 +2,11 @@
 
 \title{You can solve it, but can you play it?}
 
-\subtitle{Puzzles, games, and the polynomial hierarchy\\Midyear report draft}
+\subtitle{Puzzles, games, and the polynomial hierarchy\\\textsc{midyear report}}
 
 \author{Kye Shi}
-\advisor{Nick Pippenger}
-\reader{Art Benjamin}
+\advisor{Nicholas Pippenger}
+\reader{Arthur T. Benjamin}
 \date{2021 November}
 
 \newcommand\ComplexityClass[1]{\ensuremath{\mathbf{#1}}}
@@ -26,6 +26,10 @@
 \let\O\relax
 \DeclareMathOperator\O{O}
 
+\newcommand\OR{\ensuremath{\mathbin{\mathrm{OR}}}}
+\newcommand\AND{\ensuremath{\mathbin{\mathrm{AND}}}}
+\newcommand\NOT{\ensuremath{\operatorname{NOT}}}
+
 \newcommand\SAT{\Problem{SAT}}
 \newcommand\CSAT{\Problem{CSAT}}
 \newcommand\QSAT{\Problem{QSAT}}
@@ -40,20 +44,42 @@
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
 \makeatother
 
+\definecolor{ks0}{HTML}{0050c0}
+\definecolor{ks1}{HTML}{e00060}
+\definecolor{ks2}{HTML}{f0b000}
+
 \tikzset{
-  every picture/.style={
-    circuit logic US
-  },
   gates/.style={
     row sep=1em/2,
     column sep=2em,
+    matrix of nodes,
   },
   every circuit symbol/.style={
     fill,
     fill opacity=1/8,
     anchor=output,
   },
-%  %pics/input full/.style 2 args={
+  vertex/.style={
+    circle,
+    draw,
+    minimum size=1em/2,
+    inner sep=0pt,
+  },
+  vertex label/.style={
+    text height=2em/3,
+    text depth=1em/3,
+  },
+  edge/.style={
+  },
+  wire/.style={
+    rounded corners=1em/4,
+    to path={
+      -- ($ (\tikztostart)!1em!(\tikztostart -| \tikztotarget) $)
+      -- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
+      -- (\tikztotarget)
+    },
+  },
+  %  %pics/input full/.style 2 args={
 %  %  code={
 %  %    \begin{scope}[x=1em, y=1em]
 %  %      \filldraw[fill=lightgray]
@@ -115,15 +141,6 @@
 %  %},
 %  %on/.style={
 %  %  red,
-%  %},
-%  %wire/.style={
-%  %  thick,
-%  %  rounded corners=1em/4,
-%  %  to path={
-%  %    -- ($ (\tikztostart)!1/4!(\tikztostart -| \tikztotarget) $)
-%  %    -- ($ (\tikztotarget)!1/4!(\tikztostart |- \tikztotarget) $)
-%  %    -- (\tikztotarget)
-%  %  },
 %  %},
 %  %wire 0/.style={wire, color=blue},
 %  %wire 1/.style={wire, color=red},
