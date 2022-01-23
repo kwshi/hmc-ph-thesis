@@ -11,14 +11,21 @@ jobs:
       - uses: "./.action"
         with:
           name: "midyear-report"
+      - uses: "actions/upload-artifact@v2"
+        with:
+          name: "midyear-report"
+          path: "midyear-report/_build/midyear-report.pdf"
   release:
     runs-on: "ubuntu-latest"
     needs: ["build-midyear-report"]
     steps:
+      - uses: "actions/download-artifact@v2"
+        with:
+          name: "midyear-report"
+          path: "/tmp/out/midyear-report.pdf"
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           title: "PDFs"
           automatic_release_tag: "latest"
           repo_token: "${{secrets.GITHUB_TOKEN}}"
-          files: |
-            midyear-report/_build/midyear-report.pdf
+          files: "/tmp/out/*.pdf"
