@@ -1,5 +1,4 @@
-FROM "voidlinux/voidlinux"
-RUN ["xbps-install", "-Syu", "just", "texlive-full", "biber", "gnuplot", "python3-Pygments"]
-COPY ["build.sh", "/bin/ks-thesis-build"]
-RUN ["chmod", "+x", "/bin/ks-thesis-build"]
-ENTRYPOINT ["/bin/ks-thesis-build"]
+FROM "texlive/texlive"
+COPY ["build.sh", "/tmp/build.sh"]
+RUN ["chmod", "+x", "/tmp/build.sh"]
+ENTRYPOINT ["/tmp/build.sh"]
