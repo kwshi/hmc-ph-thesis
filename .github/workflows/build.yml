@@ -23,7 +23,6 @@ jobs:
         with:
           name: "midyear-report"
           path: "/tmp/out/midyear-report.pdf"
-      - run: "ls -R /tmp"
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           title: "PDFs"
