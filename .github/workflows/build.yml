@@ -23,10 +23,10 @@ jobs:
         with:
           name: "midyear-report"
           path: "/tmp/out/midyear-report.pdf"
-      - run: 'ls -R'
+      - run: "ls -R /tmp"
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           title: "PDFs"
           automatic_release_tag: "latest"
           repo_token: "${{secrets.GITHUB_TOKEN}}"
-          files: "/tmp/out/midyear-report.pdf"
+          files: "/tmp/out/*.pdf"
