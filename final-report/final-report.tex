@@ -1,0 +1,253 @@
+\documentclass{midyear-report}
+
+\title{You can solve it, but can you play it?}
+
+\subtitle{Puzzles, games, and the polynomial hierarchy\\\textsc{midyear report}}
+
+\author{Kye Shi}
+\advisor{Nicholas Pippenger}
+\reader{Arthur T. Benjamin}
+\date{2021 November}
+
+\newcommand\ComplexityClass[1]{\ensuremath{\mathbf{#1}}}
+\newcommand\NP{\texorpdfstring{\ComplexityClass{NP}}{𝐍𝐏}}
+\renewcommand\P{\texorpdfstring{\ComplexityClass{P}}{𝐏}}
+\newcommand\PSPACE{\texorpdfstring{\ComplexityClass{PSPACE}}{𝐏𝐒𝐏𝐀𝐂𝐄}}
+\newcommand\PH{\ComplexityClass{PH}}
+\newcommand\EXP{\ComplexityClass{EXPTIME}}
+\newcommand\C{\ensuremath{\mathbfit C}}
+\newcommand\co{\ensuremath{\operatorname{co-}\!}}
+\newcommand\pro{\ensuremath{\operatorname{pro-}\!}}
+\newcommand\SigmaP[1]{\ensuremath{Σ_{#1}\mathbf{P}}}
+\newcommand\PiP[1]{\ensuremath{Π_{#1}\mathbf{P}}}
+\newcommand\DeltaP[1]{\ensuremath{\Delta_{#1}\mathbf{P}}}
+\newcommand\Problem[1]{\texorpdfstring{\ensuremath{\text{\textsc{\MakeLowercase{#1}}}}}{#1}}
+
+\let\O\relax
+\DeclareMathOperator\O{O}
+
+\newcommand\OR{\ensuremath{\mathbin{\mathrm{OR}}}}
+\newcommand\AND{\ensuremath{\mathbin{\mathrm{AND}}}}
+\newcommand\NOT{\ensuremath{\operatorname{NOT}}}
+
+\newcommand\SAT{\Problem{SAT}}
+\newcommand\CSAT{\Problem{CSAT}}
+\newcommand\QSAT{\Problem{QSAT}}
+
+\bibliography{bibliography.bib}
+\bibliography{newbib.bib}
+
+\usepackage[textwidth=1in]{todonotes}
+
+% https://tex.stackexchange.com/questions/42486/todonotes-and-tikzexternalize
+\makeatletter
+\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+\makeatother
+
+\definecolor{ks0}{HTML}{0050c0}
+\definecolor{ks1}{HTML}{e00060}
+\definecolor{ks2}{HTML}{f0b000}
+
+\tikzset{
+  gates/.style={
+    row sep=1em/2,
+    column sep=2em,
+    matrix of nodes,
+  },
+  every circuit symbol/.style={
+    fill,
+    fill opacity=1/8,
+    anchor=output,
+  },
+  vertex/.style={
+    circle,
+    draw,
+    minimum size=1em/2,
+    inner sep=0pt,
+  },
+  vertex label/.style={
+    text height=2em/3,
+    text depth=1em/3,
+  },
+  edge/.style={
+  },
+  wire/.style={
+    rounded corners=1em/4,
+    to path={
+      -- ($ (\tikztostart)!1em!(\tikztostart -| \tikztotarget) $)
+      -- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
+      -- (\tikztotarget)
+    },
+  },
+  %  %pics/input full/.style 2 args={
+%  %  code={
+%  %    \begin{scope}[x=1em, y=1em]
+%  %      \filldraw[fill=lightgray]
+%  %      (-3/2,1) rectangle (0,-1);
+%
+%  %      \begin{scope}[yscale=#1]
+%  %        \filldraw[fill=white]
+%  %        (-1/2,1/2) -- ++(135:1/2) -| ++(-1/2,-1/3) -- ++(-45:1/2) -- ++(0,-2/3) -| cycle;
+%  %        \filldraw[fill=lightgray, line join=bevel]
+%  %        (-1,1/6) -- ++(1/2,0) -- ++(135:1/2) edge +(0,1/3) -- +(-1/2,0);
+%  %      \end{scope}
+%
+%  %      \node[below left, inner sep=1pt, color=gray!50!black, font=\scriptsize] at (0,1) {\(1\)};
+%  %      \node[above left, inner sep=1pt, color=gray!50!black, font=\scriptsize] at (0,-1) {\(0\)};
+%
+%  %      \node[left] at (-3/2,0) {#2};
+%  %    \end{scope}
+%  %  },
+%  %},
+%  %pics/output glare/.style 2 args={
+%  %  code={
+%  %    \path[pic actions] ($ ({cos(#1)/2},{sin(#1)/4}) $) -- ++(0,1)
+%  %    arc[x radius=1/2*cos(#1), y radius=1/2-1/4*sin(#1), start angle=0, end angle=90]
+%  %    arc[x radius=1/2*cos(#2), y radius=1/2-1/4*sin(#2), start angle=90, end angle=0]
+%  %    -- ++(0,-1)
+%  %    arc[x radius=1/2, y radius=1/4, start angle=#2, end angle=#1];
+%  %  },
+%  %},
+%  %pics/output/.style n args={3}{
+%  %  code={
+%  %    \begin{scope}[x=1em, y=1em]
+%  %      \draw[wire, draw=#1] (0,0) -| (1/2,3/4);
+%
+%  %      \pic[fill=#2, fill opacity=#3] at (1/2,3/4) {output glare={-180}{0}};
+%  %      \filldraw[fill opacity=1/4, draw opacity=1/2] (1/2,3/4) circle[x radius=1/2, y radius=1/4];
+%  %      \pic[fill=white, opacity=1/2] at (1/2,3/4) {output glare={-180}{-135}};
+%  %      \pic[fill=black, opacity=1/4] at (1/2,3/4) {output glare={0}{-60}};
+%  %      \pic[draw] at (1/2,3/4) {output glare={-180}{0}};
+%
+%  %      %\fill[white, opacity=#3] (1/2,5/4) circle[radius=1/4];
+%
+%  %      %\fill[opacity=1/4] (1,3/4) -- ++(0,1)
+%  %      %arc[radius=1/2, start angle=0, end angle=90]
+%  %      %arc[x radius=1/2*sin 30, y radius=1/2+1/4*cos 30, start angle=90, end angle=0]
+%  %      %-- ++(0,-1)
+%  %      %arc[x radius=1/2, y radius=1/4, start angle=-60, end angle=0];
+%  %    \end{scope}
+%  %  },
+%  %},
+%  %pics/output 0/.style={output={blue}{gray}{1/2}},
+%  %pics/output 1/.style={output={red}{red}{1}},
+%  %pics/input 1/.style={input full={1}{#1}},
+%  %pics/input 0/.style={input full={-1}{#1}},
+%  %joint/.style={
+%  %  circle,
+%  %  fill=black,
+%  %  inner sep=0pt,
+%  %  minimum size=1.5pt,
+%  %},
+%  %on/.style={
+%  %  red,
+%  %},
+%  %wire 0/.style={wire, color=blue},
+%  %wire 1/.style={wire, color=red},
+%  %focus 0/.style={opacity=1/3},
+%  %focus 1/.style={opacity=1},
+%  %gate legend grid/.style={
+%  %  tiny circuit symbols,
+%  %  matrix of nodes,
+%  %  row sep=1em/2,
+%  %  nodes={anchor=west, inner sep=0pt},
+%  %  column sep=1em/2,
+%  %  fill=lightgray!50,
+%  %  inner xsep=1em/2,
+%  %},
+%  %gate legend/.pic={
+%  %  \matrix[gate legend grid, left]{
+%  %    |[not gate]| \& \(\NOT\) \& \draw[wire, color=blue](0,0) -- (1em,0); \& \(0\) \\
+%  %    |[or gate]| \& \(\OR\)   \& \draw[wire, color=red](0,0) -- (1em,0); \& \(1\) \\
+%  %  };
+%  %},
+%  %pics/csat/.style n args={3}{
+%  %  code={
+%  %    \pgfmathtruncatemacro\x{#1}
+%  %    \pgfmathtruncatemacro\y{#2}
+%  %    \pgfmathtruncatemacro\z{#3}
+%
+%  %    \matrix[gates](gates){
+%  %      \coordinate[input](x); \& \coordinate(x'); \\
+%  %      \& \node[not gate](nx){}; \& \node[or gate](o1){}; \& \node[not gate](n1){};
+%  %      \& \node[or gate](o4){}; \& \coordinate[output](out);
+%  %      \& \coordinate[output](y); \\
+%  %      \coordinate[input](y);
+%  %      \& \node[not gate](ny){}; \& \node[or gate](o2){}; \& \node[not gate](n2){}; \\
+%  %      \& \node[or gate](o3){}; \\
+%  %      \coordinate[input](z); \\
+%  %    };
+%
+%  %    \draw[wire \x] (x) to (x') to (o1.input 1) (x) to (nx.input);
+%  %    \draw[wire \y] (y) to (ny.input) (y) to (o3.input 1);
+%  %    \draw[wire \z] (z) to (o3.input 2);
+%
+%  %    \pgfmathtruncatemacro\nx{not(\x)}
+%  %    \pgfmathtruncatemacro\ny{not(\y)}
+%  %    \draw[wire \nx] (nx.output) to (o2.input 1);
+%  %    \draw[wire \ny] (ny.output) to (o1.input 2);
+%
+%  %    \pgfmathtruncatemacro\ooo{or(\y,\z)}
+%  %    \draw[wire \ooo] (o3.output) to (o2.input 2);
+%
+%  %    \pgfmathtruncatemacro\o{or(\x,\ny)}
+%  %    \pgfmathtruncatemacro\oo{or(\nx,\ooo)}
+%  %    \draw[wire \o] (o1.output) to (n1.input);
+%  %    \draw[wire \oo] (o2.output) to (n2.input);
+%
+%  %    \pgfmathtruncatemacro\n{not(\o)}
+%  %    \pgfmathtruncatemacro\nn{not(\oo)}
+%  %    \draw[wire \n] (n1.output) to (o4.input 1);
+%  %    \draw[wire \nn] (n2.output) to (o4.input 2);
+%
+%  %    \pgfmathtruncatemacro\out{or(\n,\nn)}
+%  %    \draw[wire \out] (o4.output) to (out);
+%
+%  %    \pic at (x) {input \x=\(x\)};
+%  %    \pic at (y) {input \y=\(y\)};
+%  %    \pic at (z) {input \z=\(z\)};
+%
+%  %    \pic at (out) {output \out};
+%
+%  %    %\node[left] at (x){\(x\)};
+%  %    %\node[left] at (y){\(y\)};
+%  %    %\node[left] at (z){\(z\)};
+%
+%  %    \pic[above left] at (gates.south east) {gate legend};
+%
+%  %  },
+%  %},
+%  %box inputs/.style={
+%  %  rounded corners=1em/4,
+%  %  opacity=1/2,
+%  %  ->,
+%  %},
+%  %pics/box inputs/.style 2 args={
+%  %  code={
+%  %    \draw[box inputs]
+%  %    ($ (#1) + (-2.75em,1.5em) $) coordinate (#1-nw)
+%  %    rectangle ($ (#2) + (.5em,-1.5em) $) coordinate (#2-se);
+%  %  },
+%  %},
+}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+% it is a means of updating your advisor on your results to date; an initial
+% draft of your final report; and an introduction to the tools, skills, and
+% outlook required when writing professional reports.
+
+\mainmatter
+
+\include{chapter/intro}
+\include{chapter/progress}
+\include{chapter/future}
+%\include{chapter/bib}
+
+\printbibliography[heading=bibnumbered]
+
+\end{document}

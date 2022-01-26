@@ -1,0 +1,56 @@
+\section{Two-turn games, \texorpdfstring{\SigmaP2, and \PiP2}{𝚺₂𝐏, and 𝚷₂𝐏}}
+
+Consider, now, a similar game played by two players.  On a given game board
+\(x\), each player takes a turn writing down individual ``guesses'' \(g_1\) and
+\(g_2\).  The winner is decided by a ``check'' problem \(L' ∈ \P\).  If \((x,
+g_1, g_2) ∈ L'\), then player 1 wins; otherwise, player 2 wins.  We now ask,
+again, \emph{does either player have a winning strategy}?
+\begin{enumerate}
+
+  \item \label{itm:ph.p1} Player 1, who moves first, has a winning strategy if
+    they can concoct a \(g_1\) so that no matter what \(g_2\) player 2 responds
+    with, player 1 always wins.  In notation:
+    \[
+      ∃g_1 \; ∀g_2 \quad (x, g_1, g_2) ∈ L'.
+    \]
+
+  \item \label{itm:ph.p2} Player 2, who moves second, has a winning strategy
+    if, no matter what guess \(g_1\) player 1 produces, player 2 can find some
+    response \(g_2\) ensuring their victory.  In notation:
+    \[
+      ∀g_1 \; ∃g_2 \quad (x, g_1, g_2) ∉ L'.
+    \]
+
+\end{enumerate}
+Accordingly, we define two new complexity classes modeling these two decision
+problems:
+\begin{align*}
+  \SigmaP2 &= \SetBuilder* L {
+    \exists L' \in \P \; \forall x \quad
+    x \in L \iff \exists g_1 \; \forall g_2 \; (x, g_1, g_2) \in L'
+  }, \tag*{\ref{itm:ph.p1}} \\
+  \PiP2 &= \SetBuilder* L {
+    \exists L' \in \P \; \forall x \quad
+    x \in L \iff \forall g_1 \; \exists g_2 \; (x, g_1, g_2) \notin L'
+  }. \tag*{\ref{itm:ph.p2}}
+\end{align*}
+
+Observe that the two winning-strategy predicates are complementary: player 1
+has a winning strategy if and only if player 2 does not, and vice versa.  Thus
+it follows that the decision problems in the two complexity classes are exactly
+the complements of each other:
+\[
+  \PiP2 = \SetBuilder*{L^c}{L \in \SigmaP2}, \qquad
+  \SigmaP2 = \SetBuilder*{L^c}{L \in \PiP2}.
+\]
+(Note that we are \emph{not} saying the complexity classes themselves are
+complementary; only the decision problems \emph{within} them are.)  In general,
+classes with this relationship are called \emph{complement classes}:
+\begin{definition}[complement class] Let \(\C\) be a complexity class.  Its
+  \emph{complement class}, denoted \(\co\C\), is the class of problems
+  \[
+    \co\C = \SetBuilder{L^c}{L \in \C}.
+  \]
+\end{definition}
+
+

@@ -1,0 +1,13 @@
+setup:
+  @mkdir -p '_build/_tikz'
+  @ln -sf '_build/_tikz'
+
+build: setup
+  latexmk -interaction='nonstopmode' -lualatex 'final-report.tex'
+
+dev: setup
+  latexmk -pvc -interaction='nonstopmode' -lualatex 'final-report.tex'
+
+view:
+  nohup zathura '_build/final-report.pdf' > '/dev/null' 2> '/dev/null' &
+

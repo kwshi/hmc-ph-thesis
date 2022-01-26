@@ -1,0 +1,91 @@
+\chapter{Future work}
+
+\label{ch:future}
+
+I've discussed most of the roadblocks, challenges, and open
+questions/conjectures I've encountered.  Here, I will merely summarize what I
+think are the main next steps \& components of the work for next semester:
+
+\begin{itemize}
+
+  \item Figure out an elegant \CSAT{} to \Problem{3col} reduction.  In the
+    worst case, I might not be able to come up with anything better than what
+    already exists, which is
+    \[
+      \CSAT \le \SAT \le \Problem{cnfsat} \le \Problem{3col}.
+    \]
+    But still, it is worth trying.
+
+    Another useful source on this exploration is
+    \textcite{ddls.sat-variants-ph}, which explores how many other variants of
+    \SAT{} are placed in the polynomial hierarchy.
+
+  \item Figure out a good \emph{game} generalization of \Problem{3col} that,
+    ideally, does not make the game trivial for the adversarial player, but
+    also minimizes ``special-case'' treatment.  Prove that these games are
+    complete for \SigmaP k, \PiP k, etc.
+
+  \item Move on to other puzzles, such as Sudoku, or
+    \Problem{hamiltonian-path}, or really any of the famous 21 \NP-complete
+    problems discussed in \textcite{karp.np}.  Wonder if there is a
+    generalizable scheme/technique by which any \NP-complete puzzle can be
+    lifted up in the polynomial hierarchy, one step at a time.
+
+\end{itemize}
+
+Finally, if all that is done (ha, as if!), there are a few more topics, still
+in the theme of ``converting puzzles to games'', that I have preliminarily
+explored and found sources on:
+\begin{itemize}
+
+  \item \label{itm:intro.q.generation} Puzzle generation.  If I wish to solve a
+    puzzle, you can play a game with me by constructing puzzle \emph{instances}
+    for me to solve.  For instance, \emph{solving} Sudoku is an \NP-complete
+    problem; your task is to \emph{generate} (partially-filled) Sudoku boards
+    for me to solve.
+
+    How hard is it to do so?  Moreover, how hard is it to generate \emph{good}
+    puzzle instances, for various definitions of \emph{good} (sufficiently
+    challenging to solve, or having unique solutions, or solvable/unsolvable by
+    certain strategies)?
+
+    Most of the formal theoretical work in this topic has been done by
+    \textcite{language-instances,test-gen-complexity,hard-diverse-graph-tests,maximum-clique-generators}.
+    A few other interesting, relevant snippets on other aspects of the
+    generation problem (e.g., uniqueness, strategy-solvability, difficulty
+    assessments) are found in \textcite{strategy-solvable-sudoku,sudoku-education,unique-sudoku-poly,difficulty-driven-sudoku,sudoku-difficulty-oracle} (and many more).
+
+  \item \label{itm:intro.q.pspace} \PSPACE-complete games with arbitrarily many
+    (or, at least, polynomially-many) moves.  In our definitions of the \CSAT{}
+    games, the number of moves is \emph{fixed}.  However, in many real life
+    games such as Chess, Checkers, Go, Reversi, etc., the number of moves
+    scales with the size of the board, allowing the complexity of the problem
+    to also scale accordingly.  Thus, these games stretch beyond the polynomial
+    hierarchy into \PSPACE{} (polynomial space), which is suspected, but not
+    proven, to be strictly more complex than the polynomial hierarchy.  Several
+    \PSPACE-complete games can be derived from \NP-complete puzzles, such as
+    graph coloring.  For instance, in one such game, on a given graph, two
+    players alternate turns assigning colors to individual vertices at a time,
+    never introducing an improper pair; the first player to have no available
+    moves loses.
+
+    Can other \NP-complete puzzles be similarly generalized into games?  Will
+    those games also be \PSPACE-complete?
+
+    Specific examinations of graph coloring games like the one discussed above
+    are found in
+    \textcite{bodlaender.coloring,bh.placement,kbd.impartial,cpss.coloring}.
+    Countlessly many more games have been studied and found \PSPACE-complete;
+    useful summary-style discussions of these results may be found in
+    \textcite{eppstein.cgt,demaine.acgt}.
+
+    Finally, a \emph{general} theoretical treatment of lifting \NP-complete
+    puzzles to \PSPACE-complete games, in similar spirit to Karp's original
+    \NP-complete categorization, has been attempted in
+    \textcite{schaefer.deriving,schaefer.games}.
+
+\end{itemize}
+
+
+
+
