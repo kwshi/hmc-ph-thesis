@@ -1,0 +1,127 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{complexity}[2022/02/08 Complexity theory stuff for my math thesis]
+
+\RequirePackage{stackrel}
+\RequirePackage{mathtools}
+
+\newcommand\ComplexityClass[1]{\ensuremath{\mathbf{#1}}}
+\newcommand\NP{\texorpdfstring{\ComplexityClass{NP}}{𝐍𝐏}}
+\renewcommand\P{\texorpdfstring{\ComplexityClass{P}}{𝐏}}
+\newcommand\PSPACE{\texorpdfstring{\ComplexityClass{PSPACE}}{𝐏𝐒𝐏𝐀𝐂𝐄}}
+\newcommand\PH{\texorpdfstring{\ComplexityClass{PH}}{𝐏𝐇}}
+\newcommand\EXP{\texorpdfstring{\ComplexityClass{EXPTIME}}{𝐏𝐇}}
+\newcommand\C{\texorpdfstring{\ensuremath{\mathbfit C}}{𝑪}}
+\newcommand\co{\ensuremath{\operatorname{co-}\!}}
+\newcommand\pro{\ensuremath{\operatorname{pro-}\!}}
+\newcommand\SigmaP[1]{\ensuremath{Σ_{#1}\mathbf{P}}}
+\newcommand\PiP[1]{\ensuremath{Π_{#1}\mathbf{P}}}
+\newcommand\DeltaP[1]{\ensuremath{\Delta_{#1}\mathbf{P}}}
+\newcommand\Problem[1]{\texorpdfstring{\ensuremath{\text{\textsc{#1}}}}{#1}}
+
+\let\O\relax
+\DeclareMathOperator\O{O}
+
+\newcommand\OR{\ensuremath{\mathbin{\mathrm{OR}}}}
+\newcommand\AND{\ensuremath{\mathbin{\mathrm{AND}}}}
+\newcommand\NOT{\ensuremath{\operatorname{NOT}}}
+
+\newcommand\SAT{\Problem{SAT}}
+\newcommand\CSAT{\Problem{CSAT}}
+\newcommand\QSAT{\Problem{QSAT}}
+
+\AtBeginDocument{
+  \let\Re\relax
+  \let\Im\relax
+  \DeclareMathOperator\Re{Re}
+  \DeclareMathOperator\Im{Im}
+}
+
+\DeclarePairedDelimiter\Paren()
+\DeclarePairedDelimiter\Brack[]
+\DeclarePairedDelimiter\Brace\{\}
+\DeclarePairedDelimiter\Set\{\}
+\DeclarePairedDelimiter\Angle\langle\rangle
+\DeclarePairedDelimiter\Abs\lvert\rvert
+\DeclarePairedDelimiter\Norm\lVert\rVert
+\DeclarePairedDelimiter\Ceil\lceil\rceil
+\DeclarePairedDelimiter\Floor\lfloor\rfloor
+\DeclarePairedDelimiterX\SetBuilder[2]\{\}{#1 \;\delimsize\vert\; #2}
+
+\newcommand\True{\ensuremath{\mathrm{True}}}
+\newcommand\False{\ensuremath{\mathrm{False}}}
+\newcommand\Aux{{\mathrm{Aux}}}
+
+\DeclareMathOperator\Vertices{V}
+\DeclareMathOperator\Edges{E}
+
+
+
+
+\definecolor{ks0}{HTML}{0050c0}
+\definecolor{ks1}{HTML}{e00060}
+\definecolor{ks2}{HTML}{f0b000}
+
+\definecolor{ks-false}{HTML}{0050c0}
+\definecolor{ks-true}{HTML}{e00060}
+\definecolor{ks-aux}{HTML}{f0b000}
+
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins}
+\tcbuselibrary{theorems}
+\tcbsetforeverylayer{
+  color id/.style={
+    nobeforeafter,
+    tcbox raise base,
+    %boxsep=0pt,
+    %boxrule=0pt,
+    size=fbox,
+    %left=1em/4,
+    %right=1em/4,
+    %top=1em/4,
+    %bottom=1em/4,
+    colback=ks#1,
+    colframe=black,
+    colupper=white,
+  },
+}
+
+\newcommand\ColorId[1]{\tcboxmath[color id=#1]{\mathbf{#1}}}
+
+\tikzset{
+  gates/.style={
+    row sep=1em/2,
+    column sep=2em,
+    matrix of nodes,
+  },
+  every circuit symbol/.style={
+    fill,
+    fill opacity=1/8,
+    anchor=output,
+  },
+  vertex/.style={
+    circle,
+    draw,
+    minimum size=1em/2,
+    inner sep=0pt,
+  },
+  vertex label/.style={
+    text height=2em/3,
+    text depth=1em/3,
+  },
+  edge/.style={
+  },
+  wire/.style={
+    rounded corners=1em/4,
+    thick,
+    to path={
+      -- ($ (\tikztostart)!2em/3!(\tikztostart -| \tikztotarget) $)
+      -- ($ (\tikztotarget)!2em/3!(\tikztostart |- \tikztotarget) $)
+      -- (\tikztotarget)
+    },
+  },
+  over/.style={
+    preaction={draw=white, line width=3pt},
+  },
+}
+
+

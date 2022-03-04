@@ -1,0 +1,165 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ks-stuff}[2022/02/08 Miscellaneous utilities for final report snippets]
+
+\RequirePackage{mathtools}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+\RequirePackage{thmtools}
+\RequirePackage{isomath}
+\RequirePackage{microtype}
+\RequirePackage{parskip}
+\RequirePackage{libertinus}
+\renewcommand\familydefault\sfdefault
+
+\defaultfontfeatures{}
+\setmonofont{JuliaMono}[%
+  Extension=.ttf,%
+  UprightFont=*-Regular,%
+  BoldFont=*-Bold,%
+  ItalicFont=*-RegularItalic,%
+  BoldItalicFont=*-BoldItalic,%
+  Scale=MatchLowercase,%
+]
+
+
+\RequirePackage{enumitem}
+\setlist{
+  font=\color{gray!50!black},
+}
+\setlist[enumerate, 1]{
+  label=[\arabic*],
+}
+
+
+\RequirePackage{amsthm}
+\RequirePackage{thmtools}
+
+\declaretheoremstyle[%
+  %spaceabove=0pt,
+  bodyfont=\normalfont,
+]{theorem}
+
+\RequirePackage{tcolorbox}
+\tcbuselibrary{breakable}
+\tcbuselibrary{theorems}
+
+
+\tcbsetforeverylayer{
+  shade box/.style={
+    boxrule=0pt,
+    top=1em,
+    bottom=1em,
+    sharp corners,
+    breakable,
+    parbox=false,
+    boxsep=0pt,
+    opacityframe=0,
+    opacityback=1/16,
+    colback=#1,
+  },
+  thm/.style={},
+  theorem/.style={
+    enhanced jigsaw,
+    sharp corners,
+    boxrule=0pt,
+    colback=#1,
+    opacityback=1/8,
+    opacityframe=0,
+    colbacktitle=#1,
+    opacitybacktitle=1/4,
+    coltitle=black,
+    fonttitle=\bfseries,
+    boxsep=0em,
+    left=1em,
+    right=1em,
+    top=1em/2,
+    bottom=1em,
+    toptitle=1em/2,
+    bottomtitle=1em/2,
+    parbox=false,
+    breakable,
+  },
+}
+
+%\tcolorboxenvironment{proof}{}
+
+
+%\tcolorboxenvironment{definition}{
+%  thm=green!50!blue,
+%}
+%\tcolorboxenvironment{theorem}{
+%  thm=blue!50!teal,
+%}
+%\tcolorboxenvironment{conjecture}{
+%  thm=teal,
+%}
+
+
+
+\RequirePackage{minted}
+
+\newtcolorbox{annotation}{
+  breakable,
+  sharp corners,
+  opacityframe=0,
+  opacityback=0,
+  boxsep=0pt,
+  right=0em,
+  left=2em,
+  parbox=false,
+}
+\newtcolorbox{nested}{
+  breakable,
+  parbox=false,
+  % TODO fix spacing, maybe try `before skip balanced`, requires newer
+  % tcolorbox.  or use a list with empty labels instead!
+  before skip=1em/2,
+  sharp corners,
+  opacityback=0,
+  opacityframe=0,
+  boxsep=0pt,
+  boxrule=0pt,
+  right=0em,
+  top=0em,
+  bottom=0em,
+  left=2em,
+}
+\newtcolorbox{aside}{
+  shade box=black,
+}
+
+\RequirePackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{matrix}
+\usetikzlibrary{positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations}
+\usetikzlibrary{circuits}
+\usetikzlibrary{circuits.logic}
+\usetikzlibrary{circuits.logic.US}
+
+
+
+\RequirePackage{hyperref}
+\RequirePackage[nameinlink]{cleveref}
+\hypersetup{
+  pdfborder={0 0 1},
+  unicode=true,
+  colorlinks=true,
+  urlcolor=blue!25!teal,
+  linkcolor=green!50!brown!50!black,
+  citecolor=green!50!brown!50!black,
+}
+
+\RequirePackage{titlesec}
+\RequirePackage{cancel}
+\RequirePackage{array}
+\RequirePackage{booktabs}
+\RequirePackage{xfrac}
+\RequirePackage{xpatch}
+\RequirePackage{etoolbox}
+\RequirePackage[style=authoryear]{biblatex}
+
+\newcommand\Term{\textbf}
+

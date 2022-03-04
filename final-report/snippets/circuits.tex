@@ -1,0 +1,202 @@
+\documentclass{report-snippet}
+
+\title{Circuits}
+
+\begin{document}
+
+\section{Circuits}
+
+A (boolean) circuit is a network of \emph{wires} and \emph{logic gates}.  Each
+wire carries a value in \(\Set{\True,\False}\).  There are three kinds of logic
+gates, each of which takes some wires as \emph{inputs} and sends to another
+wire an \emph{output} value \(\Set{\True,\False}\) as a function of its inputs.
+Below we define the three logic gates and show their diagram representations:
+\begin{itemize}
+
+  \item A \NOT{} gate takes one input and produces the opposite value as
+    output.
+
+    \begin{center}
+      \begin{tikzpicture}[circuit logic US]
+        \node[not gate](n){};
+        \draw[wire]
+          (n.input) -- +(-2em,0) node[left]{input}
+          (n.output) -- +(2em,0) node[right]{output};
+      \end{tikzpicture}
+    \end{center}
+    \[
+      \begin{array}{c|c}
+        \text{input} & \text{output} \\ \midrule
+        \False & \True \\
+        \True & \False
+      \end{array}
+    \]
+
+  \item An \AND{} gate takes two inputs and produces \True{} if and only if
+    \emph{both} of its inputs are \True.
+
+    \begin{center}
+      \begin{tikzpicture}[circuit logic US]
+        \node[and gate](a){};
+        \draw[wire]
+          (a.input 1) -- +(-2em,0) coordinate(a')
+          (a.input 2) -- +(-2em,0) coordinate(a'') ($(a')!1/2!(a'')$) node[left]{inputs}
+          (a.output) -- +(2em,0) node[right]{output};
+      \end{tikzpicture}
+    \end{center}
+    \[
+      \begin{array}{cc|c}
+        \multicolumn{2}{c|}{\text{inputs}} & \text{output} \\ \midrule
+        \False & \False & \False \\
+        \False & \True & \False \\
+        \True & \False & \False \\
+        \True & \True & \True
+      \end{array}
+    \]
+
+  \item An \OR{} gate takes two inputs and produces \True{} if and only if \emph{at
+    least one} of its inputs is \True.
+
+    \begin{center}
+      \begin{tikzpicture}[circuit logic US]
+        \node[or gate](o){};
+        \draw[wire]
+          (o.input 1) -- +(-2em,0) coordinate(o')
+          (o.input 2) -- +(-2em,0) coordinate(o'') ($(o')!1/2!(o'')$) node[left]{inputs}
+          (o.output) -- +(2em,0) node[right]{output};
+      \end{tikzpicture}
+    \end{center}
+    \[
+      \begin{array}{cc|c}
+        \multicolumn{2}{c|}{\text{inputs}} & \text{output} \\ \midrule
+        \False & \False & \False \\
+        \False & \True & \True \\
+        \True & \False & \True \\
+        \True & \True & \True
+      \end{array}
+    \]
+
+\end{itemize}
+
+\begin{definition}{circuit}{}
+
+  % TODO consider using switches and lightbulbs in formalism
+
+  A \Term{circuit} consists of a network of such wires and logic gates, with
+  the following requirements for well-defined-ness:
+  \begin{itemize}
+    \item Some wires are marked as circuit-level \Term{inputs}.  These wires
+      may not be the output wire of any gate within the circuit.
+    \item Every wire that isn't a circuit-level input must be the output wire
+      of exactly one logic gate.
+    \item There must be no (directed) cycles in the circuit.  That is, there
+      must not exist gates \(g₁,\dotsc,gₖ\) such that the output of \(g₁\) is
+      an input to \(g₂\), the output of \(g₂\) an input to \(g₃\), …, and the
+      output of \(gₖ\) an input to \(g₁\).
+    \item Finally, there is exactly one wire marked the \Term{output} of the
+      circuit.
+  \end{itemize}
+  Under these requirements, each combination of boolean values assigned to the
+  circuit-level input wires, uniquely determines the circuit-level output's
+  value. Therefore, a circuit with \(n\) inputs defines a function
+  \(\Set{\False,\True}ⁿ→\Set{\False,\True}\).
+
+  To simplify notation, we refer to each circuit and its boolean function by
+  the same name.  That is, if \(C\) refers to a circuit, we denote by
+  \(C(x₁,\dotsc,xₙ)\) the output computed by \(C\) on input values
+  \(x₁,\dotsc,xₙ\).  Occasionally, if we need to disambiguate between a circuit
+  and its function, we denote the circuit \(C\) and its function \(ϕ_C\).
+
+\end{definition}
+
+Here are some example circuits.
+
+\begin{center}
+  \begin{tikzpicture}[circuit logic US]
+
+    \matrix[gates]{
+      \coordinate(i1); & \node[not gate](n1){}; & \node[and gate](a){}; & \coordinate(out); \\
+      \coordinate(i2); & \node[not gate](n2){}; \\
+    };
+
+  \draw[wire]
+  foreach \i in {1,2} { (i\i) -- (n\i.input) (n\i.output) to (a.input \i) }
+  (a.output) -- (out);
+
+  \end{tikzpicture}
+\end{center}
+
+\begin{center}
+  \begin{tikzpicture}[circuit logic US]
+    \matrix[gates]{
+      \coordinate(i1); && \node[not gate](n1){}; & \node[and gate](a1){}; &
+      \node[or gate](o){}; & \coordinate(out); \\
+      & \coordinate(i1'); \\
+      & \coordinate(i2'); \\
+      \coordinate(i2); && \node[not gate](n2){}; & \node[and gate](a2){}; \\
+    };
+
+    \draw[wire]
+    foreach \i in {1,2} {
+      (i\i) to (n\i.input)
+      (n\i.output) to (a\i.input \i)
+      (a\i.output) to (o.input \i)
+    }
+    (i1) to (i1') to (a2.input 1) (i2) to (i2')
+    (o.output) -- (out);
+
+    \draw[wire, over] (i2') to (a1.input 2);
+  \end{tikzpicture}
+\end{center}
+
+
+%\begin{definition}{}{}
+%
+%  Let \(C\) be a boolean circuit, with input wires \(i₁,\dotsc,iₙ\) and output
+%  wire \(o\).  The \Term{function computed by \(C\)} is a mapping
+%  \(\Set{\False,\True}ⁿ→\Set{\False,\True}\) that sends each combination of
+%  values on \(i₁,\dotsc,iₙ\) to the resulting value assigned by \(C\) to the
+%  output wire \(o\).
+%
+%\end{definition}
+
+\section{Puzzles and games on circuits}
+
+The most straightforward circuit problem is this: given a circuit \(C\) and
+fixed assignments \(x₁,\dotsc,xₙ\) to its inputs, compute its output value.
+Call this problem the \Term{\Problem{CircuitValue} problem}, or
+\Term{\(\CSAT₀\)}.
+
+\begin{definition}{\Problem{CircuitValue} / \(\CSAT₀\)}{}
+
+  Given a circuit \(C\) and fixed assignments to its inputs \(x₁,\dotsc,xₙ\),
+  compute \(C(x₁,\dotsc,xₙ)\).  To formalize this as a decision problem, return
+  \emph{yes} if \(C(x₁,\dotsc,xₙ)=\True\) and \emph{no} otherwise:
+  \[
+    \Problem{CircuitValue} =
+    \SetBuilder{(\text{circuit \(C\)}, \text{inputs \((x₁,\dotsc,xₙ)\)})}{
+      C(x₁,\dotsc,xₙ)=\True
+    }.
+  \]
+
+\end{definition}
+
+\Problem{CircuitValue} is fairly easy to solve: iterate through each gate,
+starting with those closest to the circuit inputs, whose values are given;
+compute and write down the gate's output, then repeat.
+
+% TODO consider being more precise here, blah blah topological sort, or lazy backfill
+
+We now define a hierarchy of puzzles and games played on circuits.
+
+\subsection{The circuit satisfiability puzzle, a.k.a. \(\CSAT₁\)}
+
+
+
+
+
+
+%You run a news organization.
+
+
+\end{document}
