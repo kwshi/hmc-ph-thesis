@@ -1,0 +1,261 @@
+\chapter{What you need to know: the basics}
+
+The fundamental question driving the study of computational complexity theory
+is, ``how difficult are certain problems for computers to solve?''  In order to
+answer this question precisely, we must start by figuring out what exactly it
+asks.  That is, formally, what do we mean by \emph{difficulty}?  For that
+matter, what constitutes a \emph{problem}?  What counts as a \emph{computer}?
+
+Conventionally, \emph{computers} are formalized as Turing machines, with
+\emph{difficulty} being measured by the number of Turing machine execution
+steps.  For the purposes of this thesis, we avoid delving into the formalism of
+Turing machines.  Instead, we assume an informal notion of computers given by
+any algorithm or procedure straightforwardly implementable in modern,
+high-level programming languages such as C/C++, Python, Java, etc.  Detailed
+treatment of the relevant formalisms may be found in \textcite[Chapter
+2]{papadimitriou.cc}.  In particular, there are theorems \parencite[Theorem
+2.5]{papadimitriou.cc} showing that modern CPU/RAM-based computer architectures
+are, for our purposes, equivalent to Turing machines, thereby justifying the
+informal approach we take here.
+
+In the following section, we discuss what exactly constitutes a \emph{problem},
+how we describe the complexity (i.e., difficulty) of problems, and how we
+categorize problems by difficulty into \emph{complexity classes}.
+
+%emphasize intuitive descriptions of
+%algorithms in terms of modern, ``high-level'' programming concepts exhibited by
+%programming languages such as Python.
+
+%An
+%alternative treatment uses ``random access machines'', which mimic modern
+%CPU/RAM-based computer architectures.  In this thesis, we avoid delving into
+%these formal details.
+
+%in terms of modern, high-level programming concepts
+
+%In the conventional formalism, computers are modeled as Turing machines.
+%Difficulty, then, refers to the number of execution steps required by a Turing
+%Machine to solve a problem.  Alternatively, computers could be modeled as
+%``random access machines'' \parencite[Section 2.6]{papadimitriou.cc}, which
+%mimic modern CPU/RAM-based computer architectures.  For our purposes, the two
+%models of computation are equivalent \parencite[Theorem 2.5]{papadimitriou.cc}.
+
+%Formal treatments of these
+%definitions are found in \textcite[Chapter 2]{papadimitriou.cc}
+
+%Of particular
+%note, \textcite[Theorem 2.5]{papadimitriou.cc} shows that these two models of
+%computation are, for our purposes, equivalent.  Therefore, for our purposes, we will
+%assume the latter model, allowing us to think in terms of modern programming
+%patterns and give
+
+%By \emph{hardness}, what we really mean is: given a problem input
+%encoded in \(n\) bits, how much computational time, asymptotically with respect
+%to \(n\), is required to solve that problem?  In order to discuss this question
+%precisely, we have to clearly define what we mean by ``computational time'',
+%and, for that matter, what we mean by ``computer''.  A traditional approach
+%takes ``computer'' to mean Turing Machines and ``time'' to be Turing Machine
+%execution steps; another approach defines ``computer'' via modern-day,
+%CPU/RAM-based architectures, with ``time'' given by CPU instruction cycles.
+
+%relatively \emph{informal} descriptions of algorithms.
+
+\section{Decision problems}
+
+The simplest flavor of computational problem is a \emph{decision problem}, or a
+yes/no question: given an input \(X\), does \(X\) satisfy certain conditions?
+Here are some examples of decision problems:
+\begin{itemize}[nosep]
+  \item Given an integer \(K\), is \(K\) even?
+  \item Given a string of letters \(S\), is \(S\) a palindrome?
+  \item A silly decision problem, but nevertheless a valid one: given any input
+    \(X\), always return ``yes''.
+\end{itemize}
+
+In order for a yes/no question to qualify as a decision problem, it must be
+stated in terms of an arbitrary input.  For instance, consider the following
+question:
+\begin{itemize}[nosep]
+  \item Is \(314159\) a prime number?  (Answer: yes.  Proof: see WolframAlpha.)
+\end{itemize}
+This is a yes/no question, but it takes no inputs (the value \(314159\) is not
+an input; it is merely part of the question statement).  In this sense, it is
+computationally uninteresting: in order to solve this question, an algorithm
+only needs to return the fixed answer ``yes''.  In contrast, what we're really
+interested in is the general problem of primality testing:
+\begin{itemize}[nosep]
+  \item Given an arbitrary positive integer \(K\), is \(K\) prime?
+\end{itemize}
+
+Formally, inputs to decision problems must be encoded as binary strings.
+Essentially, this requirement is an implication of the fact that all modern
+computers encode data in binary anyway.  Furthermore, it allows us to
+rigorously discuss notions such as \emph{input size}.  This is an
+important formal detail, but in the rest of this thesis we 
+
+We highlight it here only to elucidate the following definition
+
+\begin{definition}{(decision) problem}{}
+
+  A \Term{decision problem} is a function
+  \(f\colon\Set{0,1}^*→\Set{\text{yes},\text{no}}\) 
+
+\end{definition}
+
+
+
+
+%Notationally, we say \(X\) is \emph{in} the problem \(L\), or \(X\in L\), if
+%the answer is yes; otherwise, we say \(X\notin L\).
+%
+%An example of a decision problem is the graph reachability problem:
+%\begin{definition}[\Problem{reachability}]%
+%  Given a graph with \(n\) vertices \(v_1, \dots, v_n\), does there exist a
+%  path connecting \(v_1\) to \(v_n\)?
+%\end{definition}
+%This problem may be solved using simple graph-search algorithms such as
+%Breadth-First/Depth-First Search, whose asymptotic running time is \(\O(n)\)
+%---that is, bounded by a linear function of \(n\).  As such, this problem is
+%considered relatively ``easy'' to solve.
+%
+%More generally, \Problem{reachability} belongs to the class of decision
+%problems known as \P:
+%\begin{definition}[\P]%
+%  The class of decision problems whose solution runtime is bounded by a
+%  polynomial function of the input length.
+%\end{definition}
+%We consider problems in \P{} to be ``easy''---at least, from the standpoint of
+%computational complexity.
+%
+%Another example of a decision problem is the Hamiltonian path problem:
+%\begin{definition}[\Problem{hamiltonian-path}]%
+%  \label{def:hamiltonian-path} Given a graph with \(n\) vertices, does it
+%  contain a Hamiltonian path (i.e., a path that visits each vertex exactly
+%  once)?
+%\end{definition}
+%This problem is not known to be in \P.  In fact, the best known algorithms
+%solving \Problem{hamiltonian-path} are essentially brute-force guess-and-check:
+%\emph{guess} a possible Hamiltonian path (e.g., by writing down some
+%permutation of the vertices), then \emph{check} that it is valid (e.g., that
+%each pair of adjacent vertices in the guessed path are actually connected by an
+%edge in the graph).  In the worst case, if our guesses are really unlucky, we
+%may have to repeat up to \(n!\) iterations, which is definitely not polynomial.
+%However, setting aside the cost associated with brute-forcing guesses, note
+%that individual \emph{checking} steps \emph{do} run in polynomial time.
+%Problems like this, which are solvable via guess-and-check, where the ``check''
+%problem is in \P, belong to a class of problems known as \NP:
+%\begin{definition}[\NP]%
+%  \label{def:np} A decision problem \(L\) is in \NP{} if\dots
+%  \begin{nested}
+%    there exists a corresponding decision problem \(L'\in\P\) (intuitively: the
+%    ``check'' problem) and a polynomial \(p\) such that\dots
+%    \begin{nested}
+%      for all input strings \(x\)\dots
+%      \begin{nested}
+%        \(x \in \NP\) if and only if\dots
+%        \begin{nested}
+%          there exists a ``guess'' \(g\) with length \(\Abs g \le p(\Abs x)\)
+%          such that \((x, g) \in L'\) (intuitively: \(g\) passes the
+%          ``check'').
+%        \end{nested}
+%      \end{nested}
+%    \end{nested}
+%  \end{nested}
+%
+%  Note that the \(\Abs g \le p(\Abs x)\) requirement is present in order to
+%  ensure that the guesses are not so obscenely long as to abuse the idea of
+%  ``efficient'' checking.  This requirement is not central to understanding the
+%  definition of \NP{} but is nevertheless an important technical subtlety.
+%\end{definition}
+%
+%The infamous \P-vs-\NP{} open question asks: is \NP{} truly more difficult than
+%\P?  Does there exist some problem in \NP{} that definitively cannot be solved
+%within polynomial time?  I, a baby undergraduate, am not in the business of
+%answering that question.
+%
+%As such, the best we can do to determine the difficulty of a given problem is
+%to compare them to other problems, deriving a \emph{relative} ordering telling
+%us which problems are easier/harder than other ones.  To this end, we must
+%define what easier/harder means---intuitively, we think of a problem \(L_1\) as
+%easier than another problem \(L_2\) if knowing how to solve \(L_2\)
+%automatically also tells us how to solve \(L_1\), with minimal
+%(polynomially-bounded) overhead.  More precisely:
+%\begin{definition}[reductions]
+%  \label{def:reduction}
+%  Let \(L_1\) and \(L_2\) be decision problems.  We say \(L_1\) is
+%  \emph{reducible to} \(L_2\), or that \(L_1\) is \emph{at least as easy as}
+%  \(L_2\)'', denoted \(L_1 \le L_2\), if\dots
+%  \begin{nested}
+%    there exists a function \(f\), called a \emph{reduction}, converting input
+%    strings for \(L_1\) to inputs for \(L_2\), such that \(f\) is computable
+%    within polynomial time, and\dots
+%    \begin{nested}
+%      for any input \(x_1\)\dots
+%      \begin{nested}
+%        \(x_1 \in L_1\) if and only if \(x_2 \in L_2\).
+%      \end{nested}
+%    \end{nested}
+%  \end{nested}
+%
+%  Note that this definition of reductions is slightly different than the one
+%  given in \textcite{papadimitriou.cc}, whose requirement on \(f\) is that it
+%  is computable in \emph{logarithmic-space} rather than polynomial-time.
+%  However, for the purposes of this project, the distinction between the two is
+%  unimportant.
+%\end{definition}
+%
+%This notion of comparison also gives us a good way of comparing problems to
+%entire classes:
+%\begin{definition}[hardness and completeness]%
+%  \label{def:hard-complete}
+%  Let \(\mathbfit C\) be a complexity class.
+%  \begin{itemize}[nosep]
+%    \item A problem \(L\) is \emph{hard for \(\mathbfit C\)}, or
+%      \emph{\(\mathbfit C\)-hard}, if \(L\ge K\) for every \(K\in\mathbfit C\).
+%    \item A problem \(L\) is \emph{complete for \(\mathbfit C\)}, or
+%      \emph{\(\mathbfit C\)-complete}, if \(L\) is \(\mathbfit C\)-hard
+%      \emph{and} \(L\in\mathbfit C\).
+%  \end{itemize}
+%\end{definition}
+%
+%In particular, \emph{complete} problems for a class \(\mathbfit C\) are at
+%least as hard as everything else in \(\mathbfit C\) and simultaneously
+%themselves \emph{in} \(\mathbfit C\).  In this sense, for any complexity class,
+%its complete problems are its \emph{hardest} problems, giving us an effective,
+%``exact'' characterization of the class in terms of its problems.
+%
+%This approach to characterizing complexity classes is the driving motivation
+%behind our exploration of puzzles and games.
+%
+%%\todo[inline]{unfinished.  formalism of turing machines, decision problems,
+%%  oracles \& the definition of polynomial hierarchy, proofs of completeness of
+%%  SAT \& QSAT for classes in the polynomial hierarchy.  I imagine this stuff
+%%  will be needed in the final thesis; is it needed also for the midyear
+%%report?}
+%%
+%%\begin{definition}[decision problem/language]%
+%%  A \textbf{decision problem} is a yes/no question posed on binary input
+%%  strings, or problem \textbf{instances}.  As such, we may think of a decision
+%%  problem as a mapping
+%%  \[
+%%    L \colon \Set{0, 1}^* \to \Set{\text{yes}, \text{no}}.
+%%  \]
+%%
+%%  More commonly, we associate a problem with its ``yes'' instances, the set of
+%%  which is a \textbf{language}:
+%%  \[
+%%    L(L) = \SetBuilder* {x \in \Set{0, 1}^*} {L(x) = \text{yes}}.
+%%  \]
+%%  Here, for clarity, we are distinguishing notationally between \(L\) and
+%%  \(L(L)\), but in general we conflate the two notions and refer to both as
+%%  the problem \(L\).
+%%\end{definition}
+%%
+%%\begin{definition}[\NP]
+%%  \NP{} is the class of problems solvable by a \emph{non-deterministic} Turing
+%%  machine in \emph{polynomial time}.
+%%\end{definition}
+%%
+%%
+%%
+%%

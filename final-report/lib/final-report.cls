@@ -33,18 +33,18 @@
 
 \RequirePackage{tikz}
 \usetikzlibrary{external}
-\tikzexternalize[
-  system call={
-    lualatex %
-    \tikzexternalcheckshellescape %
-    -halt-on-error %
-    -interaction='batchmode' %
-    -output-directory='_build' %
-    -jobname="\image" %
-    "\texsource"
-  },
-  prefix=_tikz/
-]
+%\tikzexternalize[
+%  system call={
+%    lualatex %
+%    \tikzexternalcheckshellescape %
+%    -halt-on-error %
+%    -interaction='batchmode' %
+%    -output-directory='_build' %
+%    -jobname="\image" %
+%    "\texsource"
+%  },
+%  prefix=_tikz/,
+%]
 \usepackage[textwidth=1in]{todonotes}
 
 % https://tex.stackexchange.com/questions/42486/todonotes-and-tikzexternalize
@@ -121,7 +121,12 @@
 \usepackage{complexity}
 \usepackage{ks-stuff}
 
-\declaretheorem[style=theorem, numberwithin=chapter]{theorem}
-\declaretheorem[style=theorem, numberwithin=chapter]{definition}
-\declaretheorem[style=theorem, numberwithin=chapter]{conjecture}
+%\declaretheorem[style=theorem, numberwithin=chapter]{theorem}
+%\declaretheorem[style=theorem, numberwithin=chapter]{definition}
+%\declaretheorem[style=theorem, numberwithin=chapter]{conjecture}
+%
+\newtcbtheorem[crefname={definition}{definitions}]{definition}{Definition}{theorem=green!50!teal}{def}
+\newtcbtheorem[]{example}{Example}{theorem=orange}{ex}
+\newtcbtheorem[crefname={theorem}{theorems}]{theorem}{Theorem}{theorem=green!50!blue}{th}
+\newtcbtheorem[crefname={lemma}{lemmas}]{lemma}{Lemma}{theorem=teal}{lem}
 
