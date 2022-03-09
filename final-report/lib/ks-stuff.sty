@@ -9,6 +9,10 @@
 \RequirePackage{isomath}
 \RequirePackage{microtype}
 \RequirePackage{parskip}
+
+\RequirePackage{fontspec}
+\RequirePackage{lmodern}
+\RequirePackage[math-style=ISO]{unicode-math}
 \RequirePackage{libertinus}
 \renewcommand\familydefault\sfdefault
 
@@ -126,7 +130,22 @@
   left=2em,
 }
 \newtcolorbox{aside}{
-  shade box=black,
+  %shade box=black,
+  before upper=\tikz{\node[inner sep=0pt, opacity=1/2]{\scshape\bfseries Aside}}\quad,
+  breakable,
+  parbox=false,
+  enhanced jigsaw,
+  sharp corners,
+  opacityback=0,
+  boxsep=0pt,
+  colframe=black,
+  opacityframe=1/4,
+  left=1em,
+  right=0em,
+  top=0em,
+  bottom=0em,
+  boxrule=0pt,
+  leftrule=1em/4,
 }
 
 \RequirePackage{tikz}

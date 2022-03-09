@@ -125,7 +125,11 @@
 %\declaretheorem[style=theorem, numberwithin=chapter]{definition}
 %\declaretheorem[style=theorem, numberwithin=chapter]{conjecture}
 %
-\newtcbtheorem[crefname={definition}{definitions}]{definition}{Definition}{theorem=green!50!teal}{def}
+\newtcbtheorem[%
+  crefname={definition}{definitions},%
+  number within=chapter,
+]{definition}{Definition}{theorem=green!50!teal}{def}
+
 \newtcbtheorem[]{example}{Example}{theorem=orange}{ex}
 \newtcbtheorem[crefname={theorem}{theorems}]{theorem}{Theorem}{theorem=green!50!blue}{th}
 \newtcbtheorem[crefname={lemma}{lemmas}]{lemma}{Lemma}{theorem=teal}{lem}

@@ -1,4 +1,4 @@
-\chapter{What you need to know: the basics}
+\chapter{The basics}
 
 The fundamental question driving the study of computational complexity theory
 is, ``how difficult are certain problems for computers to solve?''  In order to
@@ -18,9 +18,9 @@ treatment of the relevant formalisms may be found in \textcite[Chapter
 are, for our purposes, equivalent to Turing machines, thereby justifying the
 informal approach we take here.
 
-In the following section, we discuss what exactly constitutes a \emph{problem},
-how we describe the complexity (i.e., difficulty) of problems, and how we
-categorize problems by difficulty into \emph{complexity classes}.
+In the following sections, we discuss what exactly constitutes a
+\emph{problem}, how we describe the complexity (i.e., difficulty) of problems,
+and how we categorize problems by difficulty into \emph{complexity classes}.
 
 %emphasize intuitive descriptions of
 %algorithms in terms of modern, ``high-level'' programming concepts exhibited by
@@ -87,23 +87,132 @@ interested in is the general problem of primality testing:
   \item Given an arbitrary positive integer \(K\), is \(K\) prime?
 \end{itemize}
 
-Formally, inputs to decision problems must be encoded as binary strings.
-Essentially, this requirement is an implication of the fact that all modern
-computers encode data in binary anyway.  Furthermore, it allows us to
-rigorously discuss notions such as \emph{input size}.  This is an
-important formal detail, but in the rest of this thesis we 
-
-We highlight it here only to elucidate the following definition
+We formalize the definition of decision problems below.
 
 \begin{definition}{(decision) problem}{}
 
   A \Term{decision problem} is a function
-  \(f\colon\Set{0,1}^*→\Set{\text{yes},\text{no}}\) 
+  \(Π\colon\Set{0,1}^*→\Set{\text{yes},\text{no}}\).  Equivalently, a
+  \Term{decision problem} is the set \(Π⊆\Set{0,1}^*\) comprising exactly the
+  inputs, a.k.a. \Term{instances}, that result in ``yes'' answers.
+
+  That is, for any input \(X∈\Set{0,1}^*\), we say \(X∈Π\) (in the \emph{set}
+  sense) if \(Π(X)=\text{yes}\) (in the \emph{function} sense), and \(X∉Π\) to
+  mean \(Π(X)=\text{no}\).
+
+  \begin{aside}
+    Formally, inputs to decision problems are always encoded as binary strings.
+    Essentially, this requirement follows from the fact that all modern
+    computers encode data in binary anyway.  Furthermore, it allows us to
+    rigorously discuss notions such as \emph{input size}.  This is an important
+    formal detail, but for the most part, we avoid dealing with any binary
+    encoding/decoding technicalities.  We mention this detail here only to
+    clarify the role of \(\Set{0,1}^*\) in the definition above.
+  \end{aside}
 
 \end{definition}
 
+There is another notion of \emph{problems}, called \Term{function problems}, as
+arbitrary (binary-encoded) functions \(\Set{0,1}^*→\Set{0,1}^*\).  However,
+function problems seem to generally receive less attention than decision
+problems, perhaps because decision problems are conceptually simpler but still
+versatile enough to capture the core ideas of complexity theory.  Whatever the
+reason, this thesis abides by that tradition.  As such, the vast majority of
+the problems examined in this thesis are decision problems, so for convenience
+we will simply say ``problems'' to mean decision problems, unless otherwise
+specified.
+
+\section{Complexities and classes}
+
+When we ask how difficult a problem is, we are essentially asking, how much
+time (or other resources, such as memory) does a computer need to solve that
+problem?  Of course, the answer depends on the input: some inputs are easy to
+solve, and others are harder.  Certainly, we expect the difficulty to scale
+with input size: the larger the input, the more work it generally takes an
+algorithm to process it.  Thus, the complexity of a problem is given as a
+function of the input size.  Specifically, we ask, if an algorithm is given an
+input string (recall, encoded in binary) of length \(n\), how much time in the
+worst case is required, as a function of \(n\)?
+
+However, exact function bounds are unnecessarily sensitive to pedantic
+technicalities, e.g., slight variations in implementations of the same
+algorithm, or specific details in the formal models of ``computer''. Instead,
+loosely speaking, we are mostly interested in how these costs asymptotically
+\emph{scale} as the input size gets large.  Thus, we categorize problems with
+``similar'' complexities into \emph{complexity classes}.
+
+So then, what counts as \emph{similar}?  As a starting approximation, we assert
+that \emph{polynomials are small}: any algorithm whose running time is bounded
+by some polynomial function is considered relatively ``fast''; problems with
+polynomial-time solutions are considered relatively ``easy''.  We formalize
+this idea in the definition of the complexity class \P{} below.
+
+\begin{definition}{Polynomial-time problems, \P}{}
+
+  Let \(A\) be an algorithm computing some (decision) problem (i.e., it takes a
+  binary string as input and returns ``yes'' or ``no'').  We say \(A\) runs in
+  \Term{polynomial time} if there exists some polynomial \(p\) such that, on
+  any input \(X∈\Set{0,1}^*\), the algorithm \(A\) terminates in \(≤p(\Abs X)\)
+  steps.
+
+  The complexity class \P{} is the set of (decision) problems correctly
+  solvable in polynomial time.
+
+  \begin{aside}
+    For contrast, we say an algorithm is \Term{super-polynomial} if its running
+    time cannot be bounded by some polynomial.  Examples of super-polynomial
+    functions include \(n^{\log n}\), \(2ⁿ\), etc.
+  \end{aside}
+
+\end{definition}
+
+To be clear, taking polynomials to mean ``easy'' is a very crude rule-of-thumb:
+there are important practical subdivisions \emph{within} \P{} that this
+categorization plainly ignores (e.g., linear-time vs quadratic-time); there are
+also a few notable examples of super-polynomial-time algorithms that are, by
+this rule, slow, but quite efficient \emph{in practice} (e.g., the simplex
+algorithm for linear programming).  Nevertheless, this delineation remains an
+extremely useful (and arguably elegant) starting point for the classification
+of problems.
+
+% TODO examples of 𝐏 problems, and perhaps discuss papadimitriou theorem 2.5
+% again with more precision?
+
+\section{Hard problems and reductions}
+
+Above, we establish that a problem is considered \emph{easy} if it has a
+polynomial-time solution.  Hard problems, then, are those without
+polynomial-time solutions… right?  Sure.  But how do we go about showing that a
+problem is actually hard?  And how hard, exactly?
+
+For an easy problem, proving \emph{existence} of a polynomial-time algorithm is
+straightforward---simply construct one.  On the other hand, for a problem that
+appears to be hard, we would have to prove \emph{non-existence} of a
+polynomial-time algorithm---that it is \emph{impossible} to find a
+polynomial-time algorithm. In general, this is incredibly difficult to show;
+this difficulty is a large part of why the infamous \P-vs-\NP{} question
+remains unsolved.
+
+Thus, we take a different approach to understanding hard problems: by comparing
+them to each other.
+
+TODO: simple examples of two problems that reduce to each other, then
+definition of reduction.  then definition of completeness.
 
 
+Suppose we have two problems, \(Π₁\) and \(Π₂\).
+
+
+%\section{Puzzles, non-determinism, and \NP}
+
+%Consider the following problem.
+%\begin{itemize}
+%  \item Given a graph \(Γ\) and a positive integer \(k\), does \(Γ\) contain a
+%    clique of size \(k\)?
+%\end{itemize}
+
+
+%\section{Hard problems and completeness}
 
 %Notationally, we say \(X\) is \emph{in} the problem \(L\), or \(X\in L\), if
 %the answer is yes; otherwise, we say \(X\notin L\).
