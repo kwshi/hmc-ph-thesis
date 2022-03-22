@@ -76,7 +76,7 @@ In order for a yes/no question to qualify as a decision problem, it must be
 stated in terms of an arbitrary input.  For instance, consider the following
 question:
 \begin{itemize}[nosep]
-  \item Is \(314159\) a prime number?  (Answer: yes.  Proof: see WolframAlpha.)
+  \item Is \(314159\) a prime number?
 \end{itemize}
 This is a yes/no question, but it takes no inputs (the value \(314159\) is not
 an input; it is merely part of the question statement).  In this sense, it is
@@ -112,15 +112,17 @@ We formalize the definition of decision problems below.
 
 \end{definition}
 
-There is another notion of \emph{problems}, called \Term{function problems}, as
-arbitrary (binary-encoded) functions \(\Set{0,1}^*→\Set{0,1}^*\).  However,
-function problems seem to generally receive less attention than decision
-problems, perhaps because decision problems are conceptually simpler but still
-versatile enough to capture the core ideas of complexity theory.  Whatever the
-reason, this thesis abides by that tradition.  As such, the vast majority of
-the problems examined in this thesis are decision problems, so for convenience
-we will simply say ``problems'' to mean decision problems, unless otherwise
-specified.
+A more general notion of \emph{problems} considers arbitrary (binary-encoded)
+functions \(\Set{0,1}^*→\Set{0,1}^*\); this notion is termed \Term{function
+problems}.  However, we will focus mainly on decision problems for two reasons.
+First, decision problems are easier to work with than function problems.
+Second, function problems can be encoded in terms of decision problems (e.g.,
+mapping each output bit to its own decision problem).  Essentially, the
+\emph{decision problem} formalism is conceptually simpler but remains versatile
+enough to capture the important core ideas of complexity theory. As such, the
+vast majority of the problems examined in this thesis are decision problems.
+For convenience we will simply say ``problems'' to mean decision problems,
+unless otherwise specified.
 
 \section{Complexities and classes}
 
@@ -190,17 +192,85 @@ straightforward---simply construct one.  On the other hand, for a problem that
 appears to be hard, we would have to prove \emph{non-existence} of a
 polynomial-time algorithm---that it is \emph{impossible} to find a
 polynomial-time algorithm. In general, this is incredibly difficult to show;
-this difficulty is a large part of why the infamous \P-vs-\NP{} question
-remains unsolved.
+this difficulty is largely why the infamous \P-vs-\NP{} question remains
+unsolved.
 
-Thus, we take a different approach to understanding hard problems: by comparing
-them to each other.
+Instead, we take a different approach to understanding hard problems: comparing
+them to each other.  To illustrate, consider the following two problems:
 
-TODO: simple examples of two problems that reduce to each other, then
-definition of reduction.  then definition of completeness.
+\begin{description}
+
+\item[\Problem{Latin Square}] Given a square grid of dimensions \(n×n\) (for
+  some \(n\)), with some of its cells filled in with a number in
+  \(\Set{1,\dotsc,n}\), is it possible to complete the remaining cells so that
+  each row and each column contains each number exactly once?
+
+\item[\Problem{Graph Coloring}] Given a positive integer \(k\), and a graph
+  with \(n>k\) vertices, some of which are assigned a number (a.k.a. ``color'')
+  in \(\Set{1,\dotsc,k}\), is it possible to assign numbers to the remaining
+  cells so that no neighboring vertices receive the same assignment?
+
+  TODO diagram illustrations.  also i wish i could think of simpler-to-state
+  examples with easy reductions, but nothing comes to mind, so this is the best
+  i've got for now.
+
+\end{description}
+
+Is one of these problems ``easier'' than the other?  In a sense, yes: the
+\Problem{Latin Square} problem is just a special case of the \Problem{Graph
+Coloring} problem, where the vertices are arranged into a square grid, and all
+vertices in the same row or column neighbor each other.
+
+TODO diagram of an example conversion for 3x3 or 2x2
+
+More precisely, this argument describes a way to convert any \Problem{Latin
+Square} instance (a partially-filled \(n×n\) grid) into a \Problem{Graph
+Coloring} instance (a partially-colored graph with \(n²\) vertices) with the
+same yes/no answer.  We formalize this idea as follows:
+
+\begin{definition}{reductions}{}
+
+  Let \(Π₁\) and \(Π₂\) be decision problems.  A \Term{reduction} from \(Π₁\)
+  to \(Π₂\) is an algorithm \(R\colon\Set{0,1}^*→\Set{0,1}^*\) such that, for
+  each \(X∈\Set{0,1}^*\), \(X∈Π₁\) if and only if \(R(X)∈Π₂\).
+
+  In other words, \(R\) converts problem-inputs (a.k.a. \emph{instances}) of
+  \(Π₁\) to problems-inputs of \(Π₂\) such that the yes/no answers on the
+  original and converted inputs exactly match.
+
+  \begin{aside}
+    TODO remark this is many-one/karp reduction, not to be confused with
+  \end{aside}
+
+\end{definition}
+
+In the above example, the reduction from \Problem{Latin Square} to
+\Problem{Graph Coloring} captures the idea that \Problem{Latin Square} is
+easier than \Problem{Graph Coloring} in the following sense.  Suppose that we
+already know how to solve \Problem{Graph Coloring}.  Then, we automatically
+also know how to solve \Problem{Latin Square}: given an arbitrary
+\Problem{Latin Square} input, apply the reduction to convert it into a
+\Problem{Graph Coloring} input, feed that input into the known \Problem{Graph
+Coloring} solver, then directly return its answer.
+
+However, in order to honestly capture the idea of \emph{easiness}, we must also
+account for computation time.  Namely, we stipulate that the reduction itself
+must be efficient---formally, that it runs in polynomial time.
+
+\begin{definition}{polynomial-time reducibility}{}
+
+  Let \(Π₁\) and \(Π₂\) be decision problems.  We say \(Π₁\) is
+  \Term{polynomial-time-reducible} to \(Π₂\), which we denote as
+  \[
+    Π₁≤Π₂,
+  \]
+  if there exists a reduction from \(Π₁\) to \(Π₂\) that runs in polynomial
+  time.  (The \(≤\) notation evokes the intuition that \(Π₁\) is easier than,
+  or \emph{at most as hard as}, \(Π₂\).)
+
+\end{definition}
 
 
-Suppose we have two problems, \(Π₁\) and \(Π₂\).
 
 
 %\section{Puzzles, non-determinism, and \NP}
