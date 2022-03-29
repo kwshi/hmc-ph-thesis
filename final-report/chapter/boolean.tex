@@ -1,0 +1,372 @@
+\chapter{A primer on boolean logic}
+
+Mathematical logic is founded on true-or-false statements---statements such as:
+\begin{itemize}[nosep]
+  \item property \(A\) is \emph{true} when condition \(B\) is \emph{false},
+  \item property \(X\) is \emph{true} when both condition \(Y\) and condition
+    \(Z\) are \emph{true},
+\end{itemize}
+and so on.  Boolean logic refers to the algebra of how \emph{truthiness} and
+\emph{falsiness} combine and transform under various logical operations.
+
+It is no surprise, given the foundational role of booleans in mathematical
+logic, that they also underpin all computational logic. For instance, all
+modern computer architectures deal with data encoded in binary \(0\)s
+(\emph{false}) and \(1\)s (\emph{true}).  Furthermore, it follows that
+everything we conceive of as ``computer'' can be represented as boolean
+circuits---because, essentially, they literally are boolean circuits.
+
+% TODO: this observation underlies importance of boolean puzzles/games, etc.; how this comes up later, blah
+
+In this short chapter, we outline some basic definitions and facts in
+boolean-logical operations and circuits, along with some notational conventions
+we use throughout the rest of this thesis.
+
+\begin{definition}{basic boolean operations: \NOT, \AND, \OR}{}
+
+  \begin{description}
+
+  \item[\NOT] takes one input and outputs its opposite value.  In
+    boolean-algebraic expressions, we denote \NOT{} with the symbol \(¬\).
+    \[
+      ¬\colon\Set{\True,\False}→\Set{\True,\False} \qquad
+      ¬x =
+      \begin{cases}
+        \True & x=\False \\
+        \False & x=\True
+      \end{cases}.
+    \]
+    The \NOT{} operation is also commonly known as \Term{negation}.
+
+  \item[\AND] takes two inputs and outputs \True{} if and only if \emph{both}
+    of its inputs are \True.  We denote \AND{} with the symbol \(∧\).
+    \[
+      ∧\colon\Set{\True,\False}²→\Set{\True,\False} \qquad
+      x∧y =
+      \begin{cases}
+        \True & x=y=\True \\
+        \False & \text{otherwise}
+      \end{cases}.
+    \]
+
+    For convenience, we sometimes omit the \(∧\) and simply denote \AND{} by
+    concatenating the operands, as in \(xy\) instead of \(x∧y\).  (This
+    notation looks like multiplication because it is: if we represent boolean
+    values with \(\Set{1,0}\) instead of \(\Set{\True,\False}\), then
+    \(x∧y=x⋅y\).)
+
+    \AND{} is also known as the \Term{conjunction} operation.
+
+  \item[\OR] takes two inputs and outputs \True{} if \emph{at least one} of its
+    inputs are \True.  We denote \OR{} with the symbol \(∨\).
+    \[
+      ∨\colon\Set{\True,\False}²→\Set{\True,\False} \qquad
+      x∨y =
+      \begin{cases}
+        \False & x=y=\False \\
+        \True & \text{otherwise}
+      \end{cases}.
+    \]
+
+    \OR{} is also known as the \Term{disjunction} operation.
+
+  \end{description}
+
+  Notationally, \(∧\) takes higher precedence than \(∨\).  For instance, we
+  interpret \(x∨y∧z=x∨yz=x∨(y∧z)\), and so on.
+
+  \begin{aside}
+    I personally find the \(∧\) and \(∨\) symbols for \AND{} and \OR{} quite
+    easy to mix up with each other.  Here's a mnemonic that helps me remember
+    which is which:
+    \begin{itemize}[nosep]
+      \item \(∧\) looks like the \(\mathrm{\scriptstyle A}\) in \AND, so \(∧\)
+        means \AND…
+      \item \(∨\) is the other one.
+    \end{itemize}
+  \end{aside}
+
+\end{definition}
+
+\section{Algebraic properties of \(¬,∧,∨\)}
+
+What algebraic behaviors do \(¬\), \(∧\), and \(∨\) exhibit?
+
+\paragraph{Commutativity \& associativity} It follows straightforwardly from
+their definitions that they are both commutative and associative.  In general,
+for any \(x₁,x₂,\dotsc,xₙ∈\Set{\True,\False}\),
+\begin{align*}
+  ⋀ᵢ₌₁ⁿ xᵢ &= x₁∧\dotsb∧xₙ = \text{\True{} if and only if \emph{every one} of
+  \(x₁,\dotsc,xₙ\) is \True}, \\
+  ⋁ᵢ₌₁ⁿ xᵢ &= x₁∨\dotsb∨xₙ = \text{\True{} if and only if \emph{at least one} of \(x₁,\dotsc,xₙ\) is \True}.
+\end{align*}
+
+\paragraph{Distributivity} Another interesting, sometimes useful, property of
+\(∧\) and \(∨\) is that they distribute over each other.  For all
+\(x,y,z∈\Set{\True,\False}\),
+\[
+  x∧(y∨z) = (x∧y)∨(x∧z), \qquad
+  x∨(y∧z) = (x∨y)∧(x∨z).
+\]
+
+%\begin{aside}
+%  Here are two intuitive examples demonstrating this distributivity.
+%
+%  \begin{itemize}
+%
+%    \item Consider the statement, ``Alex and (either Blake or Charlie) ate
+%      pizza'', encoded as the boolean statement \(A(B∨C)\).  What are the
+%      possible combinations of pizza-eaters?
+%
+%      The answer: either Alex and Blake, or Alex and Charlie.  That is,
+%      \[
+%        A(B∨C) = AB∨AC.
+%      \]
+%
+%    \item Consider the statement, ``either Alex is a vegetarian, or Charlie and
+%      Blake both are''.
+%
+%  \end{itemize}
+%
+%
+%\end{aside}
+
+%\section{Computing arbitrary boolean functions}
+%
+%Any boolean function can be expressed in terms of the three operators
+%\(¬,∧,∨\).
+
+
+\subsection{DeMorgan's identities}
+
+Consider the statement, ``\(x,y\) are both \False''.  There are two equivalent
+ways to express this statement algebraically:
+\begin{itemize}[nosep]
+  \item \(x\) is \False, and \(y\) is \False: \(¬x∧¬y\).
+  \item Neither of \(x,y\) is \True: \(¬(x∨y)\).
+\end{itemize}
+The equivalence of these two expressions gives rise to an identity: for all
+\(x,y∈\Set{\True,\False}\),
+\[
+  ¬x∧¬y = ¬(x∨y).
+\]
+
+Similarly, the statement ``at least one of \(x,y\) are \False'' can be
+expressed in two ways,
+\begin{itemize}[nosep]
+  \item \(x\) is \False, or \(y\) is \False: \(¬x∨¬y\).
+  \item \(x,y\) are not both simultaneously \True: \(¬(x∧y)\).
+\end{itemize}
+This equivalence gives rise to a dual identity,
+\[
+  ¬x∨¬y = ¬(x∧y).
+\]
+
+A particularly useful consequence of these DeMorgan identities is that having
+all three logical operations is \emph{redundant}.  We didn't need to define all
+three as the basic building-block operations; having only \NOT/\OR{} or
+\NOT/\AND{} suffices, since the third operation can simply be constructed in
+terms of the other two:
+\[
+  x∧y = ¬(¬x∨¬y), \qquad
+  x∨y = ¬(¬x∧¬y).
+\]
+
+We make use of this convenience later in chapters TODO, when we try to embed
+boolean logic within other ``computer-like'' systems such as graph colorings
+and exact set coverings, etc.
+
+% The usefulness of this redundancy
+%
+% that if we were trying to simulate boolean logic within some other system (we
+% explore this idea later in more detail when we explore reductions from boolean
+% circuits in chapters TODO),
+%
+% universality of not/and and not/or
+
+% TODO miscellaneous identities?
+
+
+% TODO boolean logical operations can compute arbitrary boolean functions
+
+\section{Boolean circuits}
+
+Boolean \emph{expressions} such as \(¬x∧y\) are one way to specify computations
+on boolean variables.  \emph{Circuits} generalize expressions by essentially
+chaining together a pipeline of expressions, allowing intermediate results at
+each stage to be saved and reused.  To illustrate, consider the following
+example expression:
+\[
+  ϕ(x₁,x₂,y₁,y₂,z₁,z₂)
+  = (x₁∨¬x₂)(y₁∨¬y₂) ∨ (y₁∨¬y₂)(z₁∨¬z₂) ∨ (z₁∨¬z₂)(x₁∨¬x₂).
+\]
+Notice that each \((□₁∨¬□₂)\) term appears twice in the expression, making the
+expression inefficient to evaluate (each repeated term would be unnecessarily
+recomputed), not to mention cumbersome to specify.  A more elegant way to
+specify this computation is to store and reuse the intermediate terms:
+\begin{align*}
+  X &= x₁∨¬x₂, \\
+  Y &= y₁∨¬y₂, \\
+  Z &= z₁∨¬z₂, \\
+  ϕ &= XY∨YZ∨ZX.
+\end{align*}
+This chain of assignments may be visualized as a sort of data-processing
+``pipeline'', with intermediate inputs and outputs at each stage:
+\begin{center}
+  \begin{tikzpicture}
+
+
+
+  \end{tikzpicture}
+\end{center}
+
+
+
+%This chain of assignments \emph{essentially} encodes a boolean circuit,
+%represented diagrammatically as follows:
+%\begin{center}
+%  \begin{tikzpicture}[circuit logic US]
+%
+%    \matrix[gates]{
+%      \coordinate(x1); & & \node[or gate](ax){}; \\
+%      \coordinate(x2); & \node[not gate](nx){}; \\
+%      \coordinate(y1); & & \node[or gate](ay){}; \\
+%      \coordinate(y2); & \node[not gate](ny){}; \\
+%      \coordinate(z1); & & \node[or gate](az){}; \\
+%      \coordinate(z2); & \node[not gate](nz){}; \\
+%    };
+%
+%    \draw[wire]
+%    (x1)to(ax.input 1) (x2)to(nx.input) (nx.output)to(ax.input 2);
+%
+%
+%  \end{tikzpicture}
+%\end{center}
+
+
+
+of
+expressions
+
+encode a pipeline of expressions, allowing intermediate results to be saved and
+reused.
+
+are similar, with the additional
+feature that the computation happens in ``stages'', allowing intermediate
+results to be used.
+
+Boolean circuits consist of \emph{wires} and \emph{logic gates}.  Each
+wire carries a value in \(\Set{\True,\False}\).  There are three kinds of logic
+gates, each of which takes some wires as \emph{inputs} and sends to another
+wire an \emph{output} value \(\Set{\True,\False}\) as a function of its inputs.
+Below we define the three logic gates and show their diagram representations:
+\begin{itemize}
+
+  \item A \NOT{} gate takes one input and produces the opposite value as
+    output.
+
+    \begin{center}
+      \begin{tikzpicture}[circuit logic US]
+        \node[not gate](n){};
+        \draw[wire]
+          (n.input) -- +(-2em,0) node[left]{input}
+          (n.output) -- +(2em,0) node[right]{output};
+      \end{tikzpicture}
+    \end{center}
+    \[
+      \begin{array}{c|c}
+        \text{input} & \text{output} \\ \midrule
+        \False & \True \\
+        \True & \False
+      \end{array}
+    \]
+
+  \item An \AND{} gate takes two inputs and produces \True{} if and only if
+    \emph{both} of its inputs are \True.
+
+    \begin{center}
+      \begin{tikzpicture}[circuit logic US]
+        \node[and gate](a){};
+        \draw[wire]
+          (a.input 1) -- +(-2em,0) coordinate(a')
+          (a.input 2) -- +(-2em,0) coordinate(a'') ($(a')!1/2!(a'')$) node[left]{inputs}
+          (a.output) -- +(2em,0) node[right]{output};
+      \end{tikzpicture}
+    \end{center}
+    \[
+      \begin{array}{cc|c}
+        \multicolumn{2}{c|}{\text{inputs}} & \text{output} \\ \midrule
+        \False & \False & \False \\
+        \False & \True & \False \\
+        \True & \False & \False \\
+        \True & \True & \True
+      \end{array}
+    \]
+
+  \item An \OR{} gate takes two inputs and produces \True{} if and only if \emph{at
+    least one} of its inputs is \True.
+
+    \begin{center}
+      \begin{tikzpicture}[circuit logic US]
+        \node[or gate](o){};
+        \draw[wire]
+          (o.input 1) -- +(-2em,0) coordinate(o')
+          (o.input 2) -- +(-2em,0) coordinate(o'') ($(o')!1/2!(o'')$) node[left]{inputs}
+          (o.output) -- +(2em,0) node[right]{output};
+      \end{tikzpicture}
+    \end{center}
+    \[
+      \begin{array}{cc|c}
+        \multicolumn{2}{c|}{\text{inputs}} & \text{output} \\ \midrule
+        \False & \False & \False \\
+        \False & \True & \True \\
+        \True & \False & \True \\
+        \True & \True & \True
+      \end{array}
+    \]
+
+\end{itemize}
+
+
+blurb about stuff
+
+\begin{definition}{boolean circuits}{}
+
+  % TODO consider using switches and lightbulbs in formalism
+
+  A \Term{circuit} consists of a network of such wires and logic gates, with
+  the following requirements for well-defined-ness:
+  \begin{itemize}
+    \item Some wires are marked as circuit-level \Term{inputs}.  These wires
+      may not be the output wire of any gate within the circuit.
+    \item Every wire that isn't a circuit-level input must be the output wire
+      of exactly one logic gate.
+    \item There must be no (directed) cycles in the circuit.  That is, there
+      must not exist gates \(g₁,\dotsc,gₖ\) such that the output of \(g₁\) is
+      an input to \(g₂\), the output of \(g₂\) an input to \(g₃\), …, and the
+      output of \(gₖ\) an input to \(g₁\).
+    \item Finally, there is exactly one wire marked the \Term{output} of the
+      circuit.
+  \end{itemize}
+  Under these requirements, each combination of boolean values assigned to the
+  circuit-level input wires, uniquely determines the circuit-level output's
+  value. Therefore, a circuit with \(n\) inputs defines a function
+  \(\Set{\False,\True}ⁿ→\Set{\False,\True}\).
+
+  To simplify notation, we refer to each circuit and its boolean function by
+  the same name.  That is, if \(C\) refers to a circuit, we denote by
+  \(C(x₁,\dotsc,xₙ)\) the output computed by \(C\) on input values
+  \(x₁,\dotsc,xₙ\).  Occasionally, if we need to disambiguate between a circuit
+  and its function, we denote the circuit \(C\) and its function \(ϕ_C\).
+
+\end{definition}
+
+
+
+
+
+
+
+
+
+

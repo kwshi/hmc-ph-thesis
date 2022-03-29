@@ -128,7 +128,7 @@
 \newtcbtheorem[%
   crefname={definition}{definitions},%
   number within=chapter,
-]{definition}{Definition}{theorem=green!50!teal}{def}
+]{definition}{Definition}{theorem=green!50!teal, separator sign=.}{def}
 
 \newtcbtheorem[]{example}{Example}{theorem=orange}{ex}
 \newtcbtheorem[crefname={theorem}{theorems}]{theorem}{Theorem}{theorem=green!50!blue}{th}

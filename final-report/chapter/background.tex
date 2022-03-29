@@ -1,4 +1,4 @@
-\chapter{The basics}
+\chapter{Basic concepts in complexity theory}
 
 The fundamental question driving the study of computational complexity theory
 is, ``how difficult are certain problems for computers to solve?''  In order to
@@ -205,10 +205,62 @@ them to each other.  To illustrate, consider the following two problems:
   \(\Set{1,\dotsc,n}\), is it possible to complete the remaining cells so that
   each row and each column contains each number exactly once?
 
+  \begin{figure}[H]
+    \begin{center}
+      \begin{tikzpicture}[x=2em, y=2em]
+
+        \tikzset{
+          ls/.pic={
+            \draw
+            (0,0) rectangle (3,3)
+            foreach \i in {1,2} { (0,\i) -- +(3,0) (\i,0) -- +(0,3) };
+
+            \foreach \i/\j/\n in {0/2/2,0/1/1} {
+              \fill[opacity=1/8] (\i,\j) rectangle +(1,1);
+              \node at (\i+1/2,\j+1/2) {\(\n\)};
+            };
+          },
+          lss/.pic={
+            \pic{ls};
+            \node at (1/2,1/2) {\(3\)};
+            \foreach \i in {0,1,2} {
+              \pgfmathtruncatemacro\m{Mod(\i+#1-1,3)+1}
+              \pgfmathtruncatemacro\n{Mod(\i-#1-1,3)+1}
+              \node at (1+1/2,\i+1/2) {\(\m\)};
+              \node at (2+1/2,\i+1/2) {\(\n\)};
+            }
+          },
+        }
+
+        \matrix[column sep=2em] {
+          \pic{ls}; & \draw[->] (0,3/2) -- +(1,0); &
+          \pic{lss=-1}; & \pic{lss=1}; \\
+        };
+
+      \end{tikzpicture}
+
+      \caption{A \(3×3\) Latin Square instance and its two possible
+      completions.}
+
+      \label{fig:background.latin-square-example}
+
+    \end{center}
+  \end{figure}
+
 \item[\Problem{Graph Coloring}] Given a positive integer \(k\), and a graph
   with \(n>k\) vertices, some of which are assigned a number (a.k.a. ``color'')
   in \(\Set{1,\dotsc,k}\), is it possible to assign numbers to the remaining
   cells so that no neighboring vertices receive the same assignment?
+
+  \begin{figure}[H]
+    \begin{center}
+      \begin{tikzpicture}
+
+
+      \end{tikzpicture}
+    \end{center}
+  \end{figure}
+
 
   TODO diagram illustrations.  also i wish i could think of simpler-to-state
   examples with easy reductions, but nothing comes to mind, so this is the best
@@ -221,12 +273,40 @@ Is one of these problems ``easier'' than the other?  In a sense, yes: the
 Coloring} problem, where the vertices are arranged into a square grid, and all
 vertices in the same row or column neighbor each other.
 
-TODO diagram of an example conversion for 3x3 or 2x2
+\begin{figure}[H]
+  \begin{center}
+    \begin{tikzpicture}[x=3em, y=3em]
+
+      \tikzset{
+        vert/.style={circle, draw, minimum size=1em, inner sep=0pt, font=\small},
+        pre/.style={vert, fill, fill opacity=1/8, text opacity=1},
+        edge/.style={preaction={draw=white, line width=2pt}},
+      }
+
+      \node[pre](02) at (0,2) {\(2\)};
+      \node[pre](01) at (0,1) {\(1\)};
+      \coordinate[vert](00) at (0,0){};
+
+      \foreach \i in {1,2} { \foreach \j in {0,1,2} {
+          \coordinate[vert](\i\j) at (\i,\j);
+      } };
+
+      \draw[edge] foreach \i in {0,1,2} { (0\i) to[bend left] (2\i) };
+      \draw[edge] foreach \i in {0,1,2} { (\i0)--(\i1)--(\i2) (0\i)--(1\i)--(2\i) };
+      \draw[edge] foreach \i in {0,1,2} { (\i0) to[bend left] (\i2) };
+
+    \end{tikzpicture}
+
+    \caption{The Latin Square from \cref{fig:background.latin-square-example},
+    represented as a graph.}
+
+  \end{center}
+\end{figure}
 
 More precisely, this argument describes a way to convert any \Problem{Latin
 Square} instance (a partially-filled \(n×n\) grid) into a \Problem{Graph
 Coloring} instance (a partially-colored graph with \(n²\) vertices) with the
-same yes/no answer.  We formalize this idea as follows:
+same yes/no answer.  Formally, we call this conversion a \Term{reduction}:
 
 \begin{definition}{reductions}{}
 
@@ -238,24 +318,29 @@ same yes/no answer.  We formalize this idea as follows:
   \(Π₁\) to problems-inputs of \(Π₂\) such that the yes/no answers on the
   original and converted inputs exactly match.
 
-  \begin{aside}
-    TODO remark this is many-one/karp reduction, not to be confused with
-  \end{aside}
+  %\begin{aside}
+  %  %This definition is sometimes called \emph{Karp reductions} or
+  %  %\emph{many-one reductions}, in order to distinguish it from other notions
+  %  %of reduction such as \emph{Turing/Cook reductions} and \emph{truth-table
+  %  %reductions}, which are related but different.
+
+  %  %For our purposes, Karp reductions are the simplest to describe and
+  %\end{aside}
 
 \end{definition}
 
-In the above example, the reduction from \Problem{Latin Square} to
-\Problem{Graph Coloring} captures the idea that \Problem{Latin Square} is
-easier than \Problem{Graph Coloring} in the following sense.  Suppose that we
-already know how to solve \Problem{Graph Coloring}.  Then, we automatically
-also know how to solve \Problem{Latin Square}: given an arbitrary
+Revisiting the above example, the existence of a reduction from \Problem{Latin
+Square} to \Problem{Graph Coloring} captures the idea that \Problem{Latin
+Square} is easier than \Problem{Graph Coloring} in the following sense.
+Suppose that we already know how to solve \Problem{Graph Coloring}.  Then, we
+automatically also know how to solve \Problem{Latin Square}: given an arbitrary
 \Problem{Latin Square} input, apply the reduction to convert it into a
 \Problem{Graph Coloring} input, feed that input into the known \Problem{Graph
 Coloring} solver, then directly return its answer.
 
-However, in order to honestly capture the idea of \emph{easiness}, we must also
-account for computation time.  Namely, we stipulate that the reduction itself
-must be efficient---formally, that it runs in polynomial time.
+However, in order to authentically capture the idea of \emph{easiness}, we must
+also account for computation time.  Namely, we stipulate that the reduction
+itself must be efficient---formally, that it runs in polynomial time.
 
 \begin{definition}{polynomial-time reducibility}{}
 
@@ -270,6 +355,46 @@ must be efficient---formally, that it runs in polynomial time.
 
 \end{definition}
 
+Finally, we introduce some terminology to describe how one problem compares to
+a \emph{class} of problems:
+
+\begin{definition}{hardness and completeness}{}
+
+  Let \(Π\) be a decision problem, and let \(\C\) be a class of decision
+  problems.
+
+  We say \(Π\) is \Term{hard} for \(\C\), or \Term{\C-hard}, if every
+  problem in \C{} is polynomial-time-reducible to \(Π\).
+
+  We say \(Π\) is \Term{complete} for \C, or \Term{\C-complete}, if \(Π\) is
+  \C-hard and \(Π∈\C\).
+
+  \begin{aside}
+    Following the intuition that reducibility (\(≤\)) defines a (partial)
+    ordering of problems by difficulty, \C-hard problems are just those that
+    are (non-strictly) harder than all problems in \C, and \C-complete problems
+    are just the \emph{maximal/hardest} problems within \C.
+  \end{aside}
+
+\end{definition}
+
+Complete problems are especially useful, first and foremost, because they are
+tangible.  They have accessible, interesting, and often real-world-applicable
+examples that help us understand complexity classes in concrete, intuitive
+terms, rather than pure abstractions.  At the same time, complete problems are
+also very general.  As \emph{tight} difficulty upper bounds of a complexity
+class, they are perfect characterizations of these classes; determining the
+exact difficulty of a complete problem automatically essentially determines the
+difficulty of the entire complexity class.
+
+%By studying complete problems for a spectrum of complexity classes, we gain
+%wholesale but vivid insight
+
+% TODO i feel like i want to have a conclusion punchline here
+
+%Now, it is time to study a collection of complete problems
+%
+%satisfiability games.
 
 
 
