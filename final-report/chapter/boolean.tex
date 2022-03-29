@@ -18,9 +18,9 @@ circuits---because, essentially, they literally are boolean circuits.
 
 % TODO: this observation underlies importance of boolean puzzles/games, etc.; how this comes up later, blah
 
-In this short chapter, we outline some basic definitions and facts in
+In this short chapter, we outline some basic definitions and facts about
 boolean-logical operations and circuits, along with some notational conventions
-we use throughout the rest of this thesis.
+used throughout the rest of this thesis.
 
 \begin{definition}{basic boolean operations: \NOT, \AND, \OR}{}
 
@@ -198,175 +198,173 @@ each stage to be saved and reused.  To illustrate, consider the following
 example expression:
 \[
   ϕ(x₁,x₂,y₁,y₂,z₁,z₂)
-  = (x₁∨¬x₂)(y₁∨¬y₂) ∨ (y₁∨¬y₂)(z₁∨¬z₂) ∨ (z₁∨¬z₂)(x₁∨¬x₂).
+  = (x₁∨x₂)(y₁∨y₂) ∨ (y₁∨y₂)(z₁∨z₂) ∨ (z₁∨z₂)(x₁∨x₂).
 \]
-Notice that each \((□₁∨¬□₂)\) term appears twice in the expression, making the
+Notice that each \((□₁∨□₂)\) term appears twice in the expression, making the
 expression inefficient to evaluate (each repeated term would be unnecessarily
 recomputed), not to mention cumbersome to specify.  A more elegant way to
 specify this computation is to store and reuse the intermediate terms:
 \begin{align*}
-  X &= x₁∨¬x₂, \\
-  Y &= y₁∨¬y₂, \\
-  Z &= z₁∨¬z₂, \\
+  X &= x₁∨x₂, \\
+  Y &= y₁∨y₂, \\
+  Z &= z₁∨z₂, \\
   ϕ &= XY∨YZ∨ZX.
 \end{align*}
 This chain of assignments may be visualized as a sort of data-processing
 ``pipeline'', with intermediate inputs and outputs at each stage:
-\begin{center}
-  \begin{tikzpicture}
 
+{
 
+  \tikzset{
+    input/.style={
+      circle,
+      fill,
+      inner sep=0pt,
+      minimum size=3pt,
+    },
+    gate/.style={
+      draw,
+      rounded corners=1em/8,
+    },
+    pipe/.style={
+      rounded corners=1em/4,
+      to path={
+        (\tikztostart)
+        -- ($ (\tikztostart -| \tikztotarget)!3em!(\tikztostart) $)
+        -- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
+        -- (\tikztotarget)
+      },
+      ->,
+    },
+    over/.style={
+      preaction={
+        draw=white,
+        line width=2pt,
+      },
+    },
+    gates/.style={
+      row sep=2em, column sep=6em, matrix of math nodes, nodes=gate,
+    },
+    wires/.pic={
 
-  \end{tikzpicture}
-\end{center}
+      \foreach \var in {x,y,z} {
+        \coordinate (\var1) at ($ (\var.west) + (-4em,-2em/3) $);
+        \coordinate (\var2) at ($ (\var.west) + (-4em,2em/3) $);
+        \draw[pipe] (\var1) node[left]{\(\var₁\)} to (\var.west);
+        \draw[pipe] (\var2) node[left]{\(\var₂\)} to (\var.west);
+        \node[above right] at (\var.east) {\(\MakeUppercase{\var}=\var₁∨\var₂\)};
+      }
+      \draw[pipe] (x.east) to (xy.west);
+      \draw[pipe] (y.east) to (xy.west);
+      \draw[pipe] (y.east) to (yz.west);
+      \draw[pipe] (z.east) to (yz.west);
+      \draw[pipe] (z.east) to (zx.west);
+      \draw[pipe, over] (x.east) to (zx.west);
 
+      \foreach \gate in {xy,yz,zx} {
+        \node[above right] at (\gate.east) {\(\MakeUppercase{\gate}\)};
+      }
+      
+    },
+  }
 
+  \begin{center}
+    \begin{tikzpicture}
+      \matrix[gates, ampersand replacement=\&]{
+        |(x)|∨ \&[2em] |(xy)|∧ \\
+        |(y)|∨ \& |(yz)|∧ \& |(out)|∨ \\
+        |(z)|∨ \& |(zx)|∧ \\
+      };
 
-%This chain of assignments \emph{essentially} encodes a boolean circuit,
-%represented diagrammatically as follows:
-%\begin{center}
-%  \begin{tikzpicture}[circuit logic US]
-%
-%    \matrix[gates]{
-%      \coordinate(x1); & & \node[or gate](ax){}; \\
-%      \coordinate(x2); & \node[not gate](nx){}; \\
-%      \coordinate(y1); & & \node[or gate](ay){}; \\
-%      \coordinate(y2); & \node[not gate](ny){}; \\
-%      \coordinate(z1); & & \node[or gate](az){}; \\
-%      \coordinate(z2); & \node[not gate](nz){}; \\
-%    };
-%
-%    \draw[wire]
-%    (x1)to(ax.input 1) (x2)to(nx.input) (nx.output)to(ax.input 2);
-%
-%
-%  \end{tikzpicture}
-%\end{center}
+      \pic{wires};
+      \foreach \gate in {xy,yz,zx} {
+        \draw[pipe] (\gate.east) to (out.west);
+      }
+      \draw[->] (out.east) -- +(2em,0) node[right]{\(ϕ=XY∨YZ∨ZX\)};
+    \end{tikzpicture}
+  \end{center}
 
+  This is \emph{essentially} a boolean circuit.  More precisely, in a boolean
+  circuit, each variable (e.g., \(x₂\) or \(Y\)) is represented as a \emph{wire}
+  carrying a boolean value, and each ``stage'' of computation, called a
+  \emph{logic gate}, computes an individual boolean operation.
 
+  For simplicity's sake, we also require that each \AND/\OR{} gate operates on
+  exactly two inputs.  Thus the last \OR{} operation \(XY∨YZ∨ZX\) should
+  actually be associatively grouped as \((XY∨YZ)∨ZX\).  The corrected circuit
+  is shown below:
 
-of
-expressions
+  \begin{center}
+    \begin{tikzpicture}
+      \matrix[gates, ampersand replacement=\&]{
+        |(x)|∨ \&[2em] |(xy)|∧ \\
+        |(y)|∨ \& |(yz)|∧ \&\& |(or')|∨ \\
+        |(z)|∨ \& |(zx)|∧ \\
+      };
 
-encode a pipeline of expressions, allowing intermediate results to be saved and
-reused.
+      \node[gate](or) at ($ (xy)!1/2!(or') $){\(∨\)};
 
-are similar, with the additional
-feature that the computation happens in ``stages'', allowing intermediate
-results to be used.
+      \pic{wires};
+      \draw[pipe] (xy.east) to (or.west);
+      \draw[pipe] (yz.east) to (or.west);
+      \draw[pipe] (or.east) to (or'.west);
+      \draw[pipe] (zx.east) to (or'.west);
+      \node[above right] at (or.east) {\(XY∨YZ\)};
+      \draw[->] (or'.east) -- +(2em,0) node[right]{\(ϕ=(XY∨YZ)∨ZX\)};
+      
+    \end{tikzpicture}
+  \end{center}
 
-Boolean circuits consist of \emph{wires} and \emph{logic gates}.  Each
-wire carries a value in \(\Set{\True,\False}\).  There are three kinds of logic
-gates, each of which takes some wires as \emph{inputs} and sends to another
-wire an \emph{output} value \(\Set{\True,\False}\) as a function of its inputs.
-Below we define the three logic gates and show their diagram representations:
-\begin{itemize}
+}
 
-  \item A \NOT{} gate takes one input and produces the opposite value as
-    output.
+%Lastly, we use the algebraic symbols \(∨,∧\) to denote the logic gates in the
+%circuit diagram above
 
-    \begin{center}
-      \begin{tikzpicture}[circuit logic US]
-        \node[not gate](n){};
-        \draw[wire]
-          (n.input) -- +(-2em,0) node[left]{input}
-          (n.output) -- +(2em,0) node[right]{output};
-      \end{tikzpicture}
-    \end{center}
-    \[
-      \begin{array}{c|c}
-        \text{input} & \text{output} \\ \midrule
-        \False & \True \\
-        \True & \False
-      \end{array}
-    \]
+Below, we give a precise definition of boolean circuits and introduce some
+relevant terminology.
 
-  \item An \AND{} gate takes two inputs and produces \True{} if and only if
-    \emph{both} of its inputs are \True.
+\begin{definition}{boolean circuits, logic gates}{}
+  
+  TODO precise definition
 
-    \begin{center}
-      \begin{tikzpicture}[circuit logic US]
-        \node[and gate](a){};
-        \draw[wire]
-          (a.input 1) -- +(-2em,0) coordinate(a')
-          (a.input 2) -- +(-2em,0) coordinate(a'') ($(a')!1/2!(a'')$) node[left]{inputs}
-          (a.output) -- +(2em,0) node[right]{output};
-      \end{tikzpicture}
-    \end{center}
-    \[
-      \begin{array}{cc|c}
-        \multicolumn{2}{c|}{\text{inputs}} & \text{output} \\ \midrule
-        \False & \False & \False \\
-        \False & \True & \False \\
-        \True & \False & \False \\
-        \True & \True & \True
-      \end{array}
-    \]
-
-  \item An \OR{} gate takes two inputs and produces \True{} if and only if \emph{at
-    least one} of its inputs is \True.
-
-    \begin{center}
-      \begin{tikzpicture}[circuit logic US]
-        \node[or gate](o){};
-        \draw[wire]
-          (o.input 1) -- +(-2em,0) coordinate(o')
-          (o.input 2) -- +(-2em,0) coordinate(o'') ($(o')!1/2!(o'')$) node[left]{inputs}
-          (o.output) -- +(2em,0) node[right]{output};
-      \end{tikzpicture}
-    \end{center}
-    \[
-      \begin{array}{cc|c}
-        \multicolumn{2}{c|}{\text{inputs}} & \text{output} \\ \midrule
-        \False & \False & \False \\
-        \False & \True & \True \\
-        \True & \False & \True \\
-        \True & \True & \True
-      \end{array}
-    \]
-
-\end{itemize}
-
-
-blurb about stuff
-
-\begin{definition}{boolean circuits}{}
-
-  % TODO consider using switches and lightbulbs in formalism
-
-  A \Term{circuit} consists of a network of such wires and logic gates, with
-  the following requirements for well-defined-ness:
-  \begin{itemize}
-    \item Some wires are marked as circuit-level \Term{inputs}.  These wires
-      may not be the output wire of any gate within the circuit.
-    \item Every wire that isn't a circuit-level input must be the output wire
-      of exactly one logic gate.
-    \item There must be no (directed) cycles in the circuit.  That is, there
-      must not exist gates \(g₁,\dotsc,gₖ\) such that the output of \(g₁\) is
-      an input to \(g₂\), the output of \(g₂\) an input to \(g₃\), …, and the
-      output of \(gₖ\) an input to \(g₁\).
-    \item Finally, there is exactly one wire marked the \Term{output} of the
-      circuit.
-  \end{itemize}
-  Under these requirements, each combination of boolean values assigned to the
-  circuit-level input wires, uniquely determines the circuit-level output's
-  value. Therefore, a circuit with \(n\) inputs defines a function
-  \(\Set{\False,\True}ⁿ→\Set{\False,\True}\).
-
-  To simplify notation, we refer to each circuit and its boolean function by
-  the same name.  That is, if \(C\) refers to a circuit, we denote by
-  \(C(x₁,\dotsc,xₙ)\) the output computed by \(C\) on input values
-  \(x₁,\dotsc,xₙ\).  Occasionally, if we need to disambiguate between a circuit
-  and its function, we denote the circuit \(C\) and its function \(ϕ_C\).
+  TODO common logic gate symbols
 
 \end{definition}
 
+% TODO blurb about circuits being universal in computers
 
+% TODO precise definitions, gate symbols, etc.
 
-
-
-
-
-
-
+%We give a precise definition of 
+%
+%\begin{definition}{boolean circuits}{}
+%
+%  % TODO consider using switches and lightbulbs in formalism
+%
+%  A \Term{circuit} consists of a network of such wires and logic gates, with
+%  the following requirements for well-defined-ness:
+%  \begin{itemize}
+%    \item Some wires are marked as circuit-level \Term{inputs}.  These wires
+%      may not be the output wire of any gate within the circuit.
+%    \item Every wire that isn't a circuit-level input must be the output wire
+%      of exactly one logic gate.
+%    \item There must be no (directed) cycles in the circuit.  That is, there
+%      must not exist gates \(g₁,\dotsc,gₖ\) such that the output of \(g₁\) is
+%      an input to \(g₂\), the output of \(g₂\) an input to \(g₃\), …, and the
+%      output of \(gₖ\) an input to \(g₁\).
+%    \item Finally, there is exactly one wire marked the \Term{output} of the
+%      circuit.
+%  \end{itemize}
+%  Under these requirements, each combination of boolean values assigned to the
+%  circuit-level input wires, uniquely determines the circuit-level output's
+%  value. Therefore, a circuit with \(n\) inputs defines a function
+%  \(\Set{\False,\True}ⁿ→\Set{\False,\True}\).
+%
+%  To simplify notation, we refer to each circuit and its boolean function by
+%  the same name.  That is, if \(C\) refers to a circuit, we denote by
+%  \(C(x₁,\dotsc,xₙ)\) the output computed by \(C\) on input values
+%  \(x₁,\dotsc,xₙ\).  Occasionally, if we need to disambiguate between a circuit
+%  and its function, we denote the circuit \(C\) and its function \(ϕ_C\).
+%
+%\end{definition}
 
