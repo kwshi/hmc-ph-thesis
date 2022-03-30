@@ -130,6 +130,8 @@
   number within=chapter,
 ]{definition}{Definition}{theorem=green!50!teal, separator sign=.}{def}
 
+\newtcbtheorem[crefname={algorithm}{algorithms},number within=chapter]{algorithm}{Algorithm}{theorem=gray}{alg}
+
 \newtcbtheorem[]{example}{Example}{theorem=orange}{ex}
 \newtcbtheorem[crefname={theorem}{theorems}]{theorem}{Theorem}{theorem=green!50!blue}{th}
 \newtcbtheorem[crefname={lemma}{lemmas}]{lemma}{Lemma}{theorem=teal}{lem}

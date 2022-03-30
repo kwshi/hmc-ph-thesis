@@ -154,8 +154,8 @@ this idea in the definition of the complexity class \P{} below.
   Let \(A\) be an algorithm computing some (decision) problem (i.e., it takes a
   binary string as input and returns ``yes'' or ``no'').  We say \(A\) runs in
   \Term{polynomial time} if there exists some polynomial \(p\) such that, on
-  any input \(X∈\Set{0,1}^*\), the algorithm \(A\) terminates in \(≤p(\Abs X)\)
-  steps.
+  any input \(X∈\Set{0,1}^*\), the algorithm \(A\) \emph{always} terminates in
+  \(≤p(\Abs X)\) steps.
 
   The complexity class \P{} is the set of (decision) problems correctly
   solvable in polynomial time.
@@ -176,6 +176,14 @@ this rule, slow, but quite efficient \emph{in practice} (e.g., the simplex
 algorithm for linear programming).  Nevertheless, this delineation remains an
 extremely useful (and arguably elegant) starting point for the classification
 of problems.
+
+\subsection{How to tell when an algorithm is polynomial-time}
+
+TODO: examples of \P{} problems, some basic facts and intuition about closure
+of polynomials under multiplication, composition, etc.
+
+ALSO TODO for earlier: may need to briefly remark on what's allowed as
+algorithm, i.e. determinism, no randomness, etc.
 
 % TODO examples of 𝐏 problems, and perhaps discuss papadimitriou theorem 2.5
 % again with more precision?

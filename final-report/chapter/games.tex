@@ -1,4 +1,4 @@
-\chapter{Boolean circuits, puzzles, and games}
+\chapter{Boolean circuit puzzles and games}
 
 In this chapter, we begin to explore landscape of puzzle-and-game complexity
 classes---specifically, the \emph{polynomial hierarchy}---through a series of
@@ -6,10 +6,139 @@ games played on boolean circuits.
 
 \section{The \Problem{Circuit Value} problem}
 
-We begin our exploration at the complexity class \P---recall, problems solvable
-in polynomial-time, which we informally consider ``easy''.
+To set the stage, we start with an ``easy'' problem, known as the
+\Problem{Circuit Value} problem, or \Problem{CircVal} for short:
+
+\begin{definition}{\(\Problem{Circuit Value}=\Problem{CircVal}\)}{}
+
+  Let \(C\) be a given boolean circuit with all input wires/variables
+  specified. What is the final output value of \(C\)? As a decision problem:
+  \(C∈\Problem{Circuit Value}\) if it outputs \True, and \(C∉\Problem{Circuit
+  Value}\) if it outputs \False.
+
+\end{definition}
+
+It is well-known that \(\Problem{Circuit Value}∈\P\) (i.e., it is actually
+``easy'').  We give one version of a proof below.
+
+\begin{proof}
+  We give a polynomial-time algorithm solving \Problem{Circuit Value} below.
+  (Note that this is not the most efficient algorithm doing so; we choose it
+  here only for its simplicity.)
+
+  \begin{algorithm}{}{}
+    \begin{algorithmic}
+      \Given{\(C\), a boolean circuit with all inputs fully specified}
+      \LComment{Call a wire \emph{finished} if it has been assigned a boolean
+        value. Initially, all the input wires are finished, since their values
+      were given, and all intermediate and output wires are unfinished.}%
+      \While{final output wire is not finished}%
+      \ForEach{unfinished logic gate \(g\) in \(C\)}%
+      \If{all input wires of \(g\) are finished}%
+      \State{compute and assign the output value of \(g\) and to its output wire}%
+      \EndIf%
+      \EndFor%
+      \EndWhile%
+      \State \Return value assigned to final output wire%
+    \end{algorithmic}
+  \end{algorithm}
+
+  We argue that this algorithm terminates in polynomial time.  On each
+  iteration of the ``while'' loop, at least one logic gate is guaranteed to
+  have all of its inputs done, since there are no cyclic dependencies in the
+  circuit.  Thus each iteration of the ``while'' loop finishes at least one
+  additional wire.  Therefore, the number of ``while'' iterations is at most
+  the number of wires in the circuit, and the work done within each iteration
+  is also polynomial with respect to the size of the circuit, so the overall
+  algorithm terminates in polynomial time.
+\end{proof}
+
+To kickstart the puzzles-and-games perspective, we think of \Problem{Circuit
+Value}---and actually, every problem in \P---as a game with \(0\) turns: the
+player does nothing, and an (efficient) algorithm automatically decides whether
+the player wins or loses.
+
+This seems like a silly (arguably boring) idea.  But, as we see in the next few
+sections, this approach allows us to generalize \Problem{Circuit Value} into
+very powerful puzzles and games.
 
 \section{The \Problem{Circuit Satisfiability} puzzle}
+
+By \emph{puzzle}, we really mean \(1\)-turn games: games in which the player
+makes a sequence of ``moves'' on a given ``game board'', and an (efficient)
+algorithm then determines whether the player's moves constitute a win.
+Formulated as decision problems, the computational puzzle is the yes/no
+question:
+\begin{center}
+  Does the player have a winning strategy?
+\end{center}
+
+For example, consider the puzzle-ification of \Problem{CircVal}, where the
+circuit's inputs are no longer specified but rather chosen by the player (this
+is the ``move'' made by the player).  In this sense, to say that the player has
+a winning strategy means that there exists a winning move the player can
+make---that is, there exists a combination of inputs causing the circuit to
+output \True.
+
+Call this problem \Problem{Circuit Satisfiability}, or \Problem{CircSat} for
+short:
+
+\begin{definition}{\(\Problem{Circuit Satisfiability}=\Problem{CircSat}\)}{}
+
+  Let \(C\), a boolean circuit, be given. Does there exist a combination of
+  boolean input values to \(C\) causing it to output \True?
+
+\end{definition}
+
+Briefly: how (computationally) difficult is \Problem{CircSat}?  As it turns
+out, nobody knows for sure, but it seems \emph{quite} difficult.  Loosely
+speaking, all known algorithms for solving \Problem{CircSat} amount to brute
+force with optimizations that enhance performance on ``practical'', real-world
+inputs but do not save them from performing poorly in the worst case.
+Tentatively, then, most computer scientists suspect that
+\(\Problem{CircSat}∉\P\)---i.e., there is no polynomial-time solution for
+\Problem{CircSat}.
+
+Anyway, back to puzzles.  \Problem{CircSat} is one example of how a \(0\)-turn
+game such as \Problem{CircVal} may be generalized into a \(1\)-turn game---a
+puzzle.  How can we do this in general?
+
+In the example of \Problem{CircSat}, we do this by making the player supplement
+the input to the the \(0\)-turn analog, \Problem{CircVal}.  This approach is
+readily generalized.  Given some input \(X\) (the ``game board''), construct a
+\(1\)-turn game in which the player specifies a supplementary input \(Y\);
+victory is decided by whether the pair of inputs \((X,Y)\) meets the \(0\)-turn
+winning condition.  As before, the decision problem asks whether the player can
+win---i.e., whether there exists \(Y\) such that the player wins.
+
+The complexity class of problems constructed in this manner is called \NP:
+
+\begin{definition}{\NP}{}
+
+  \NP{} is the class of decision problems \(Π\) (the puzzle problem) for which
+  there exists another problem \(Π'∈\P\) (the \(0\)-turn analog) such that, for
+  each input \(X∈\Set{\True,\False}^*\), \(X∈Π\) if and only if there exists
+  \(Y∈\Set{\True,\False}^*\) such that \((X,Y)∈Π'\).
+
+  TODO say \& comment that \(Y\) needs to be polynomially bounded by length of
+  \(X\)
+
+\end{definition}
+
+
+
+% SURVEY on pnp opinion: https://dl.acm.org/doi/10.1145/564585.564599
+% https://www.researchgate.net/publication/292393040_The_PNP_poll
+
+% TODO maybe cite an up-to-date result about how good the bound is, but whatever
+
+% useful citation about best-known SAT bounds: https://cstheory.stackexchange.com/questions/1060/best-upper-bounds-on-sat
+
+% https://www.sciencedirect.com/science/article/pii/S0304397501001748?via%3Dihub
+% 3sat solvable in 1.5^n?
+
+
+
 
 description of circuit satisfiability puzzle, guess-and-check solution
 
