@@ -121,6 +121,8 @@
 \usepackage{complexity}
 \usepackage{ks-stuff}
 
+%\tcbuselibrary{hooks}
+
 %\declaretheorem[style=theorem, numberwithin=chapter]{theorem}
 %\declaretheorem[style=theorem, numberwithin=chapter]{definition}
 %\declaretheorem[style=theorem, numberwithin=chapter]{conjecture}
@@ -133,6 +135,26 @@
 \newtcbtheorem[crefname={algorithm}{algorithms},number within=chapter]{algorithm}{Algorithm}{theorem=gray}{alg}
 
 \newtcbtheorem[]{example}{Example}{theorem=orange}{ex}
-\newtcbtheorem[crefname={theorem}{theorems}]{theorem}{Theorem}{theorem=green!50!blue}{th}
+
+\newtcbtheorem[%
+  crefname={theorem}{theorems},%
+  number within=chapter,%
+]{theorem}{Theorem}{theorem=green!50!blue}{th}
+
 \newtcbtheorem[crefname={lemma}{lemmas}]{lemma}{Lemma}{theorem=teal}{lem}
+
+\newtcbtheorem[%
+  crefname={corollary}{corollaries},%
+  number within=chapter,%
+]{corollary}{Corollary}{theorem=green!50!blue}{cor}
+
+\newtcbtheorem[
+  crefname={problem}{problems},
+  number within=chapter,
+]{problem}{Decision problem}{
+  theorem=orange,
+  before upper=Given:,
+  before lower=Return ``yes'' if:,
+}{pr}
+%\newenvironment{problem}[2]{\begin{problembox}{#1}{#2}}{\end{problembox}}
 

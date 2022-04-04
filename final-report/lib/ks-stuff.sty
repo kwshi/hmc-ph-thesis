@@ -34,6 +34,7 @@
 \setlist[enumerate, 1]{
   label=[\arabic*],
 }
+\setlistdepth{10}
 
 
 \RequirePackage{amsthm}
@@ -125,22 +126,30 @@
   left=2em,
   parbox=false,
 }
-\newtcolorbox{nested}{
-  breakable,
-  parbox=false,
-  % TODO fix spacing, maybe try `before skip balanced`, requires newer
-  % tcolorbox.  or use a list with empty labels instead!
-  before skip=1em/2,
-  sharp corners,
-  opacityback=0,
-  opacityframe=0,
-  boxsep=0pt,
-  boxrule=0pt,
-  right=0em,
-  top=0em,
-  bottom=0em,
-  left=2em,
-}
+
+\newenvironment{nest}{%
+  \begin{list}{}{%
+      \setlength{\parskip}{0pt}%
+      \setlength{\leftmargin}{1.5em}%
+    }\item%
+}{\end{list}}
+%\newtcolorbox{nested}{
+%  breakable,
+%  parbox=false,
+%  % TODO fix spacing, maybe try `before skip balanced`, requires newer
+%  % tcolorbox.  or use a list with empty labels instead!
+%  %before=\\,
+%  sharp corners,
+%  opacityback=0,
+%  opacityframe=0,
+%  boxsep=0pt,
+%  boxrule=0pt,
+%  right=0em,
+%  top=1em/2,
+%  %top=0pt,
+%  bottom=0pt,
+%  left=2em,
+%}
 \newtcolorbox{aside}{
   %shade box=black,
   before upper=\tikz{\node[inner sep=0pt, opacity=1/2]{\scshape\bfseries Aside}}\quad,

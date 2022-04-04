@@ -1,4 +1,5 @@
 \chapter{A primer on boolean logic}
+\label{ch:boolean}
 
 Mathematical logic is founded on true-or-false statements---statements such as:
 \begin{itemize}[nosep]
@@ -264,7 +265,7 @@ This chain of assignments may be visualized as a sort of data-processing
       \foreach \gate in {xy,yz,zx} {
         \node[above right] at (\gate.east) {\(\MakeUppercase{\gate}\)};
       }
-      
+
     },
   }
 
@@ -311,7 +312,7 @@ This chain of assignments may be visualized as a sort of data-processing
       \draw[pipe] (zx.east) to (or'.west);
       \node[above right] at (or.east) {\(XY∨YZ\)};
       \draw[->] (or'.east) -- +(2em,0) node[right]{\(ϕ=(XY∨YZ)∨ZX\)};
-      
+
     \end{tikzpicture}
   \end{center}
 
@@ -324,7 +325,7 @@ Below, we give a precise definition of boolean circuits and introduce some
 relevant terminology.
 
 \begin{definition}{boolean circuits, logic gates}{}
-  
+
   TODO precise definition
 
   TODO common logic gate symbols
@@ -335,7 +336,7 @@ relevant terminology.
 
 % TODO precise definitions, gate symbols, etc.
 
-%We give a precise definition of 
+%We give a precise definition of
 %
 %\begin{definition}{boolean circuits}{}
 %

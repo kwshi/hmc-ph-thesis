@@ -4,9 +4,9 @@ In this chapter, we begin to explore landscape of puzzle-and-game complexity
 classes---specifically, the \emph{polynomial hierarchy}---through a series of
 games played on boolean circuits.
 
-\section{The \Problem{Circuit Value} problem}
+\section{The \Problem{Circuit Value} problem, and \P}
 
-To set the stage, we start with an ``easy'' problem, known as the
+To set the stage, we start with a relatively ``easy'' problem, known as the
 \Problem{Circuit Value} problem, or \Problem{CircVal} for short:
 
 \begin{definition}{\(\Problem{Circuit Value}=\Problem{CircVal}\)}{}
@@ -62,9 +62,9 @@ This seems like a silly (arguably boring) idea.  But, as we see in the next few
 sections, this approach allows us to generalize \Problem{Circuit Value} into
 very powerful puzzles and games.
 
-\section{The \Problem{Circuit Satisfiability} puzzle}
+\section{The \Problem{Circuit Satisfiability} puzzle, and \NP}
 
-By \emph{puzzle}, we really mean \(1\)-turn games: games in which the player
+By \emph{puzzle}, we really mean \(1\)-turn games: games in which a player
 makes a sequence of ``moves'' on a given ``game board'', and an (efficient)
 algorithm then determines whether the player's moves constitute a win.
 Formulated as decision problems, the computational puzzle is the yes/no
@@ -73,15 +73,13 @@ question:
   Does the player have a winning strategy?
 \end{center}
 
-For example, consider the puzzle-ification of \Problem{CircVal}, where the
+For example, consider a puzzle-ification of \Problem{CircVal}, where the
 circuit's inputs are no longer specified but rather chosen by the player (this
-is the ``move'' made by the player).  In this sense, to say that the player has
-a winning strategy means that there exists a winning move the player can
-make---that is, there exists a combination of inputs causing the circuit to
-output \True.
-
-Call this problem \Problem{Circuit Satisfiability}, or \Problem{CircSat} for
-short:
+is the ``move'' made by the player).  Recall that the player wins if the
+circuit's output is \True.  Thus, when we allow the player to choose inputs, a
+winning strategy means a combination of inputs causing the circuit to output
+\True.  The decision problem asking whether such a winning move exists is
+called \Problem{Circuit Satisfiability}, or \Problem{CircSat} for short:
 
 \begin{definition}{\(\Problem{Circuit Satisfiability}=\Problem{CircSat}\)}{}
 
@@ -89,6 +87,16 @@ short:
   boolean input values to \(C\) causing it to output \True?
 
 \end{definition}
+
+\begin{problem}{\Problem{Circuit Satisfiability} / \CircSat}{circ-sat}
+
+  \(C\), a boolean circuit with \(n\) inputs
+
+  \tcblower
+
+  there exists \(X∈\TF[n]\) so that \(C(X)=\True\)
+
+\end{problem}
 
 Briefly: how (computationally) difficult is \Problem{CircSat}?  As it turns
 out, nobody knows for sure, but it seems \emph{quite} difficult.  Loosely
@@ -98,6 +106,18 @@ inputs but do not save them from performing poorly in the worst case.
 Tentatively, then, most computer scientists suspect that
 \(\Problem{CircSat}∉\P\)---i.e., there is no polynomial-time solution for
 \Problem{CircSat}.
+
+% SURVEY on pnp opinion: https://dl.acm.org/doi/10.1145/564585.564599
+% https://www.researchgate.net/publication/292393040_The_PNP_poll
+
+% TODO maybe cite an up-to-date result about how good the bound is, but whatever
+
+% useful citation about best-known SAT bounds: https://cstheory.stackexchange.com/questions/1060/best-upper-bounds-on-sat
+
+% https://www.sciencedirect.com/science/article/pii/S0304397501001748?via%3Dihub
+% 3sat solvable in 1.5^n?
+
+
 
 Anyway, back to puzzles.  \Problem{CircSat} is one example of how a \(0\)-turn
 game such as \Problem{CircVal} may be generalized into a \(1\)-turn game---a
@@ -115,38 +135,235 @@ The complexity class of problems constructed in this manner is called \NP:
 
 \begin{definition}{\NP}{}
 
-  \NP{} is the class of decision problems \(Π\) (the puzzle problem) for which
-  there exists another problem \(Π'∈\P\) (the \(0\)-turn analog) such that, for
-  each input \(X∈\Set{\True,\False}^*\), \(X∈Π\) if and only if there exists
-  \(Y∈\Set{\True,\False}^*\) such that \((X,Y)∈Π'\).
+  Let \(Π\) be a decision problem.  We say \(Π\) (the \(1\)-turn \emph{puzzle})
+  is in \NP{} if…
+  \begin{nest}
+    there exists another problem \(Π'∈\P\) (the \(0\)-turn \emph{winning
+    condition}) and a polynomial \(p\) such that…
+    \begin{nest}
+      for each input \(X∈\Set{\True,\False}^*\)…
+      \begin{nest}
+        \(X∈Π\) if and only if…
+        \begin{nest}
+          there exists \(Y∈\Set{\True,\False}^*\) such that…
+          \begin{nest}
+            \((X,Y)∈Π'\) and \(\Abs Y≤p(\Abs X)\).
+          \end{nest}
+        \end{nest}
+      \end{nest}
+    \end{nest}
+  \end{nest}
 
-  TODO say \& comment that \(Y\) needs to be polynomially bounded by length of
-  \(X\)
+  The polynomial-length requirement on \(Y\) is there to prevent the
+  player-provided input from unduly distorting the size of the problem.
+  Essentially, it enforces the idea that the winning-condition problem \(Π'\)
+  scales polynomially with the size of the \emph{game board} \(X\), roughly
+  independent of the player's move \(Y\).  (Without this requirement, for
+  example, the input string can be padded with a large number of meaningless
+  zeroes to artificially inflate its size relative to the cost of computing the
+  winning condition.)
 
 \end{definition}
 
+%We can also think of problems in \NP, or puzzles, as problems solvable by
+%guess-and-check: guess a move \(Y\), and check whether it meets the winning
+%condition.
+
+Unsurprisingly, \(\CircSat∈\NP\). Fitting this observation to the formalism
+above, we express \CircSat{} as the set of circuits
+\[
+  \CircSat=\SetBuilder{
+    \text{circuit \(X\) with \(n\) inputs}
+  }{
+    ∃Y∈\Set{\True,\False}ⁿ\ldotp (X,Y)∈\CircVal
+  }.
+\]
+
+But what makes \CircSat{} particularly interesting is that it is also
+\NP-\emph{complete}.  In other words, \CircSat{} is the hardest of the
+\NP{} puzzles: any other \NP{} problem reduces to \CircSat.  This result is
+known as the Cook--Levin theorem:
+
+\begin{theorem}{Cook--Levin}{}
+
+  \CircSat{} is \NP-complete.
+
+\end{theorem}
+
+For sake of brevity, we will not reproduce here the full proof of the
+Cook--Levin theorem.  Instead, we give some informal intuition about the basic
+idea behind the proof and why the result should not be surprising.  As
+mentioned in \cref{ch:boolean}, any computer can be expressed in terms of
+boolean circuits; in fact, modern computers literally are implemented using
+boolean circuits.  Therefore, the execution of any algorithm \(A\) is just a
+sequence of circuit computations, one for each time-step of the algorithm.
+Thus every \(1\)-turn game is really just a \emph{special case} of the
+\Problem{Circuit Satisfiability} problem.
+
+\subsection{\True{} or \False?}
+
+In our definition of \CircSat, we say the player wins if the output of the
+circuit is set to \True.  But there is nothing special about \True---we could
+have defined the puzzle so that the player wins if the circuit outputs \False;
+the two formulations are exactly equivalent in difficulty.  Call the
+win-if-\False{} version of the puzzle \Problem{Circuit Falsifiability}:
+
+\begin{definition}{\Problem{Circuit Falsifiability}}{}
+
+  Let \(C\), a boolean circuit, be given.  Does there exist an input
+  combination to \(C\) setting its output to \False?
+
+\end{definition}
+
+Do not confuse \Problem{Circuit Falsifiability} with the \emph{complement} of
+\Problem{Circuit Satisfiability}, whose answer is ``yes'' when the player's
+moves \emph{always} lead to a \False{} output:
+\begin{align*}
+  \Problem{Circuit Satisfiability} &= \SetBuilder{C}{∃X\ldotp C(X)=\True} \\
+  (\Problem{Circuit Satisfiability})\Complement &= \SetBuilder{C}{∄X\ldotp C(X)=\True}
+  = \SetBuilder{C}{∀X\ldotp C(X)=\False} \\
+  \Problem{Circuit Falsifiability} &= \SetBuilder{C}{∃X\ldotp C(X)=\False}.
+\end{align*}
+
+To see that this formulation is equivalent in difficulty to \Problem{Circuit
+Satisfiability}, we show that both problems reduce to each other.
+
+\begin{theorem}{}{}
+
+  \Problem{Circuit Satisfiability} and \Problem{Circuit Falsifiability} are
+  equivalent in difficulty.
+
+\end{theorem}
+
+\begin{proof}
+
+  Let any circuit \(C\) be given.  Compose its output with a \NOT{} gate,
+  forming a new circuit \(C'\) whose output is always opposite that of \(C\).
+
+  Therefore, \(C\) is satisfiable if and only if \(C'\) is falsifiable;
+  conversely, \(C\) is falsifiable if and only if \(C'\) is satisfiable.  Thus
+  the compose-with-\NOT-gate transformation is a reduction going both ways:
+  \begin{align*}
+    \Problem{Circuit Falsifiability} &≤ \Problem{Circuit Satisfiability}, \\
+    \Problem{Circuit Satisfiability} &≤ \Problem{Circuit Falsifiability}.
+    \qedhere
+  \end{align*}
+
+\end{proof}
+
+A corollary of this result is that \Problem{Circuit Falsifiability} is also
+\NP-complete, and therefore ``characterizes'' \NP.  A corollary-corollary,
+then, is that \(\co\Problem{Circuit Falsifiability}\) is \(\co\NP\)-complete.
+We leverage this result in the next section, where we introduce a second player
+whose goal is, indeed, to \emph{falsify} the circuit.
+
+\section{Two-player circuit games, and the polynomial hierarchy}
+
+Recall, in the \(1\)-turn game \CircSat, a single player assigns inputs to a
+given circuit, with the goal of getting the circuit to output \True.  Now, we
+introduce a second player, an \emph{antagonist}, working towards the opposite
+goal.  The two players now take turns assigning inputs in the circuit; when all
+inputs have been assigned, the circuit's final output dictates the winner
+(\(\True⟹\text{first player wins}\), \(\False⟹\text{second player wins}\)).
+Now, framing this game as a decision problem, we ask the yes/no question,
+\begin{center}
+  Does the \emph{first} player have a winning strategy?
+\end{center}
+
+To start with a concrete example, consider the version of this game with \(2\)
+turns.  A circuit \(C\) is given; its (unassigned) inputs are partitioned into
+two groups, \(I₁\) and \(I₂\).  Two turns proceed: the first player assigns
+values to all inputs in \(I₁\), then the second player assigns values to all
+inputs in \(I₂\).  Finally, if the circuit outputs \True, the first player
+wins; otherwise, the second player wins.  Now, we ask, does the first player
+have a winning strategy?
+
+To be more precise, by \emph{winning strategy}, we mean a move the first player
+can make in order to guarantee a win, no matter what the second player plays in
+response.  In other words, if the first player plays a winning move, then there
+\emph{does not exist} a counter-winning move by the second player.  Thus, in
+this example, what we are actually asking is, does there exist \(X₁\) such that
+there does not exist \(X₂\) setting \(C(X₁,X₂)=\False\)?  We call this decision
+problem \(\CircSat₂\).
+
+\begin{definition}{\Problem{Circuit Satisfiability} with \(2\) turns, a.k.a.
+  \(\CircSat₂\)}{}
+
+  Let \(C\), a boolean circuit, be given, with its inputs partitioned into two
+  groups \(I₁\) and \(I₂\).  Does there exist some
+  \(X₁∈\Set{\True,\False}^{\Abs{I₁}}\) such that…
+  \begin{nest}
+    there does \emph{not} exist an
+    \(X₂∈\Set{\True,\False}^{\Abs{I₂}}\) such that…
+    \begin{nest}
+      \(C(I₁≔X₁,I₂≔X₂)=\False\)?
+    \end{nest}
+  \end{nest}
+
+\end{definition}
+
+There is another way to formulate \(\CircSat₂\), in an inductive way.  To aid
+this formulation, we introduce the notion of an \emph{augmented circuit}:
+
+\begin{definition}{augmented circuit}{}
+
+  Let \(C\) be a circuit, and let \(I\) refer to a subset of the inputs of
+  \(C\).
+
+  Let \(X∈\Set{\True,\False}^{\Abs I}\) be a boolean assignment to the inputs
+  in \(I\).  We call the new circuit \(C'\) produced by fixing inputs \(I\) to
+  values \(X\) an \Term{augmented circuit \(C'=C[I≔X]\)}.
+
+\end{definition}
+
+Now, we revisit \(\CircSat₂\) in order to formulate it inductively.  On the
+first turn, the first player makes an assignment \(X₁∈\TF[\Abs{I₁}]\) to the
+inputs \(I₁\).  After that assignment, the remaining circuit is the augmented
+circuit \(C'=C[I₁≔X₁]\), whose inputs are just \(I₂\).  The first player's
+initial move is a winning move if and only if \(C'\) is now
+\emph{unfalsifiable}.
+\[
+  \CircSat₂ = \SetBuilderLong{
+    \text{circuit \(C\) with inputs partitioned into \(I₁,I₂\)}
+  }{
+    ∃X₁∈\TF[\Abs{I₁}]\ldotp
+    C[I₁≔X₁]∉\Problem{Circuit Falsifiability}
+  }
+\]
 
 
-% SURVEY on pnp opinion: https://dl.acm.org/doi/10.1145/564585.564599
-% https://www.researchgate.net/publication/292393040_The_PNP_poll
-
-% TODO maybe cite an up-to-date result about how good the bound is, but whatever
-
-% useful citation about best-known SAT bounds: https://cstheory.stackexchange.com/questions/1060/best-upper-bounds-on-sat
-
-% https://www.sciencedirect.com/science/article/pii/S0304397501001748?via%3Dihub
-% 3sat solvable in 1.5^n?
-
-
-
-
-description of circuit satisfiability puzzle, guess-and-check solution
-
-definition of NP
-
-\section{Two-player circuit games}
-
-two-turn version.
+This inductive formulation shows a way to construct \(k\)-turn circuit games in
+general.  Start with a boolean circuit \(C\), whose inputs are partitioned into
+\(k\) groups, \(I₁,I₂,\dotsc,Iₖ\).  The \(k\) turns proceed as follows:
+\begin{enumerate}[left=1.5em]
+  \item[{[\(1\)]}] On the first turn, the first player assigns values
+    \(X₁∈\TF[\Abs{I₁}]\) to the inputs \(I₁\).
+  \item[{[\(2\)--\(k\)]}] The remaining \(k-1\) turns proceed inductively, now
+    starting with the second player.  It is played on the augmented circuit
+    \(C'=C[I₁≔X₁]\), whose inputs are partitioned into \(k-1\) groups,
+    \(I₂,\dotsc,Iₖ\).
+\end{enumerate}
+The first player's move is a winning move if and only if, in the remaining
+\((k-1)\)-game, the second player does not have a (counter-)winning strategy.
 
 
-n-turns, defined inductively.
+\begin{definition}{\Problem{Circuit Satisfiability with \(k\) turns}}{}
+
+  Given: a boolean circuit \(C\) with inputs partitioned into \(k\) groups,
+  \(I₁,I₂,\dotsc,Iₖ\).
+
+
+\end{definition}
+
+definitions of sigmap, pip
+
+
+completeness
+
+
+%\[
+%  \CircSat₂ = \SetBuilder{\text{circuit \(C\)}}{
+%    ∃X₁\ldotp (C,X₁)∉\Problem{Circuit Falsifiability}
+%  }
+%\]
+

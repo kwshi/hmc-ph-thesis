@@ -27,6 +27,7 @@
 \newcommand\PiP[1]{\ensuremath{Π_{#1}\mathbf{P}}}
 \newcommand\DeltaP[1]{\ensuremath{\Delta_{#1}\mathbf{P}}}
 \newcommand\Problem[1]{\texorpdfstring{\ensuremath{\text{\textsc{#1}}}}{#1}}
+\newcommand\Complement{^\mathsf{c}}
 
 \let\O\relax
 \DeclareMathOperator\O{O}
@@ -35,9 +36,9 @@
 \newcommand\AND{\ensuremath{\mathbin{\mathrm{\scriptstyle AND}}}}
 \newcommand\NOT{\ensuremath{\operatorname{\scriptstyle NOT}}}
 
-\newcommand\SAT{\Problem{SAT}}
-\newcommand\CSAT{\Problem{CSAT}}
-\newcommand\QSAT{\Problem{QSAT}}
+\newcommand\Sat{\Problem{Sat}}
+\newcommand\CircSat{\Problem{CircSat}}
+\newcommand\CircVal{\Problem{CircVal}}
 
 \AtBeginDocument{
   \let\Re\relax
@@ -57,9 +58,17 @@
 \DeclarePairedDelimiter\Floor\lfloor\rfloor
 \DeclarePairedDelimiterX\SetBuilder[2]\{\}{#1 \;\delimsize\vert\; #2}
 
+\newcommand\SetBuilderLong[2]{\Set*{%
+    \begin{array}{@{}l@{}}
+      \left. {#1} \; \right\rvert \\
+      \quad {#2}
+    \end{array}
+}}
+
 \newcommand\True{\ensuremath{\mathrm{True}}}
 \newcommand\False{\ensuremath{\mathrm{False}}}
 \newcommand\Aux{{\mathrm{Aux}}}
+\newcommand\TF[1][]{\Set{\True,\False}\ifx#1\undefined\relax\else^{#1}\fi}
 
 \DeclareMathOperator\Vertices{V}
 \DeclareMathOperator\Edges{E}
