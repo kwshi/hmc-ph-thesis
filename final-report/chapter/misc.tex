@@ -128,7 +128,8 @@ in the (partial) coloring, the other player wins.  If, after all turns, no
 improper edges have been introduced---that is, the resulting coloring is
 proper---then the \emph{last} player wins.
 
-
+To help formalize this game, we define exactly what we mean by \emph{partial
+coloring}.
 
 \begin{definition}{partial (vertex 3-)colorings}{}
 
@@ -145,6 +146,73 @@ proper---then the \emph{last} player wins.
   \(κ(u)≠κ(v)\).
 
 \end{definition}
+
+At the start of the game, no vertices are colored yet---the partial coloring
+assigns \None{} to every vertex.  When a player makes a move, they
+\emph{augment} the partial coloring with new assignments:
+
+\begin{definition}{augmented coloring}{}
+
+  Let \(Γ\) be a graph, and \(κ\) be a partial coloring on \(Γ\).
+
+  Let \(U⊆\Vertices(Γ)\) be a subset of the vertices such that, for each
+  \(u∈U\), \(κ(u)=\None\) (all vertices in \(U\) are uncolored), and let
+  \(δ\colon U→\Colors\) be an assignment of colors to every vertex in \(U\). 
+  Then the \Term{augmented coloring \(κ[δ]\colon\Vertices(Γ)→\ColorsOpt\)} is
+  another partial coloring formed by the combining the two color assignments:
+  \[
+    κ[δ](v) =
+    \begin{cases}
+      δ(v) & v∈U \\
+      κ(v) & v∉U
+    \end{cases}.
+  \]
+  
+\end{definition}
+
+Finally, we define the \(k\)-turn graph coloring games.  To make it easier to
+formulate the game inductively, we posit for now that games begin on a
+partially-colored graph, rather than an uncolored graph.  We discuss later in
+section TODO how to remove this requirement.
+
+Thus we start with a graph \(Γ\) and a partial coloring \(κ\) of \(Γ\).  The
+\emph{uncolored} vertices in \(Γ\) are partitioned into \(k\) groups,
+\(U₁,U₂,\dotsc,Uₖ\). \(k\) turns of the game proceed as follows:
+\begin{enumerate}
+  \item On the first turn, the first player assigns a coloring \(δ₁\) to
+    \(U₁\), producing a new partial coloring \(κ'=κ[δ₁]\).  If \(κ'\) is
+    improper, then the first player automatically loses; otherwise, the game
+    continues.
+  \item[{[\(2\)--\(k\)]}] The remaining \(k-1\) turns proceed inductively,
+    starting with the new partial coloring \(κ'\), with the first move made by
+    the second player.
+\end{enumerate}
+At the end of all turns, if the resulting coloring is improper, the player who
+introduced the improper edge loses; otherwise, the last player wins.  The
+decision problem, as always: does the first player have a winning strategy?
+
+\begin{problem}{\Problem{3-Colorability} with \(k\) turns / \Col[k]}{}
+
+  Given a partially-colored graph \((Γ,κ)\), such that the uncolored vertices
+  are partitioned into sets \(U₁,U₂,\dotsc,Uₖ\), determine whether there is a
+  coloring of \(U₁\) so that
+
+  TODO finish, and also i think the recursive defn below is not quite right---I
+  think the check-that-each-proper-coloring requirement needs to happen in the
+  subproblem in order to fit this defn to sigmap recursion
+
+  \tcblower  
+  \Col[k] = \SetBuilderLong{(Γ,κ,(U₁,\dotsc,Uₖ))}{
+    ∃δ\colon U₁→\Colors\Q
+    \text{\(κ[δ]\) is proper and \((Γ,κ[δ],(U₂,\dotsc,Uₖ))∉\Col[k-1]\)}
+  }
+\end{problem}
+
+
+
+
+
+
 
 
 
@@ -188,7 +256,14 @@ proper---then the \emph{last} player wins.
 
 \subsection{Key idea: embedding circuits in colorings}
 
-TODO narrative connective text
+TODO this section onward is totally incomplete/in first-draft stage.  i'll just
+bullet points the things i want to say
+
+before we jump into proofs of completeness, we emphasize the key idea
+underlying each proof: that boolean circuits can be embedded into graph
+3-colorings.  define precisely what this means.
+
+%TODO narrative connective text
 
 \begin{definition}{boolean graph}{boolean-graph}%
   A \Term{boolean graph} is a graph \(G\) whose vertices satisfy the following:
@@ -663,18 +738,18 @@ TODO narrative connective text
   TODO
 \end{example}
 
-\subsection{Graph-colorability}
+\subsection{Proofs of sigmap completeness of graph coloring games}
 
-\begin{definition}{The graph 3-colorability problem (\Problem{3col})}{}
-
-  The \Term{graph 3-colorability problem} is stated as the following yes/no
-  question: given a graph, is it (properly) 3-colorable?
-
-\end{definition}
-
-\begin{theorem}{}{}
-  \Problem{3col} is \NP-complete.
-\end{theorem}
+%\begin{definition}{The graph 3-colorability problem (\Problem{})}{}
+%
+%  The \Term{graph 3-colorability problem} is stated as the following yes/no
+%  question: given a graph, is it (properly) 3-colorable?
+%
+%\end{definition}
+%
+%\begin{theorem}{}{}
+%  \Problem{3col} is \NP-complete.
+%\end{theorem}
 
 \begin{proof}
   It is straightforward to see that \(\Problem{3col}∈\NP\), since it is
@@ -734,8 +809,12 @@ TODO narrative connective text
 
 
 
-\subsection{Graph-coloring games}
-
-
-
 \section{Set covering games}
+
+introduce exact set covering problem
+
+introduce set covering game
+
+key idea: embedding circuits in set coverings
+
+proofs of game completeness
