@@ -82,7 +82,7 @@ the \Problem{3-Coloring Properness} problem, or \ColProp{} for short:
 \end{problem}
 
 In order for \ColProp{} to be usable as a basis for polynomial-hierarchy games,
-we must first ensure that it itself is easy to compute.  Indeed, it is:
+we must first ensure that it itself is in \P.  Indeed, it is:
 
 \begin{theorem}{\(\ColProp∈\P\)}{}
 
@@ -111,13 +111,46 @@ we must first ensure that it itself is easy to compute.  Indeed, it is:
     \end{algorithmic}
   \end{algorithm}
 
-  The number of edges is, by definition, bounded polynomially by the size of
-  the graph.  Each \(κ(u)=κ(v)\) check runs within polynomial time, so the
-  overall algorithm runs in polynomial time as well.  \qedhere
+  The number of edges is, by definition, bounded by the size of the graph, so
+  the number of ``for each'' iterations is polynomial. Within each iteration,
+  the \(κ(u)=κ(v)\) check runs within polynomial time, so the overall algorithm
+  runs in polynomial time as well.  \qedhere
 
 \end{proof}
 
 \subsection{The \(k\)-turn games}
+
+A graph coloring game is played on an initially uncolored graph \(Γ\).  In a
+\(k\)-turn game, the graph's vertices are partitioned into \(k\) groups,
+\(V₁,V₂,\dotsc,Vₖ\), and players alternate turns assigning colors to the
+vertices in each group.  If, on any turn, a player introduces an improper edge
+in the (partial) coloring, the other player wins.  If, after all turns, no
+improper edges have been introduced---that is, the resulting coloring is
+proper---then the \emph{last} player wins.
+
+
+
+\begin{definition}{partial (vertex 3-)colorings}{}
+
+  Let \(Γ\) be a graph.  A \Term{partial (vertex 3-)coloring} is a map
+  \(κ\colon\Vertices(Γ)→\ColorsOpt\), which \emph{optionally} assigns a color
+  to each vertex in \(Γ\) (\None{} means no color is assigned).
+
+  Except where ambiguous, we will simply say ``partial coloring'' to mean
+  ``partial vertex 3-coloring''.
+
+  A partial coloring \(κ\) is \Term{proper} if, among the vertices it
+  \emph{does} assign a color, there are no improper edges.  That is, for all
+  \((u,v)∈\Edges(Γ)\), if both \(κ(u)\) and \(κ(v)\) are not \None, then
+  \(κ(u)≠κ(v)\).
+
+\end{definition}
+
+
+
+
+
+
 
 
 %Given a graph \(G\) along with a \(3\)-coloring on \(G\), is the coloring
@@ -153,7 +186,7 @@ we must first ensure that it itself is easy to compute.  Indeed, it is:
 %
 %\section{Reduction from CSAT}
 
-\subsection{Making circuits with graph \(3\)-colorings}
+\subsection{Key idea: embedding circuits in colorings}
 
 TODO narrative connective text
 

@@ -42,6 +42,7 @@
 \newcommand\CircVal{\Problem{CircVal}}
 
 \newcommand\ColProp{\Problem{3ColProp}}
+\newcommand\Col[1][]{\ensuremath{\Problem{3Col}\ifx#1\undefined\else_{#1}\fi}}
 
 \AtBeginDocument{
   \let\Re\relax
@@ -75,7 +76,9 @@
 \newcommand\Aux{{\mathrm{Aux}}}
 \newcommand\TF[1][]{\Set{\True,\False}\ifx#1\undefined\relax\else^{#1}\fi}
 
+\RequirePackage{etoolbox}
 % TODO fix excessive spacing between colons and V/E, https://tex.stackexchange.com/questions/461537/further-questions-about-mathrm-and-operatorname-spacing-after-colon
+\patchcmd\colon{{:}}{\mathopen:}{}{}
 \DeclareMathOperator\Vertices{V}
 \DeclareMathOperator\Edges{E}
 
@@ -118,7 +121,9 @@
 %\tcboxmath[color id=#1]{\mathbf{#1}}%
 }
 
+\newcommand\None{\ensuremath{\mathrm{\transparent{.5}None}}}
 \newcommand\Colors{\Set{\ColorId0,\ColorId1,\ColorId2}}
+\newcommand\ColorsOpt{\Set{\ColorId0,\ColorId1,\ColorId2,\None}}
 
 %\RequirePackage[outline]{contour}
 \RequirePackage{pdfrender}

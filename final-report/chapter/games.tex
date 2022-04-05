@@ -412,23 +412,25 @@ player's initial move is a winning move if and only if \(C'\) is now
   }.
 \]
 
-
-
 Continuing this process gives a general way to construct \(k\)-turn circuit
-games, for any \(k∈ℕ\).  Start with a boolean circuit \(C\), whose inputs are
-partitioned into \(k\) groups, \(I₁,I₂,\dotsc,Iₖ\).  The \(k\) turns proceed as
-follows:
+games, in which the two players take turns assigning values to groups of
+inputs.  Start with a boolean circuit \(C\), whose inputs are partitioned into
+\(k\) groups, \(I₁,I₂,\dotsc,Iₖ\).  On the \(i\)-th turn, the \((i\bmod2)\)-th
+player assigns values to the inputs in \(Iᵢ\).
+
+We formulate this game inductively as follows:
 \begin{enumerate}[left=1.5em]
   \item[{[\(1\)]}] On the first turn, the first player assigns values
     \(X₁∈\TF[\Abs{I₁}]\) to the inputs \(I₁\).
-  \item[{[\(2\)--\(k\)]}] The remaining \(k-1\) turns proceed inductively, now
-    starting with the second player.  It is played on the augmented circuit
-    \(C'=C[I₁≔X₁]\), whose inputs are partitioned into \(k-1\) groups,
-    \(I₂,\dotsc,Iₖ\).
+  \item[{[\(2\)--\(k\)]}] The remaining \(k-1\) turns proceed inductively.  It
+    is played on the augmented circuit \(C'=C[I₁≔X₁]\), whose inputs are
+    partitioned into \(k-1\) groups, \(I₂,\dotsc,Iₖ\), starting with the second
+    player's move.
 \end{enumerate}
 The first player's initial move is a winning move if and only if, in the
 remaining \((k-1)\)-turn game, the responding player does \emph{not} have a
-(counter-)winning strategy.
+(counter-)winning strategy.  Finally, the first player wins if and only if the
+completed circuit (after all turns) passes \CircVal.
 
 \begin{problem}{\Problem{Circuit Satisfiability} with \(k\) turns / \(\CircSat_k\)}{}
 
