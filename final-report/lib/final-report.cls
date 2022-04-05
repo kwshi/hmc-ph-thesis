@@ -91,8 +91,8 @@
   \thispagestyle{title}%
   \begin{titlepage}%
     \linespread{4}
-    {\huge\@title}\par\vspace*{1em}%
-    \ifdefined\@subtitle{\LARGE\scshape\@subtitle}\par\else\fi%
+    {\huge\@title}\par\vspace*{.5em}%
+    \ifdefined\@subtitle{\Large\scshape\@subtitle}\par\else\fi%
     \vspace{\stretch{2}}%
     {\Large\@author}\par%
     \vspace{\stretch{2}}%
@@ -118,8 +118,10 @@
 }
 
 
-\usepackage{complexity}
-\usepackage{ks-stuff}
+\RequirePackage{complexity}
+\RequirePackage{ks-stuff}
+
+\RequirePackage{transparent}
 
 %\tcbuselibrary{hooks}
 
@@ -153,8 +155,22 @@
   number within=chapter,
 ]{problem}{Decision problem}{
   theorem=orange,
-  before upper=Given:,
-  before lower=Return ``yes'' if:,
+  %before upper*=\textbf{\small\transparent{.5}given:}\quad\IgnoreSpacesAndPars,
+  %before lower*=\textbf{\small\transparent{.5}return whether:}\quad\IgnoreSpacesAndPars,
+  ams align* lower,
+  %before lower*=\IgnoreSpacesAndPars,
+  segmentation style={black, solid, opacity=1/4, shorten <=1em, shorten >=1em},
+  segmentation at break,
+  parbox=true,
+  %sidebyside,
+  %sidebyside align=top,
+  %sidebyside gap=2em,
+  %lefthand ratio=.4,
 }{pr}
+
+% https://tex.stackexchange.com/questions/179016/ignore-spaces-and-pars-after-an-environment
+% https://tex.stackexchange.com/questions/279652/macro-like-ignorespaces-for-ignoring-pars
+\newcommand\IgnoreSpacesAndPars{\@ifnextchar\par{\expandafter\IgnoreSpacesAndPars\@gobble}{}}
+
 %\newenvironment{problem}[2]{\begin{problembox}{#1}{#2}}{\end{problembox}}
 

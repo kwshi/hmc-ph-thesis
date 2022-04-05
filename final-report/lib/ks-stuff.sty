@@ -79,7 +79,7 @@
     left=1em,
     right=1em,
     top=1em/2,
-    bottom=1em,
+    bottom=1em/2,
     toptitle=1em/2,
     bottomtitle=1em/2,
     parbox=false,
@@ -130,6 +130,9 @@
 \newenvironment{nest}{%
   \begin{list}{}{%
       \setlength{\parskip}{0pt}%
+      \setlength{\topsep}{0pt}%
+      \setlength{\partopsep}{0pt}%
+      \setlength{\itemsep}{0pt}%
       \setlength{\leftmargin}{1.5em}%
     }\item%
 }{\end{list}}

@@ -9,24 +9,39 @@ games played on boolean circuits.
 To set the stage, we start with a relatively ``easy'' problem, known as the
 \Problem{Circuit Value} problem, or \Problem{CircVal} for short:
 
-\begin{definition}{\(\Problem{Circuit Value}=\Problem{CircVal}\)}{}
+%\begin{definition}{\(\Problem{Circuit Value}=\Problem{CircVal}\)}{}
+%
+%  Let \(C\) be a given boolean circuit with all input wires/variables
+%  specified. What is the final output value of \(C\)? As a decision problem:
+%  \(C∈\Problem{Circuit Value}\) if it outputs \True, and \(C∉\Problem{Circuit
+%  Value}\) if it outputs \False.
+%
+%\end{definition}
 
-  Let \(C\) be a given boolean circuit with all input wires/variables
-  specified. What is the final output value of \(C\)? As a decision problem:
-  \(C∈\Problem{Circuit Value}\) if it outputs \True, and \(C∉\Problem{Circuit
-  Value}\) if it outputs \False.
+\begin{problem}[lefthand ratio=.5]{\Problem{Circuit Value} / \CircVal}{circ-val}
 
-\end{definition}
+  Given a boolean circuit with all inputs specified, compute its output. Return
+  \emph{yes} if the output is \True.
 
-It is well-known that \(\Problem{Circuit Value}∈\P\) (i.e., it is actually
-``easy'').  We give one version of a proof below.
+  \tcblower
+  \CircVal = \SetBuilder{\text{circuit \(C\)}}{C()=\True}
+\end{problem}
+
+It is well-known that \(\CircVal∈\P\) (i.e., it is actually ``easy'').  We give
+one version of a proof below.
+
+\begin{theorem}{\(\CircVal∈\P\)}{}
+
+  \CircVal{} is solvable in polynomial time.
+
+\end{theorem}
 
 \begin{proof}
   We give a polynomial-time algorithm solving \Problem{Circuit Value} below.
   (Note that this is not the most efficient algorithm doing so; we choose it
   here only for its simplicity.)
 
-  \begin{algorithm}{}{}
+  \begin{algorithm}{a polynomial-time \CircVal{} solver}{}
     \begin{algorithmic}
       \Given{\(C\), a boolean circuit with all inputs fully specified}
       \LComment{Call a wire \emph{finished} if it has been assigned a boolean
@@ -35,7 +50,7 @@ It is well-known that \(\Problem{Circuit Value}∈\P\) (i.e., it is actually
       \While{final output wire is not finished}%
       \ForEach{unfinished logic gate \(g\) in \(C\)}%
       \If{all input wires of \(g\) are finished}%
-      \State{compute and assign the output value of \(g\) and to its output wire}%
+      \State{compute and assign the output value of \(g\) to its output wire}%
       \EndIf%
       \EndFor%
       \EndWhile%
@@ -81,21 +96,21 @@ winning strategy means a combination of inputs causing the circuit to output
 \True.  The decision problem asking whether such a winning move exists is
 called \Problem{Circuit Satisfiability}, or \Problem{CircSat} for short:
 
-\begin{definition}{\(\Problem{Circuit Satisfiability}=\Problem{CircSat}\)}{}
-
-  Let \(C\), a boolean circuit, be given. Does there exist a combination of
-  boolean input values to \(C\) causing it to output \True?
-
-\end{definition}
+%\begin{definition}{\(\Problem{Circuit Satisfiability}=\Problem{CircSat}\)}{}
+%
+%  Let \(C\), a boolean circuit, be given. Does there exist a combination of
+%  boolean input values to \(C\) causing it to output \True?
+%
+%\end{definition}
 
 \begin{problem}{\Problem{Circuit Satisfiability} / \CircSat}{circ-sat}
 
-  \(C\), a boolean circuit with \(n\) inputs
+  Given a boolean circuit \(C\), determine whether there exists some assignment
+  to its inputs causing its output to be set to \True.  Such an assignment is
+  called a \Term{satisfying assignment of \(C\)}.
 
   \tcblower
-
-  there exists \(X∈\TF[n]\) so that \(C(X)=\True\)
-
+  \CircSat = \SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{∃X∈\TF[n]\Q C(X)=\True}
 \end{problem}
 
 Briefly: how (computationally) difficult is \Problem{CircSat}?  As it turns
@@ -107,7 +122,8 @@ Tentatively, then, most computer scientists suspect that
 \(\Problem{CircSat}∉\P\)---i.e., there is no polynomial-time solution for
 \Problem{CircSat}.
 
-% SURVEY on pnp opinion: https://dl.acm.org/doi/10.1145/564585.564599
+TODO: here's a survey to cite on on pnp opinion:
+\url{https://dl.acm.org/doi/10.1145/564585.564599}.  cite it correctly later.
 % https://www.researchgate.net/publication/292393040_The_PNP_poll
 
 % TODO maybe cite an up-to-date result about how good the bound is, but whatever
@@ -121,7 +137,7 @@ Tentatively, then, most computer scientists suspect that
 
 Anyway, back to puzzles.  \Problem{CircSat} is one example of how a \(0\)-turn
 game such as \Problem{CircVal} may be generalized into a \(1\)-turn game---a
-puzzle.  How can we do this in general?
+puzzle.  How can we do this in general, for arbitrary games?
 
 In the example of \Problem{CircSat}, we do this by making the player supplement
 the input to the the \(0\)-turn analog, \Problem{CircVal}.  This approach is
@@ -133,7 +149,7 @@ win---i.e., whether there exists \(Y\) such that the player wins.
 
 The complexity class of problems constructed in this manner is called \NP:
 
-\begin{definition}{\NP}{}
+\begin{definition}{\NP}{np}
 
   Let \(Π\) be a decision problem.  We say \(Π\) (the \(1\)-turn \emph{puzzle})
   is in \NP{} if…
@@ -165,39 +181,87 @@ The complexity class of problems constructed in this manner is called \NP:
 
 \end{definition}
 
+Notice the inductive relationship between \P{} and \NP.  Each problem \(Π∈\NP\)
+is constructed by \emph{adding one turn} to some other problem \(Π'∈\P\).
+
+To illustrate this more precisely in the example of \CircSat, we first
+introduce the notion of \emph{augmenting} a circuit by fixing some of its
+inputs to constants:
+
+\begin{definition}{augmented circuit}{}
+
+  Let \(C\) be a circuit, and let \(I\) refer to a subset of the inputs of
+  \(C\).
+
+  Let \(X∈\Set{\True,\False}^{\Abs I}\) be a boolean assignment to the inputs
+  in \(I\).  We call the new circuit \(C'\) produced by fixing inputs \(I\) to
+  values \(X\) an \Term{augmented circuit \(C'=C[I≔X]\)}.
+
+  To simplify notation, if \(I\) comprises \emph{all} inputs of \(C\), then we
+  simply denote \(C[I≔X]=C[X]\).
+
+\end{definition}
+
+Now, given a \CircSat{} instance---namely, a circuit \(C\) with \(n\)
+unspecified inputs---the player's move \(X∈\TF[n]\) augments \(C\) to form a
+new circuit \(C'=C[X]\) with \emph{no} unspecified inputs.  The player wins if
+and only if \(C'\) outputs \True; that is, if \(C'∈\CircVal\).
+\[
+  \CircSat=\SetBuilder{
+    \text{circuit \(C\) with \(n\) inputs}
+  }{
+    ∃X∈\Set{\True,\False}ⁿ\Q C[X]∈\CircVal
+  }.
+\]
+This inductive formulation of \CircSat{} shows clearly that \(\CircSat∈\NP\).
+We will also see later that the add-a-turn extension shown here can be
+generalized to construct games with many turns.
+
+% see later in section TODO
+
+% i wonder whether i should define projections here
+
+
+%If
+%\(Π\) asks the question,
+%\begin{nest}
+%  Does the first player have a winning strategy in a game of \(k\) turns?
+%\end{nest}
+%That question is answered by asking, in turn,
+%\begin{nest}
+%  After the first turn has been played, is the first player the guaranteed
+%  winner
+%\end{nest}
+
+
+
+\subsection{\CircSat{} is \NP-complete}
+
 %We can also think of problems in \NP, or puzzles, as problems solvable by
 %guess-and-check: guess a move \(Y\), and check whether it meets the winning
 %condition.
 
-Unsurprisingly, \(\CircSat∈\NP\). Fitting this observation to the formalism
-above, we express \CircSat{} as the set of circuits
-\[
-  \CircSat=\SetBuilder{
-    \text{circuit \(X\) with \(n\) inputs}
-  }{
-    ∃Y∈\Set{\True,\False}ⁿ\ldotp (X,Y)∈\CircVal
-  }.
-\]
+Unsurprisingly, we that \(\CircSat∈\NP\).  But what
+makes \CircSat{} actually interesting is that it is also \NP-\emph{hard}.  In
+other words, \CircSat{} is the hardest of the \NP{} puzzles: any other \NP{}
+problem reduces to \CircSat. This result is known as the Cook--Levin theorem:
 
-But what makes \CircSat{} particularly interesting is that it is also
-\NP-\emph{complete}.  In other words, \CircSat{} is the hardest of the
-\NP{} puzzles: any other \NP{} problem reduces to \CircSat.  This result is
-known as the Cook--Levin theorem:
-
-\begin{theorem}{Cook--Levin}{}
+\begin{theorem}{Cook--Levin}{cook-levin}
 
   \CircSat{} is \NP-complete.
 
 \end{theorem}
 
-For sake of brevity, we will not reproduce here the full proof of the
-Cook--Levin theorem.  Instead, we give some informal intuition about the basic
-idea behind the proof and why the result should not be surprising.  As
-mentioned in \cref{ch:boolean}, any computer can be expressed in terms of
+A full proof of the Cook--Levin theorem would require delving into formal
+technicalities about Turing Machines, which is beyond the scope of this thesis.
+Instead, we give here some informal intuition about the basic idea underlying
+the proof and why the Cook--Levin result makes sense.
+
+As mentioned in \cref{ch:boolean}, any computer can be expressed in terms of
 boolean circuits; in fact, modern computers literally are implemented using
-boolean circuits.  Therefore, the execution of any algorithm \(A\) is just a
-sequence of circuit computations, one for each time-step of the algorithm.
-Thus every \(1\)-turn game is really just a \emph{special case} of the
+boolean circuits. Therefore, the execution of any algorithm \(A\) is just a
+sequence of circuit computations, one for each time-step of the algorithm. Thus
+every \(1\)-turn game is really just a \emph{special case} of the
 \Problem{Circuit Satisfiability} problem.
 
 \subsection{\True{} or \False?}
@@ -208,12 +272,17 @@ have defined the puzzle so that the player wins if the circuit outputs \False;
 the two formulations are exactly equivalent in difficulty.  Call the
 win-if-\False{} version of the puzzle \Problem{Circuit Falsifiability}:
 
-\begin{definition}{\Problem{Circuit Falsifiability}}{}
+\begin{problem}{\Problem{Circuit Falsifiability}}{}
 
-  Let \(C\), a boolean circuit, be given.  Does there exist an input
-  combination to \(C\) setting its output to \False?
+  Given a boolean circuit \(C\), determine whether there exists some assignment
+  to its inputs causing its output to be set to \False.  Such an assignment is
+  called a \Term{falsifying assignment of \(C\)}.
 
-\end{definition}
+  \tcblower
+  \Problem{Circuit Falsifiability}=\SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{
+    ∃X∈\TF[n]\Q C(X)=\False
+  }
+\end{problem}
 
 Do not confuse \Problem{Circuit Falsifiability} with the \emph{complement} of
 \Problem{Circuit Satisfiability}, whose answer is ``yes'' when the player's
@@ -286,41 +355,53 @@ this example, what we are actually asking is, does there exist \(X₁\) such tha
 there does not exist \(X₂\) setting \(C(X₁,X₂)=\False\)?  We call this decision
 problem \(\CircSat₂\).
 
-\begin{definition}{\Problem{Circuit Satisfiability} with \(2\) turns, a.k.a.
-  \(\CircSat₂\)}{}
+%\begin{definition}{\Problem{Circuit Satisfiability} with \(2\) turns, a.k.a.
+%  \(\CircSat₂\)}{}
+%
+%  Let \(C\), a boolean circuit, be given, with its inputs partitioned into two
+%  groups \(I₁\) and \(I₂\).  Does there exist some
+%  \(X₁∈\Set{\True,\False}^{\Abs{I₁}}\) such that…
+%  \begin{nest}
+%    there does \emph{not} exist an
+%    \(X₂∈\Set{\True,\False}^{\Abs{I₂}}\) such that…
+%    \begin{nest}
+%      \(C(I₁≔X₁,I₂≔X₂)=\False\)?
+%    \end{nest}
+%  \end{nest}
+%
+%\end{definition}
 
-  Let \(C\), a boolean circuit, be given, with its inputs partitioned into two
-  groups \(I₁\) and \(I₂\).  Does there exist some
-  \(X₁∈\Set{\True,\False}^{\Abs{I₁}}\) such that…
+\begin{problem}[lefthand ratio=.5]{\Problem{Circuit Satisfiability} with \(2\) turns / \(\CircSat₂\)}{}
+
+  Given a boolean circuit \(C\), with inputs partitioned into two groups
+  \(I₁,I₂\), determine whether
   \begin{nest}
-    there does \emph{not} exist an
-    \(X₂∈\Set{\True,\False}^{\Abs{I₂}}\) such that…
+    there exists some \(X₁∈\TF[\Abs{I₁}]\) such that
     \begin{nest}
-      \(C(I₁≔X₁,I₂≔X₂)=\False\)?
+      there does \emph{not} exist any \(X₂∈\TF[\Abs{I₂}]\) such that
+      \begin{nest}
+        \(C(I₁≔X₁,I₂≔X₂)=\False\)
+      \end{nest}
     \end{nest}
   \end{nest}
 
-\end{definition}
+  \tcblower
+  \CircSat₂=\SetBuilderLong{\text{circuit \(C\) with inputs \(I₁⊔I₂\)}}{
+    ∃X₁∈\TF[\Abs{I₁}]\Q
+    ∄X₂∈\TF[\Abs{I₂}]\Q
+    C(I₁≔X₁,I₂≔X₂)=\False
+  }.
+\end{problem}
 
-There is another way to formulate \(\CircSat₂\), in an inductive way.  To aid
-this formulation, we introduce the notion of an \emph{augmented circuit}:
+Earlier, we formulated \(\CircSat\) inductively, as an add-one-turn extension
+of \CircVal.  Similarly, we can formulate \(\CircSat₂\) as an inductive
+extension of \Problem{Circuit Falsifiability}.
 
-\begin{definition}{augmented circuit}{}
-
-  Let \(C\) be a circuit, and let \(I\) refer to a subset of the inputs of
-  \(C\).
-
-  Let \(X∈\Set{\True,\False}^{\Abs I}\) be a boolean assignment to the inputs
-  in \(I\).  We call the new circuit \(C'\) produced by fixing inputs \(I\) to
-  values \(X\) an \Term{augmented circuit \(C'=C[I≔X]\)}.
-
-\end{definition}
-
-Now, we revisit \(\CircSat₂\) in order to formulate it inductively.  On the
-first turn, the first player makes an assignment \(X₁∈\TF[\Abs{I₁}]\) to the
-inputs \(I₁\).  After that assignment, the remaining circuit is the augmented
-circuit \(C'=C[I₁≔X₁]\), whose inputs are just \(I₂\).  The first player's
-initial move is a winning move if and only if \(C'\) is now
+We start with a circuit \(C\), whose inputs are partitioned into \(I₁⊔I₂\).  On
+the first turn, the first player makes an assignment \(X₁∈\TF[\Abs{I₁}]\) to
+the inputs \(I₁\).  After that assignment, the remaining circuit is the
+augmented circuit \(C'=C[I₁≔X₁]\), whose inputs are just \(I₂\).  The first
+player's initial move is a winning move if and only if \(C'\) is now
 \emph{unfalsifiable}.
 \[
   \CircSat₂ = \SetBuilderLong{
@@ -328,13 +409,15 @@ initial move is a winning move if and only if \(C'\) is now
   }{
     ∃X₁∈\TF[\Abs{I₁}]\ldotp
     C[I₁≔X₁]∉\Problem{Circuit Falsifiability}
-  }
+  }.
 \]
 
 
-This inductive formulation shows a way to construct \(k\)-turn circuit games in
-general.  Start with a boolean circuit \(C\), whose inputs are partitioned into
-\(k\) groups, \(I₁,I₂,\dotsc,Iₖ\).  The \(k\) turns proceed as follows:
+
+Continuing this process gives a general way to construct \(k\)-turn circuit
+games, for any \(k∈ℕ\).  Start with a boolean circuit \(C\), whose inputs are
+partitioned into \(k\) groups, \(I₁,I₂,\dotsc,Iₖ\).  The \(k\) turns proceed as
+follows:
 \begin{enumerate}[left=1.5em]
   \item[{[\(1\)]}] On the first turn, the first player assigns values
     \(X₁∈\TF[\Abs{I₁}]\) to the inputs \(I₁\).
@@ -343,22 +426,107 @@ general.  Start with a boolean circuit \(C\), whose inputs are partitioned into
     \(C'=C[I₁≔X₁]\), whose inputs are partitioned into \(k-1\) groups,
     \(I₂,\dotsc,Iₖ\).
 \end{enumerate}
-The first player's move is a winning move if and only if, in the remaining
-\((k-1)\)-game, the second player does not have a (counter-)winning strategy.
+The first player's initial move is a winning move if and only if, in the
+remaining \((k-1)\)-turn game, the responding player does \emph{not} have a
+(counter-)winning strategy.
 
+\begin{problem}{\Problem{Circuit Satisfiability} with \(k\) turns / \(\CircSat_k\)}{}
 
-\begin{definition}{\Problem{Circuit Satisfiability with \(k\) turns}}{}
+  Given a boolean circuit \(C\) with inputs partitioned into \(k\) groups
+  \(I₁,I₂,\dotsc,Iₖ\), determine whether the first player has a winning
+  strategy.
 
-  Given: a boolean circuit \(C\) with inputs partitioned into \(k\) groups,
-  \(I₁,I₂,\dotsc,Iₖ\).
+  \tcblower
+  \CircSat₀ &= \CircVal, \\
+  \CircSat₁ &= \CircSat, \\
+  \CircSat_k &= \SetBuilderLong{
+    \text{circuit \(C\) with inputs \(I₁⊔I₂⊔\dotsb⊔Iₖ\)}
+  }{
+    ∃X₁∈\TF[\Abs{I₁}]\Q
+    C[I₁≔X₁]∉\CircSat_{k-1}
+  }
+\end{problem}
 
+Finally, we can apply the same generalization to arbitrary games, not just
+circuit games.  Consider an arbitrary game of \(k\) turns, played on some game
+board \(B∈\TF[*]\).  Two players take turns making moves
+\(M₁,M₂,\dotsc,Mₖ∈\TF[*]\).  At the end, an efficient algorithm determines
+which player wins.  To state this game precisely, we adopt the following
+inductive formulation:
+\begin{enumerate}
+  \item[{[\(1\)]}] On the first turn, the first player makes some move
+    \(M₁∈\TF[*]\).  whose size is bounded by some polynomial function of \(\Abs
+    B\) (thereby preventing the player's move from distorting the size of the
+    game; see the discussion at the end of \cref{def:np}).
+  \item[{[\(2\)--\(k\)]}] The remaining turns constitute a \((k-1)\)-turn game.
+    It is played on the ``augmented'' board \((B,M₁)\), starting now with the
+    second player.
+\end{enumerate}
+The first player's move is a winning move if and only if the responding player
+has \emph{no} winning strategy for the \((k-1)\)-turn game.  Finally, after
+all turns have been played (the base case), the \(0\)-turn game's winner is
+dictated by a winning condition checkable in polynomial time.  The decision
+problem asks whether the first player can guarantee a win.
+
+For each \(k\), the complexity class of all games constructed in this manner is
+called \SigmaP k.  Together, the \((\SigmaP k)\)s constitute the
+\emph{polynomial hierarchy}.
+
+\begin{definition}{polynomial hierarchy}{}
+
+  \(\SigmaP0=\P\) is the class of (efficient) \(0\)-turn game deciders.
+
+  \(\SigmaP1=\NP\) is the class of \(1\)-turn game winning-strategy problems
+  (given a \(1\)-turn board, return ``yes'' if the player has a winning move).
+
+  In general, for any \(k\), \(\SigmaP k\) is the class of \(k\)-turn
+  winning-strategy problems.  Let \(Π\) be any decision problem; we say \(Π\)
+  is in \(\SigmaP k\) if
+  \begin{nest}
+    there exists another problem \(Π'∈\SigmaP{k-1}\) (the \((k-1)\)-turn game)
+    and a polynomial \(p\) such that
+    \begin{nest}
+      for each input \(B∈\TF[*]\) (the game board)
+      \begin{nest}
+        \(B∈\SigmaP k\) (the first player has a winning strategy) if and only
+        if
+        \begin{nest}
+          there exists \(M∈\TF[*]\) (an initial move) such that \(\Abs M≤p(\Abs
+          B)\), and
+          \begin{nest}
+            \((B,M)∉Π'\) (the responding player cannot win in the remaining
+            \(k-1\) turns).
+          \end{nest}
+        \end{nest}
+      \end{nest}
+    \end{nest}
+  \end{nest}
 
 \end{definition}
 
-definitions of sigmap, pip
+TODO talk about complements somewhere (maybe in background section), and
+remember to mention coNP and \PiP k somewhere
+
+Notably, the circuit games \(\CircSat_k\) are \SigmaP k-complete for each
+\(k\).
+
+\begin{theorem}{}{}
+
+  For each \(k=1,2,\dotsc\), \(\CircSat_k\) is \SigmaP k-complete.
+
+\end{theorem}
+
+Again, a full proof of this result is beyond the scope of this paper.
+Essentially, this theorem holds for the same reason as the Cook--Levin theorem
+(\cref{th:cook-levin}): all algorithms can be encoded as circuits, so all
+problems are just special-cases of circuit problems.  For our purposes, we
+take this theorem to be given.
+
+In the next chapter, we will use this theorem as the central starting point for
+exploring and ``benchmarking'' the complexities of other puzzles and games.
 
 
-completeness
+%completeness
 
 
 %\[
