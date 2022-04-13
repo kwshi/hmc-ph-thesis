@@ -23,8 +23,8 @@
 \newcommand\C{\texorpdfstring{\ensuremath{\mathbfit C}}{𝑪}}
 \newcommand\co{\ensuremath{\operatorname{co-}\!}}
 \newcommand\pro{\ensuremath{\operatorname{pro-}\!}}
-\newcommand\SigmaP[1]{\ensuremath{Σ_{#1}\mathbf{P}}}
-\newcommand\PiP[1]{\ensuremath{Π_{#1}\mathbf{P}}}
+\newcommand\SigmaP[1]{\ensuremath{\mathbf{Σ}_{#1}\mathbf{P}}}
+\newcommand\PiP[1]{\ensuremath{\mathbf{Π}_{#1}\mathbf{P}}}
 \newcommand\DeltaP[1]{\ensuremath{\Delta_{#1}\mathbf{P}}}
 \newcommand\Problem[1]{\texorpdfstring{\ensuremath{\text{\normalfont\scshape #1}}}{#1}}
 \newcommand\Complement{^\mathsf{c}}
@@ -75,6 +75,7 @@
 \newcommand\False{\ensuremath{\mathrm{\color{ks-false}False}}}
 \newcommand\Aux{{\mathrm{Aux}}}
 \newcommand\TF[1][]{\Set{\True,\False}\ifx#1\undefined\relax\else^{#1}\fi}
+\newcommand\Strings[1][*]{\Set{0,1}\ifx#1\undefined\relax\else^{#1}\fi}
 
 \RequirePackage{etoolbox}
 % TODO fix excessive spacing between colons and V/E, https://tex.stackexchange.com/questions/461537/further-questions-about-mathrm-and-operatorname-spacing-after-colon

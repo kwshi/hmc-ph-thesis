@@ -323,7 +323,15 @@ Satisfiability}, we show that both problems reduce to each other.
 
 
 A corollary of this result is that \Problem{Circuit Falsifiability} is also
-\NP-complete, and therefore fully ``characterizes'' \NP.
+\NP-complete and therefore fully ``characterizes'' \NP.
+
+\[
+  \Problem{Circuit Falsifiability} =
+  \SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{¬C∈\CircSat}.
+\]
+
+TODO think about reframing this
+
 
 %A corollary-corollary,
 %then, is that \(\co\Problem{Circuit Falsifiability}\) is \(\co\NP\)-complete.
@@ -397,9 +405,9 @@ problem \(\CircSat₂\).
   }.
 \end{problem}
 
-Earlier, we formulated \(\CircSat\) inductively, as an add-one-turn extension
-of \CircVal.  Similarly, we can formulate \(\CircSat₂\) as an inductive
-extension of \Problem{Circuit Falsifiability}.
+Earlier, we formulated \(\CircSat\) inductively, as an add-one-turn extension of
+\CircVal.  Similarly, we can formulate \(\CircSat₂\) as an inductive extension
+of \CircSat.
 
 We start with a circuit \(C\), whose inputs are partitioned into \(I₁⊔I₂\).  On
 the first turn, the first player makes an assignment \(X₁∈\TF[\Abs{I₁}]\) to
@@ -412,7 +420,7 @@ player's initial move is a winning move if and only if \(C'\) is now
     \text{circuit \(C\) with inputs partitioned into \(I₁,I₂\)}
   }{
     ∃X₁∈\TF[\Abs{I₁}]\ldotp
-    C[I₁≔X₁]∉\Problem{Circuit Falsifiability}
+    ¬C[I₁≔X₁]∉\CircSat
   }.
 \]
 
@@ -449,7 +457,7 @@ completed circuit (after all turns) passes \CircVal.
     \text{circuit \(C\) with inputs \(I₁⊔I₂⊔\dotsb⊔Iₖ\)}
   }{
     ∃X₁∈\TF[\Abs{I₁}]\Q
-    C[I₁≔X₁]∉\CircSat_{k-1}
+    ¬C[I₁≔X₁]∉\CircSat_{k-1}
   }
 \end{problem}
 
@@ -474,31 +482,39 @@ all turns have been played (the base case), the \(0\)-turn game's winner is
 dictated by a winning condition checkable in polynomial time.  The decision
 problem asks whether the first player can guarantee a win.
 
-For each \(k\), the complexity class of all games constructed in this manner is
-called \SigmaP k.  Together, the \((\SigmaP k)\)s constitute the
-\emph{polynomial hierarchy}.
+For each \(k\), the complexity class of all such decision problems is called
+\SigmaP k.  There are also the complements of problems in \(\SigmaP k\), which,
+instead of asking whether the first player has a winning strategy, asks whether
+the first player is \emph{doomed} to lose; the class of these decision problems
+is called \(\PiP k=\co\SigmaP k\).
+
+Together, \(\SigmaP k\)s and \(\PiP k\)s constitute the \emph{polynomial
+hierarchy}.
 
 \begin{definition}{polynomial hierarchy}{}
 
-  \(\SigmaP0=\P\) is the class of (efficient) \(0\)-turn game deciders.
+  \(\SigmaP0=\PiP0=\P\) is the class of (efficient) \(0\)-turn game deciders.
 
   \(\SigmaP1=\NP\) is the class of \(1\)-turn game winning-strategy problems
   (given a \(1\)-turn board, return ``yes'' if the player has a winning move).
+  \(\PiP1=\co\NP\) is the class of \(1\)-turn game, impossible-to-win problems
+  (given a \(1\)-turn board, return ``yes'' if the player has \emph{no} winning
+  move).
 
   In general, for any \(k\), \(\SigmaP k\) is the class of \(k\)-turn
-  winning-strategy problems.  Let \(Π\) be any decision problem; we say \(Π\)
+  winning-strategy problems, and \(\PiP k=\co\SigmaP k\) the class of \(k\)-turn
+  no-winning-strategy problems.  Let \(Π\) be any decision problem; we say \(Π\)
   is in \(\SigmaP k\) if
   \begin{nest}
     there exists another problem \(Π'∈\SigmaP{k-1}\) (the \((k-1)\)-turn game)
     and a polynomial \(p\) such that
     \begin{nest}
-      for each input \(B∈\TF[*]\) (the game board)
+      for each input \(B∈\Strings[*]\) (the game board)
       \begin{nest}
-        \(B∈\SigmaP k\) (the first player has a winning strategy) if and only
-        if
+        \(B∈\SigmaP k\) (the first player has a winning strategy) if and only if
         \begin{nest}
-          there exists \(M∈\TF[*]\) (an initial move) such that \(\Abs M≤p(\Abs
-          B)\), and
+          there exists \(M∈\Strings[*]\) (an initial move) such that \(\Abs
+          M≤p(\Abs B)\), and
           \begin{nest}
             \((B,M)∉Π'\) (the responding player cannot win in the remaining
             \(k-1\) turns).
@@ -509,9 +525,6 @@ called \SigmaP k.  Together, the \((\SigmaP k)\)s constitute the
   \end{nest}
 
 \end{definition}
-
-TODO talk about complements somewhere (maybe in background section), and
-remember to mention coNP and \PiP k somewhere
 
 Notably, the circuit games \(\CircSat_k\) are \SigmaP k-complete for each
 \(k\).
