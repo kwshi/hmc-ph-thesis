@@ -113,16 +113,16 @@ We formalize the definition of decision problems below.
 \end{definition}
 
 A more general notion of \emph{problems} considers arbitrary (binary-encoded)
-functions \(\Set{0,1}^*→\Set{0,1}^*\); this notion is termed \Term{function
-problems}.  However, we will focus mainly on decision problems for two reasons.
-First, decision problems are easier to work with than function problems.
-Second, function problems can be encoded in terms of decision problems (e.g.,
-mapping each output bit to its own decision problem).  Essentially, the
-\emph{decision problem} formalism is conceptually simpler but remains versatile
-enough to capture the important core ideas of complexity theory. As such, the
-vast majority of the problems examined in this thesis are decision problems.
-For convenience we will simply say ``problems'' to mean decision problems,
-unless otherwise specified.
+functions \(\Set{0,1}^*→\Set{0,1}^*\); such a problem is termed a \Term{function
+problem}.  However, we will focus mainly on decision problems for two reasons.
+First, decision problems are easier to work with than function problems. Second,
+function problems can be encoded in terms of decision problems (e.g., mapping
+each output bit to its own decision problem).  Essentially, the \emph{decision
+problem} formalism is conceptually simpler but remains versatile enough to
+capture the important core ideas of complexity theory. As such, the vast
+majority of the problems examined in this thesis are decision problems. For
+convenience we will simply say ``problems'' to mean decision problems, unless
+otherwise specified.
 
 \section{Complexities and classes}
 
@@ -394,6 +394,93 @@ also very general.  As \emph{tight} difficulty upper bounds of a complexity
 class, they are perfect characterizations of these classes; determining the
 exact difficulty of a complete problem automatically essentially determines the
 difficulty of the entire complexity class.
+
+\subsection{Complements of decision problems}
+
+Every decision problem \(Π\) has a complement \(Π\Complement\), whose yes/no
+question is opposite that of \(Π\).  For instance, if \(Π\) returns ``yes'' if a
+given integer \(n\) (encoded in binary) is prime, then \(Π\Complement\) returns
+``yes'' if \(n\) is composite.
+
+\begin{definition}{complement problems}{}
+
+  Let \(Π⊆\Set{0,1}^*\) be a decision problem.  The \Term{complement of \(Π\)},
+  denoted \(Π\Complement\), is same as the \emph{set} complement of \(Π\):
+  \[
+    Π\Complement=\SetBuilder*{X∈\Set{0,1}^*}{X∉Π}.
+  \]
+
+  The yes/no answer to \(Π\Complement\) is always opposite that of \(Π\).  That
+  is, for any \(X∈\Set{0,1}^*\),
+  \[
+    Π\Complement(x)=
+    \begin{cases}
+      \text{yes} & Π(x)=\text{no} \\
+      \text{no} & Π(x)=\text{yes}.
+    \end{cases}
+  \]
+
+  \begin{aside}
+
+    TODO finer discussion about complement not being exactly complement, see
+    papadimitriou 142
+
+  \end{aside}
+
+\end{definition}
+
+It is worth mentioning that, under \emph{our} definition of reduction, in
+general \(Π\) and \(Π\Complement\) aren't necessarily reducible to each other.
+This is perhaps counter to what one might expect, because aren't \(Π\) and
+\(Π\Complement\) just two faces of the same problem?  Not entirely.
+
+To see why not, consider again the example from earlier, \(Π=\Problem{Primes}\)
+and \(Π\Complement=\Problem{Composites}\).  Suppose some integer \(n\) is given,
+and you are asked to \emph{prove} that either \(n∈Π\) (\(n\) is prime) or
+\(n∈Π\Complement\) (\(n\) is composite).  Which proof would be more
+straightforward?
+\begin{itemize}
+  \item If \(n\) is composite, the proof is straightforward: simply provide an
+    example of a divisor \(1<m<n\), and demonstrate that indeed \(m\) divides
+    \(n\).
+  \item If \(n\) is prime, on the other hand, the proof appears less
+    straightforward: there is way to provide no \emph{one} example to
+    demonstrate the proof; \emph{every possible} divisor up to \(n\) must be
+    checked to ensure that none of them divide \(n\).
+\end{itemize}
+Basically, while \(Π\) and \(Π\Complement\) do represent two sides of the same
+problem, the difficulty of proving/demonstrating membership in the two sets may
+be different.  Our definition of reduction, therefore, distinguishes between the
+difficulty of proving ``yes''-ness and the difficulty of proving ``no''-ness.
+(There are other more generous definitions of reducibility out there, under
+which \(Π\) and \(Π\Complement\) do reduce to each other, but that's besides the
+point: our definition makes a finer, more careful distinction and is easier to
+work with.)
+
+For a complexity class of problems \C, the ``dual'' class formed by taking the
+complement of each problem in \C{} is denoted \co\C{} (I don't know if this has
+an actual name).
+
+\begin{definition}{\(\operatorname{co}\)}{co}
+
+  Let \C{} be a complexity class.  The complexity class \(\co\C\) comprises the
+  complement of each problem in \C:
+  \[
+    \co\C = \SetBuilder*{Π\Complement}{Π∈\C}.
+  \]
+
+\end{definition}
+
+Note that \(\co\C\) is \emph{not} the same thing as the set-complement of \C.
+
+Since decision problems in general aren't guaranteed to have same complexity as
+their complements, \(\C\) and \(\co\C\) aren't necessarily the same complexity
+class.  However, \P{} (and, in general, any ``deterministic'' class) \emph{is}
+equal to \(\co\P\).
+
+TODO couple sentences
+
+
 
 %By studying complete problems for a spectrum of complexity classes, we gain
 %wholesale but vivid insight

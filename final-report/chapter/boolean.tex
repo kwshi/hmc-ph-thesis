@@ -228,11 +228,11 @@ This chain of assignments may be visualized as a sort of data-processing
       rounded corners=1em/8,
     },
     pipe/.style={
-      rounded corners=1em/4,
+      rounded corners=1em/2,
       to path={
         (\tikztostart)
         -- ($ (\tikztostart -| \tikztotarget)!3em!(\tikztostart) $)
-        -- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
+        %-- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
         -- (\tikztotarget)
       },
       ->,
@@ -249,18 +249,21 @@ This chain of assignments may be visualized as a sort of data-processing
     wires/.pic={
 
       \foreach \var in {x,y,z} {
-        \coordinate (\var1) at ($ (\var.west) + (-4em,-2em/3) $);
-        \coordinate (\var2) at ($ (\var.west) + (-4em,2em/3) $);
-        \draw[pipe] (\var1) node[left]{\(\var₁\)} to (\var.west);
-        \draw[pipe] (\var2) node[left]{\(\var₂\)} to (\var.west);
+        \coordinate (\var1) at ($ (\var.west) + (-4em,2em/3) $);
+        \coordinate (\var2) at ($ (\var.west) + (-4em,-2em/3) $);
+        \draw[pipe] (\var1) node[left]{\(\var₁\)} to ($ (\var.north west)!2/3!(\var.west) $);
+        \draw[pipe] (\var2) node[left]{\(\var₂\)} to ($ (\var.south west)!2/3!(\var.west) $);
         \node[above right] at (\var.east) {\(\MakeUppercase{\var}=\var₁∨\var₂\)};
       }
-      \draw[pipe] (x.east) to (xy.west);
-      \draw[pipe] (y.east) to (xy.west);
+      \draw[pipe] (y.east) to (xy.south west);
+      %\draw[pipe] ($ (yz.west)!3em!(y.east) $) to ($ (xy.west)!1/2!(xy.south west) $);
       \draw[pipe] (y.east) to (yz.west);
-      \draw[pipe] (z.east) to (yz.west);
+      %\draw[pipe] ($ (zx.west)!3em!(z.east) $) to ($ (yz.west)!1/2!(yz.south west) $);
+      \draw[pipe] (z.east) to (yz.south west);
       \draw[pipe] (z.east) to (zx.west);
-      \draw[pipe, over] (x.east) to (zx.west);
+      %\draw[pipe] ($ (zx.west)!3em!(z.east) $) to ($ (yz.west)!1/2!(yz.south west) $);
+      \draw[pipe, over] (x.east) to (zx.north west);
+      \draw[pipe] (x.east) to (xy.west);
 
       \foreach \gate in {xy,yz,zx} {
         \node[above right] at (\gate.east) {\(\MakeUppercase{\gate}\)};
@@ -278,9 +281,9 @@ This chain of assignments may be visualized as a sort of data-processing
       };
 
       \pic{wires};
-      \foreach \gate in {xy,yz,zx} {
-        \draw[pipe] (\gate.east) to (out.west);
-      }
+      \draw[pipe] (xy.east) to (out.north west);
+      \draw[pipe] (yz.east) to (out.west);
+      \draw[pipe] (zx.east) to (out.south west);
       \draw[->] (out.east) -- +(2em,0) node[right]{\(ϕ=XY∨YZ∨ZX\)};
     \end{tikzpicture}
   \end{center}
@@ -306,10 +309,10 @@ This chain of assignments may be visualized as a sort of data-processing
       \node[gate](or) at ($ (xy)!1/2!(or') $){\(∨\)};
 
       \pic{wires};
-      \draw[pipe] (xy.east) to (or.west);
-      \draw[pipe] (yz.east) to (or.west);
-      \draw[pipe] (or.east) to (or'.west);
-      \draw[pipe] (zx.east) to (or'.west);
+      \draw[pipe] (xy.east) to ($ (or.west)!1/3!(or.north west) $);
+      \draw[pipe] (yz.east) to ($ (or.west)!1/3!(or.south west) $);
+      \draw[pipe] (or.east) to ($ (or'.west)!1/3!(or'.north west) $);
+      \draw[pipe] (zx.east) to ($ (or'.west)!1/3!(or'.south west) $);
       \node[above right] at (or.east) {\(XY∨YZ\)};
       \draw[->] (or'.east) -- +(2em,0) node[right]{\(ϕ=(XY∨YZ)∨ZX\)};
 
@@ -326,15 +329,12 @@ relevant terminology.
 
 \begin{definition}{boolean circuits, logic gates}{}
 
-  TODO precise definition
+  A \Term{boolean circuit}
 
-  TODO common logic gate symbols
+  TODO precise definition
 
 \end{definition}
 
-% TODO blurb about circuits being universal in computers
-
-% TODO precise definitions, gate symbols, etc.
 
 %We give a precise definition of
 %

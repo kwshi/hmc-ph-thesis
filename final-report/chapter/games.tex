@@ -284,9 +284,9 @@ win-if-\False{} version of the puzzle \Problem{Circuit Falsifiability}:
   }
 \end{problem}
 
-Do not confuse \Problem{Circuit Falsifiability} with the \emph{complement} of
-\Problem{Circuit Satisfiability}, whose answer is ``yes'' when the player's
-moves \emph{always} lead to a \False{} output:
+Note that \Problem{Circuit Falsifiability} is not the same as the
+\emph{complement} of \Problem{Circuit Satisfiability}, whose answer is ``yes''
+when the player's moves \emph{always} lead to a \False{} output:
 \begin{align*}
   \Problem{Circuit Satisfiability} &= \SetBuilder{C}{∃X\ldotp C(X)=\True} \\
   (\Problem{Circuit Satisfiability})\Complement &= \SetBuilder{C}{∄X\ldotp C(X)=\True}
@@ -307,10 +307,10 @@ Satisfiability}, we show that both problems reduce to each other.
 \begin{proof}
 
   Let any circuit \(C\) be given.  Compose its output with a \NOT{} gate,
-  forming a new circuit \(C'\) whose output is always opposite that of \(C\).
+  forming a new circuit \(¬C\) whose output is always opposite that of \(C\).
 
-  Therefore, \(C\) is satisfiable if and only if \(C'\) is falsifiable;
-  conversely, \(C\) is falsifiable if and only if \(C'\) is satisfiable.  Thus
+  Therefore, \(C\) is satisfiable if and only if \(¬C\) is falsifiable;
+  conversely, \(C\) is falsifiable if and only if \(¬C\) is satisfiable.  Thus
   the compose-with-\NOT-gate transformation is a reduction going both ways:
   \begin{align*}
     \Problem{Circuit Falsifiability} &≤ \Problem{Circuit Satisfiability}, \\
@@ -320,11 +320,15 @@ Satisfiability}, we show that both problems reduce to each other.
 
 \end{proof}
 
+
+
 A corollary of this result is that \Problem{Circuit Falsifiability} is also
-\NP-complete, and therefore ``characterizes'' \NP.  A corollary-corollary,
-then, is that \(\co\Problem{Circuit Falsifiability}\) is \(\co\NP\)-complete.
-We leverage this result in the next section, where we introduce a second player
-whose goal is, indeed, to \emph{falsify} the circuit.
+\NP-complete, and therefore fully ``characterizes'' \NP.
+
+%A corollary-corollary,
+%then, is that \(\co\Problem{Circuit Falsifiability}\) is \(\co\NP\)-complete.
+%We leverage this result in the next section, where we introduce a second player
+%whose goal is, indeed, to \emph{falsify} the circuit.
 
 \section{Two-player circuit games, and the polynomial hierarchy}
 
