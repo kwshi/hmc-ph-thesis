@@ -98,7 +98,7 @@ We formalize the definition of decision problems below.
 
   That is, for any input \(X∈\Set{0,1}^*\), we say \(X∈Π\) (in the \emph{set}
   sense) if \(Π(X)=\text{yes}\) (in the \emph{function} sense), and \(X∉Π\) to
-  mean \(Π(X)=\text{no}\).
+  mean \(Π(X)=\text{no}\).  The two formalisms are equivalent.
 
   \begin{aside}
     Formally, inputs to decision problems are always encoded as binary strings.
@@ -475,10 +475,11 @@ Note that \(\co\C\) is \emph{not} the same thing as the set-complement of \C.
 
 Since decision problems in general aren't guaranteed to have same complexity as
 their complements, \(\C\) and \(\co\C\) aren't necessarily the same complexity
-class.  However, \P{} (and, in general, any ``deterministic'' class) \emph{is}
-equal to \(\co\P\).
+class.  However, \P{} (and, in general, any class defined by
+\emph{deterministic} algorithms) \emph{is} equal to its complement, because
+modifying any deterministic decision algorithm by inverting its responses yields
+an algorithm that solves the complementary problem.
 
-TODO couple sentences
 
 
 

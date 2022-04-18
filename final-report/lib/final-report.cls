@@ -161,7 +161,7 @@
   %before lower*=\IgnoreSpacesAndPars,
   segmentation style={black, solid, opacity=1/4, shorten <=1em, shorten >=1em},
   segmentation at break,
-  parbox=true,
+  parbox=false,
   %sidebyside,
   %sidebyside align=top,
   %sidebyside gap=2em,

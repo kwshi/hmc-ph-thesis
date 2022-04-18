@@ -37,10 +37,11 @@
 \newcommand\NOT{\ensuremath{\operatorname{\scriptstyle NOT}}}
 
 \newcommand\Sat{\Problem{Sat}}
-\newcommand\CircSat{\Problem{CircSat}}
+%\newcommand\CircSat{\Problem{CircSat}}
 \newcommand\CircSatₖ{\ensuremath{{\CircSat}ₖ}}
 \newcommand\CircVal{\Problem{CircVal}}
 
+\newcommand\CircSat[1][]{\ensuremath{\Problem{CircSat}\ifx#1\undefined\else_{#1}\fi}}
 \newcommand\ColProp{\Problem{3ColProp}}
 \newcommand\Col[1][]{\ensuremath{\Problem{3Col}\ifx#1\undefined\else_{#1}\fi}}
 

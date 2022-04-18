@@ -103,7 +103,7 @@ called \Problem{Circuit Satisfiability}, or \Problem{CircSat} for short:
 %
 %\end{definition}
 
-\begin{problem}{\Problem{Circuit Satisfiability} / \CircSat}{circ-sat}
+\begin{problem}{\Problem{Circuit Satisfiability} / \CircSat}{circsat}
 
   Given a boolean circuit \(C\), determine whether there exists some assignment
   to its inputs causing its output to be set to \True.  Such an assignment is
@@ -144,78 +144,104 @@ the input to the the \(0\)-turn analog, \Problem{CircVal}.  This approach is
 readily generalized.  Given some input \(X\) (the ``game board''), construct a
 \(1\)-turn game in which the player specifies a supplementary input \(Y\);
 victory is decided by whether the pair of inputs \((X,Y)\) meets the \(0\)-turn
-winning condition.  As before, the decision problem asks whether the player can
-win---i.e., whether there exists \(Y\) such that the player wins.
+winning condition, which should be an efficiently-computable condition---a
+problem in \P.  As before, the decision problem asks whether the player can win:
+does there exist \(Y\) such that \((X,Y)\) meets the winning condition?
 
-The complexity class of problems constructed in this manner is called \NP:
+The complexity class of all \(1\)-turn game problems constructed in this manner
+is called \NP.  Before we give the formal definition of \NP, we need to
+introduce one more technical detail.  In the discussion above, call \(Π\) the
+\(0\)-turn winning condition problem.  We said above that \(Π\) should be
+computable in polynomial-time.  More precisely, we want it to be computable in
+polynomial-time with respect to the size of the \emph{game board} \(X\).
+However, the input string to the \(Π\) isn't just \(X\) but the pair \((X,Y)\),
+so simply requiring \(Π∈\P\) is insufficient: polynomial with respect to the
+size of \((X,Y)\) does not imply polynomial with respect to the size of \(X\)
+(\(Y\) could be arbitrarily long).  To fix this disparity, we require that the
+player's input scales controlledly with the game board: the size of \(Y\) must
+be polynomially-bounded by the size of \(X\).  This requirement guarantees that
+\(Y\) does not unduly distort the input size, and any polynomial function on the
+size of \((X,Y)\) is also polynomial with respect to the size of \(X\).  We call
+problems with this constraint \emph{polynomially balanced}.
+
+\begin{definition}{polynomially balanced}{}
+
+  Let \(Π⊆\Set{0,1}^*×\Set{0,1}^*\) be a decision problem whose inputs are
+  \emph{pairs} of strings.  We say \(Π\) is \Term{polynomially balanced} if
+  there exists a polynomial function \(p\) such that, for every \((X,Y)∈Π\),
+  \[
+    \Abs Y≤p(\Abs X).
+  \]
+
+\end{definition}
+
+We are now ready to give the full definition of \NP{} (the class of all
+\(1\)-turn games).
 
 \begin{definition}{\NP}{np}
 
-  Let \(Π\) be a decision problem.  We say \(Π\) (the \(1\)-turn \emph{puzzle})
-  is in \NP{} if…
+  \NP{} is the class of decision problems \(Π\) such that
   \begin{nest}
-    there exists another problem \(Π'∈\P\) (the \(0\)-turn \emph{winning
-    condition}) and a polynomial \(p\) such that…
+    there exists a \emph{polynomially-balanced} \(Π'∈\P\) (the \(0\)-turn
+    winning condition) such that
     \begin{nest}
-      for each input \(X∈\Set{\True,\False}^*\)…
+      for each input \(X∈\Strings\) (the game board)
       \begin{nest}
-        \(X∈Π\) if and only if…
+        \(X∈Π\) (the player can guarantee a win) if and only if
         \begin{nest}
-          there exists \(Y∈\Set{\True,\False}^*\) such that…
+          there exists \(Y∈\Strings\) (the player's move) such that
           \begin{nest}
-            \((X,Y)∈Π'\) and \(\Abs Y≤p(\Abs X)\).
+            \((X,Y)∈Π'\) (the move meets the winning condition).
           \end{nest}
         \end{nest}
       \end{nest}
     \end{nest}
   \end{nest}
 
-  The polynomial-length requirement on \(Y\) is there to prevent the
-  player-provided input from unduly distorting the size of the problem.
-  Essentially, it enforces the idea that the winning-condition problem \(Π'\)
-  scales polynomially with the size of the \emph{game board} \(X\), roughly
-  independent of the player's move \(Y\).  (Without this requirement, for
-  example, the input string can be padded with a large number of meaningless
-  zeroes to artificially inflate its size relative to the cost of computing the
-  winning condition.)
-
 \end{definition}
 
 Notice the inductive relationship between \P{} and \NP.  Each problem \(Π∈\NP\)
 is constructed by \emph{adding one turn} to some other problem \(Π'∈\P\).
 
-To illustrate this more precisely in the example of \CircSat, we first
-introduce the notion of \emph{augmenting} a circuit by fixing some of its
-inputs to constants:
+Unsurprisingly, \CircSat{} is in \NP{} (after all, we used it as the example
+problem to motivate the general definition of \NP).  To demonstrate this
+inclusion formally, we show how the definition of \CircSat{} fits the definition
+of \NP.
 
-\begin{definition}{augmented circuit}{}
+\begin{theorem}{}{}
+  \(\CircSat∈\NP\).
+\end{theorem}
 
-  Let \(C\) be a circuit, and let \(I\) refer to a subset of the inputs of
+\begin{proof}
+
+  Let \(Π'=\CircVal\).  Specifically, think of \(Π'\) as a set of \emph{pairs}
+  \((C,X)\) where \(C\) specifies the boolean circuit, and \(X\) specifies a
+  input assignment to \(C\) so that \(C(X)=\True\).  Note that \(Π'\) is
+  polynomially-balanced, because the length of \(X\) always matches the number
+  of input variables in \(C\), which by definition is bounded by the size of
   \(C\).
 
-  Let \(X∈\Set{\True,\False}^{\Abs I}\) be a boolean assignment to the inputs
-  in \(I\).  We call the new circuit \(C'\) produced by fixing inputs \(I\) to
-  values \(X\) an \Term{augmented circuit \(C'=C[I≔X]\)}.
+  \CircSat{} comprises exactly the set of circuits \(C\) (the game board) for
+  which there exists an \(X\) (the player's move) such that
+  \((C,X)∈Π'=\CircVal\).  Thus \CircSat{} fits the definition of an \NP{}
+  problem.  \qedhere
 
-  To simplify notation, if \(I\) comprises \emph{all} inputs of \(C\), then we
-  simply denote \(C[I≔X]=C[X]\).
+\end{proof}
 
-\end{definition}
-
-Now, given a \CircSat{} instance---namely, a circuit \(C\) with \(n\)
-unspecified inputs---the player's move \(X∈\TF[n]\) augments \(C\) to form a
-new circuit \(C'=C[X]\) with \emph{no} unspecified inputs.  The player wins if
-and only if \(C'\) outputs \True; that is, if \(C'∈\CircVal\).
-\[
-  \CircSat=\SetBuilder{
-    \text{circuit \(C\) with \(n\) inputs}
-  }{
-    ∃X∈\Set{\True,\False}ⁿ\Q C[X]∈\CircVal
-  }.
-\]
-This inductive formulation of \CircSat{} shows clearly that \(\CircSat∈\NP\).
-We will also see later that the add-a-turn extension shown here can be
-generalized to construct games with many turns.
+%Now, given a \CircSat{} instance---namely, a circuit \(C\) with \(n\)
+%unspecified inputs---the player's move \(X∈\TF[n]\) augments \(C\) to form a
+%new circuit \(C'=C[X]\) with \emph{no} unspecified inputs.  The player wins if
+%and only if \(C'\) outputs \True; that is, if \(C'∈\CircVal\).
+%\[
+%  \CircSat=\SetBuilder{
+%    \text{circuit \(C\) with \(n\) inputs}
+%  }{
+%    ∃X∈\Set{\True,\False}ⁿ\Q C[X]∈\CircVal
+%  }.
+%\]
+%This inductive formulation of \CircSat{} shows clearly that \(\CircSat∈\NP\).
+%We will also see later that the add-a-turn extension shown here can be
+%generalized to construct games with many turns.
 
 % see later in section TODO
 
@@ -241,10 +267,10 @@ generalized to construct games with many turns.
 %guess-and-check: guess a move \(Y\), and check whether it meets the winning
 %condition.
 
-Unsurprisingly, we that \(\CircSat∈\NP\).  But what
-makes \CircSat{} actually interesting is that it is also \NP-\emph{hard}.  In
-other words, \CircSat{} is the hardest of the \NP{} puzzles: any other \NP{}
-problem reduces to \CircSat. This result is known as the Cook--Levin theorem:
+What makes \CircSat{} especially interesting, compared to all the other puzzles
+in \NP, is that \CircSat{} is \NP-\emph{complete}.  In other words, \CircSat{}
+is the hardest of the \NP{} puzzles: any other \NP{} problem reduces to
+\CircSat. This result is known as the Cook--Levin theorem:
 
 \begin{theorem}{Cook--Levin}{cook-levin}
 
@@ -409,23 +435,43 @@ Earlier, we formulated \(\CircSat\) inductively, as an add-one-turn extension of
 \CircVal.  Similarly, we can formulate \(\CircSat₂\) as an inductive extension
 of \CircSat.
 
-We start with a circuit \(C\), whose inputs are partitioned into \(I₁⊔I₂\).  On
-the first turn, the first player makes an assignment \(X₁∈\TF[\Abs{I₁}]\) to
-the inputs \(I₁\).  After that assignment, the remaining circuit is the
-augmented circuit \(C'=C[I₁≔X₁]\), whose inputs are just \(I₂\).  The first
-player's initial move is a winning move if and only if \(C'\) is now
-\emph{unfalsifiable}.
+To help do so, let's first formalize what it means for a player to take a single
+turn.  When the player makes an assignment to some inputs, we say the player
+\emph{augments} the circuit, creating a new circuit in which those inputs are
+fixed to the (constant) assigned values.
+
+\begin{definition}{augmented circuit}{}
+
+  Let \(C\) be a circuit, and let \(I\) refer to a subset of the inputs of
+  \(C\).
+
+  Let \(X∈\Set{\True,\False}^{\Abs I}\) be a boolean assignment to the inputs
+  in \(I\).  We call the new circuit \(C'\) produced by fixing inputs \(I\) to
+  values \(X\) an \Term{augmented circuit \(C'=C[I≔X]\)}.
+
+  To simplify notation, if \(I\) comprises \emph{all} inputs of \(C\), then we
+  simply denote \(C[I≔X]=C[X]\).
+
+\end{definition}
+
+Now, in the two-turn game \CircSat[2], we start with a circuit \(C\), whose
+inputs are partitioned into \(I₁⊔I₂\).  On the first turn, the first player
+makes an assignment \(X₁∈\TF[\Abs{I₁}]\) to the inputs \(I₁\).  After that
+assignment, the remaining circuit is the augmented circuit \(C'=C[I₁≔X₁]\),
+whose inputs are just \(I₂\).  The first player's initial move is a winning move
+if and only if \(C'\) is now \emph{unfalsifiable}---or, in other words, its
+negation \(¬C'\) is unsatisfiable.
 \[
   \CircSat₂ = \SetBuilderLong{
-    \text{circuit \(C\) with inputs partitioned into \(I₁,I₂\)}
+    \text{circuit \(C\) with inputs \(I₁⊔I₂\)}
   }{
     ∃X₁∈\TF[\Abs{I₁}]\ldotp
     ¬C[I₁≔X₁]∉\CircSat
   }.
 \]
 
-Continuing this process gives a general way to construct \(k\)-turn circuit
-games, in which the two players take turns assigning values to groups of
+Continuing this process gives a general way to construct general \(k\)-turn
+circuit games, in which the two players take turns assigning values to groups of
 inputs.  Start with a boolean circuit \(C\), whose inputs are partitioned into
 \(k\) groups, \(I₁,I₂,\dotsc,Iₖ\).  On the \(i\)-th turn, the \((i\bmod2)\)-th
 player assigns values to the inputs in \(Iᵢ\).

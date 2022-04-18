@@ -84,7 +84,7 @@ the \Problem{3-Coloring Properness} problem, or \ColProp{} for short:
 In order for \ColProp{} to be usable as a basis for polynomial-hierarchy games,
 we must first ensure that it itself is in \P.  Indeed, it is:
 
-\begin{theorem}{\(\ColProp∈\P\)}{}
+\begin{theorem}{\(\ColProp∈\P\)}{3colprop-in-p}
 
   \(\ColProp\) is solvable in polynomial time.
 
@@ -120,6 +120,8 @@ we must first ensure that it itself is in \P.  Indeed, it is:
 
 \subsection{The \(k\)-turn games}
 
+
+
 A graph coloring game is played on an initially uncolored graph \(Γ\).  In a
 \(k\)-turn game, the graph's vertices are partitioned into \(k\) groups,
 \(V₁,V₂,\dotsc,Vₖ\), and players alternate turns assigning colors to the
@@ -128,14 +130,16 @@ in the (partial) coloring, the other player wins.  If, after all turns, no
 improper edges have been introduced---that is, the resulting coloring is
 proper---then the \emph{last} player wins.
 
+To help formalize this game, we define exactly what we mean by \emph{partial
+coloring}.
+
 \begin{definition}{partial (vertex 3-)colorings}{}
 
   Let \(Γ\) be a graph.  A \Term{partial (vertex 3-)coloring} is a map
-  \(κ\colon\Vertices(Γ)→\ColorsOpt\), which \emph{optionally} assigns a color
-  to each vertex in \(Γ\) (\None{} means no color is assigned).
-
-  Except where ambiguous, we will simply say ``partial coloring'' to mean
-  ``partial vertex 3-coloring''.
+  \(κ\colon\Vertices(Γ)→\ColorsOpt\), which \emph{optionally} assigns a color to
+  each vertex in \(Γ\) (\None{} means no color is assigned).  Where necessary,
+  we refer to fully-completed colorings as \Term{total colorings} to
+  differentiate them from partial colorings.
 
   A partial coloring \(κ\) is \Term{proper} if, among the vertices it
   \emph{does} assign a color, there are no improper edges.  That is, for all
@@ -144,7 +148,98 @@ proper---then the \emph{last} player wins.
 
 \end{definition}
 
+At the start of the game, no vertices are colored yet---the partial coloring
+assigns \None{} to every vertex.  When a player makes a move, they
+\emph{augment} the partial coloring with new assignments:
 
+\begin{definition}{augmented coloring}{}
+
+  Let \(Γ\) be a graph, and \(κ\) be a partial coloring on \(Γ\).
+
+  Let \(U⊆\Vertices(Γ)\) be a subset of the vertices such that, for each
+  \(u∈U\), \(κ(u)=\None\) (all vertices in \(U\) are uncolored), and let
+  \(δ\colon U→\Colors\) be an assignment of colors to every vertex in \(U\).
+  Then the \Term{augmented coloring \(κ[δ]\colon\Vertices(Γ)→\ColorsOpt\)} is
+  another partial coloring formed by the combining the two color assignments:
+  \[
+    κ[δ](v) =
+    \begin{cases}
+      δ(v) & v∈U \\
+      κ(v) & v∉U
+    \end{cases}.
+  \]
+
+\end{definition}
+
+Finally, we define the \(k\)-turn graph coloring games.  To make it easier to
+formulate the game inductively, we posit for now that games begin on a
+partially-colored graph, rather than an uncolored graph.  We discuss later in
+section TODO how to remove this requirement.
+
+Thus we start with a graph \(Γ\) and a partial coloring \(κ\) of \(Γ\).  The
+\emph{uncolored} vertices in \(Γ\) are partitioned into \(k\) groups,
+\(U₁,U₂,\dotsc,Uₖ\).  For each turn \(i\) in \(1,2,\dotsc,k\), player
+\((i\bmod2)\) assigns colors to all vertices in \(Uᵢ\).  If, when doing so, they
+introduce an improper edge, they lose; otherwise, the game proceeds.  If all
+turns finish, and the resulting total coloring is proper, the last player wins.
+
+The inductive definition of this game is given below.
+\begin{enumerate}
+  \item On the first turn, the first player assigns a coloring \(δ₁\) to \(U₁\),
+    producing a new partial coloring \(κ'=κ[δ₁]\).  If \(κ'\) is improper, then
+    the first player automatically loses; otherwise, the game continues.
+  \item[{[\(2\)--\(k\)]}] The remaining \(k-1\) turns proceed inductively,
+    starting with the new partial coloring \(κ'\), with the first move made by
+    the second player.
+\end{enumerate}
+At the end of all turns, if the resulting coloring is improper, the player who
+introduced the improper edge loses; otherwise, the last player wins.  The
+decision problem: does the first player have a winning strategy?
+
+\begin{problem}{\Problem{3-Colorability} with \(k\) turns / \Col[k]}{}
+
+  Given a partially-colored graph \((Γ,κ)\), such that the uncolored vertices
+  are partitioned into sets \(U₁,U₂,\dotsc,Uₖ\), determine whether there is a
+  coloring of \(U₁\) so that
+
+  TODO finish, and also i think the recursive defn below is not exactly
+  right---I think the check-that-each-proper-coloring requirement needs to
+  happen in the subproblem in order to fit this defn to sigmap recursion
+
+  \tcblower
+  \Col[k] = \SetBuilderLong{(Γ,κ,(U₁,\dotsc,Uₖ))}{
+    ∃δ\colon U₁→\Colors\Q
+    \text{\(κ[δ]\) is proper and \((Γ,κ[δ],(U₂,\dotsc,Uₖ))∉\Col[k-1]\)}
+  }
+\end{problem}
+
+Unsurprisingly, \(\Col[k]∈\SigmaP k\).  This inclusion follows straightforwardly
+from the construction of \Col[k] as a \(k\)-turn game; we give a rigorous proof
+below by showing that it complies to the definition of \SigmaP k.
+
+\begin{proof}
+
+  For each \(k=0,1,\dotsc\), define \(\Col[k]'\) to be a modified version of
+  \Col[k] in which the first player automatically wins if the starting coloring
+  is invalid:
+  \[
+    \Col[k]' = \SetBuilderLong{(Γ,κ,(U₁,\dotsc,Uₖ))}{
+      \text{\(κ\) is improper, or \(∃δ\colon U₁→\Colors\Q(Γ,κ[δ],(U₂,\dotsc,Uₖ))∉\Col[k-1]'\)}
+    }
+  \]
+
+  When \(k=0\), there are no uncolored vertices, and \(κ\) is a total coloring.
+  Then \(\Col[0]'\) is simply the set of improperly colored graphs, the
+  complement of \ColProp:
+  \[
+    \Col[0]' = \SetBuilder{(Γ,κ)}{\text{\(κ\) is improper}} = \ColProp\Complement.
+  \]
+  Since \(\ColProp∈\P\) (\cref{th:3colprop-in-p}), we know that
+  \(\Col[0]'=\ColProp\Complement\) is also in \(\P=\SigmaP0\).
+
+  TODO
+
+\end{proof}
 
 
 
@@ -184,9 +279,21 @@ proper---then the \emph{last} player wins.
 %
 %\section{Reduction from CSAT}
 
-\subsection{Key idea: embedding circuits in colorings}
+\subsection{Key idea: using colorings to emulate circuits}
 
-TODO narrative connective text
+Of course, the interesting result we are really after is that \Col[k] is not
+just \emph{in} \SigmaP k but also \emph{\SigmaP k-complete}.  Before jumping
+directly into that proof, let us flesh out the key idea underlying the result
+and (hopefully) thereby develop an intuitive appreciation for why the result
+makes sense.
+
+The key idea is that proper graph colorings can \emph{emulate} boolean circuits.
+To see what this means, associate each boolean value with a color: we take the
+(convenient) convention that \ColorId0 means \False{} and \ColorId1 means
+\True{} (\ColorId2 is only used as an ``auxiliary'' color for enforcing
+intermediate constraints, but never used to represent a boolean value). Then, it
+is possible to convert any boolean circuit into a graph so that properness on
+the graph's colorings causes it to exactly compute the circuit.
 
 \begin{definition}{boolean graph}{boolean-graph}%
   A \Term{boolean graph} is a graph \(G\) whose vertices satisfy the following:
@@ -661,18 +768,18 @@ TODO narrative connective text
   TODO
 \end{example}
 
-\subsection{Graph-colorability}
+\subsection{Proofs of sigmap completeness of graph coloring games}
 
-\begin{definition}{The graph 3-colorability problem (\Problem{3col})}{}
-
-  The \Term{graph 3-colorability problem} is stated as the following yes/no
-  question: given a graph, is it (properly) 3-colorable?
-
-\end{definition}
-
-\begin{theorem}{}{}
-  \Problem{3col} is \NP-complete.
-\end{theorem}
+%\begin{definition}{The graph 3-colorability problem (\Problem{})}{}
+%
+%  The \Term{graph 3-colorability problem} is stated as the following yes/no
+%  question: given a graph, is it (properly) 3-colorable?
+%
+%\end{definition}
+%
+%\begin{theorem}{}{}
+%  \Problem{3col} is \NP-complete.
+%\end{theorem}
 
 \begin{proof}
   It is straightforward to see that \(\Problem{3col}∈\NP\), since it is
@@ -732,8 +839,12 @@ TODO narrative connective text
 
 
 
-\subsection{Graph-coloring games}
-
-
-
 \section{Set covering games}
+
+introduce exact set covering problem
+
+introduce set covering game
+
+key idea: embedding circuits in set coverings
+
+proofs of game completeness
