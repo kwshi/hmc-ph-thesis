@@ -68,7 +68,7 @@
     },
   },
   gates/.style={
-    row sep=1em, column sep=4em, matrix of math nodes,
+    row sep=1em, column sep=3em, matrix of math nodes,
   },
   input/.style={
     circle,
@@ -167,7 +167,7 @@ Here is a circuit that \emph{never} returns \True:
   \end{tikzpicture}
 \end{center}
 
-\subsection{\Problem{Circuit Satisfiability} games}
+\subsection{\Problem{Circuit Satisfiability} games are hard}
 
 Some circuits are possible to \Term{satisfy}, i.e. cause to output \True; some
 are not.  The game: \emph{given a circuit, can you satisfy it?}
@@ -187,10 +187,10 @@ is \Term{proper} if every two neighboring vertices have different colors:
     pics/four/.style n args={4}{
       code={
 
-        \coordinate[vertex, fill=ks#1](a) at (3em/2,0);
-        \coordinate[vertex, fill=ks#2](b) at ($ (a) + (120:3em) $);
-        \coordinate[vertex, fill=ks#3](c) at ($ (a) + (180:3em) $);
-        \coordinate[vertex, fill=ks#4](d) at ($ (a) + (60:3em) $);
+        \coordinate[vertex, fill=ks#1](a) at (1em,0);
+        \coordinate[vertex, fill=ks#2](b) at ($ (a) + (120:2em) $);
+        \coordinate[vertex, fill=ks#3](c) at ($ (a) + (180:2em) $);
+        \coordinate[vertex, fill=ks#4](d) at ($ (a) + (60:2em) $);
 
         \draw[line width=2pt] (a) -- (b) -- (c) -- (a) -- (d);
 
@@ -208,10 +208,39 @@ is \Term{proper} if every two neighboring vertices have different colors:
   \end{tikzpicture}
 \end{center}
 
+Some graphs are impossible to properly 3-color:
+
+\begin{center}
+  \begin{tikzpicture}
+    \coordinate[vertex](o);
+    \foreach \i in {0,...,4} {
+      \coordinate[vertex](v\i) at ({360/5*\i+90}:2em);
+      \draw[line width=2pt] (o) -- (v\i);
+    }
+    \draw[line width=2pt] (v0) -- (v1) -- (v2) -- (v3) -- (v4) -- (v0);
+  \end{tikzpicture}
+\end{center}
+
 The game: \emph{given a graph, can you find a proper coloring for it?}
 
+\subsection{Are graph-coloring games hard?}
+
+Yes!  Convert from circuits to graphs as follows:
+
+Assign so-and-so input vertices to which players; last player fills out
+remaining colors on gate gadgets.
+
+Requiring each player to play a proper move, constrains their colorings to be
+consistent with boolean circuit outputs.
 
 \section{Exact-cover games}
+
+Menu, select items
+
+
+\subsection{Are exact-cover games hard?}
+
+Convert from circuits to graphs.
 
 \section{Conclusions}
 
