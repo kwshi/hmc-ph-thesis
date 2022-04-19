@@ -6,6 +6,11 @@
 \usepackage{libertinus}
 \renewcommand\familydefault\sfdefault
 
+\usepackage{enumitem}
+\setlist[itemize]{
+  left=1em..2em,
+}
+
 \usepackage{graphicx}
 \usepackage{natbib}
 \usepackage{booktabs}
@@ -15,95 +20,198 @@
 
 \author{Kye Shi}
 \posteryear{2022}
-\title{Putting Together a Poster\\for Presentation Days}
+\title{Games for one, games for two!\\\LARGE\P{} vs \NP{} vs \SigmaP2 and more…}
 
 \class{Math 197: Senior Thesis}
 
 \advisor{Nicholas J. Pippenger}
 \reader{Arthur Benjamin}
 
+\usepackage{colortbl}
+\setlength\arraycolsep{.5em}
+\setlength\arrayrulewidth{2pt}
+\arrayrulecolor{gray}
+
+\usepackage{complexity}
+
 \pagestyle{fancy}
+
+
+\tikzset{
+  input/.style={
+    circle,
+    fill,
+    inner sep=0pt,
+    minimum size=3pt,
+  },
+  gate/.style={
+    draw,
+    line width=2pt,
+    rounded corners=1em/8,
+  },
+  pipe/.style={
+    line width=2pt,
+    rounded corners=1em/2,
+    to path={
+      (\tikztostart)
+      -- ($ (\tikztostart -| \tikztotarget)!1/2!(\tikztostart) $)
+      %-- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
+      -- (\tikztotarget)
+    },
+    -Stealth,
+  },
+  over/.style={
+    preaction={
+      draw=white,
+      line width=8pt,
+      -,
+    },
+  },
+  gates/.style={
+    row sep=1em, column sep=4em, matrix of math nodes,
+  },
+  input/.style={
+    circle,
+    inner sep=0pt,
+    minimum size=1em,
+    fill,
+    fill opacity=1/4,
+    text opacity=1,
+  },
+  vertex/.append style={
+    line width=2pt,
+  },
+}
 
 \begin{document}
 
+
 \begin{poster}
 
-\section{Introduction}
-% Note that we're not labeling sections because you shouldn't be
-% doing a lot of referring back and forth in your poster---let the
-% interested folks read your thesis or Clinic report, or ask
-% questions.
+\section{Puzzles, games, and hierarchies}
 
-Describe the basics about your thesis or project here---briefly!  An
-image such as Figure~\ref{fig:our-poster} can help jazz up the
-introduction and get people interested in your poster.
+\NP-complete problems
 
-\begin{figure}
+P vs NP problem.
+
+what is NP?  useful way to understand it: puzzles, or games with a single turn.
+a well-known example is the Sudoku puzzle
+
+
+takes us farther: games with 2 turns fall into a class known as sigma2p, games
+with k sigmakp (and yes, np=sigma1p).  together, these classes form the
+polynomial hierarchy,
+
+
+
+definition of a k-turn game.
+
+\section{First stop: boolean circuits}
+
+\Term{Boolean circuits} consist of \Term{wires}, which carry \True/\False{}
+values, sent through various \Term{logic gates}:
+\[
+  \begin{array}{c|cl}
+    \NOT & ¬x & \text{flips the value of \(x\)} \\
+    \AND & x∧y & \text{\True{} iff both of \(x,y\) are \True} \\
+    \OR & x∨y & \text{\True{} iff at least one of \(x,y\) are \True}
+  \end{array}
+\]
+
+For example, the circuit below returns \True{} if and only if at least \(2/3\)
+of its inputs are \True:
+
 \begin{center}
-\fbox{\includegraphics[width=6in]{sampleposter}}
-\caption{What a great poster!}%
-\label{fig:our-poster}
+  \begin{tikzpicture}
+    \matrix[gates, ampersand replacement=\&]{
+      |[input](x)|x \& |[gate](xy)|∧ \\
+      |[input](y)|y \& |[gate](yz)|∧ \&\& |[gate](or')|∨ \\
+      |[input](z)|z \& |[gate](zx)|∧ \\
+    };
+
+    \node[gate](or) at ($ (xy)!1/2!(or') $){\(∨\)};
+
+    \draw[pipe] (y) to (xy.south west);
+    \draw[pipe] (y) to (yz);
+    \draw[pipe] (z) to (yz.south west);
+    \draw[pipe] (z) to (zx);
+    \draw[pipe, over] (x) to (zx.north west);
+    \draw[pipe] (x) to (xy);
+
+    \draw[pipe] (xy) to (or);
+    \draw[pipe] (yz) to (or);
+    \draw[pipe] (or) to (or');
+    \draw[pipe] (zx) to (or');
+
+    \draw[pipe] (or'.east) -- +(2em,0) node[right]{\(xy∨yz∨zx\)};
+
+  \end{tikzpicture}
 \end{center}
-\end{figure}
 
-It's important to give your reader a reason to keep reading your
-poster---why should they care about your project?  Tell them!
+Here is a circuit that \emph{never} returns \True:
+
+\begin{center}
+  \begin{tikzpicture}
+    \matrix[gates, ampersand replacement=\&]{
+      \& |[gate](not)|¬ \& |[gate](and)|∧ \\
+      |[input](x)|x \\
+    };
+
+    %\draw[pipe] (x) to (buf);
+    \draw[pipe] (x) -- (not);
+    \draw[pipe] (x) to (and);
+    \draw[pipe] (not) to (and);
+
+    \draw[pipe] (and) -- +(2em,0) node[right]{\(x∧¬x=\False\)};
+
+  \end{tikzpicture}
+\end{center}
+
+\subsection{\Problem{Circuit Satisfiability} games}
+
+Some circuits are possible to \Term{satisfy}, i.e. cause to output \True; some
+are not.  The game: \emph{given a circuit, can you satisfy it?}
+
+NP-complete because circuits are universal; basic building blocks of logic \&
+computers, pretty much any statement can be encoded using booleans.
+
+k-turn games definition, also np-complete.
+
+\section{Graph-coloring games}
+
+Assign to each vertex in a graph one of three colors: \(\Colors\).  The coloring
+is \Term{proper} if every two neighboring vertices have different colors:
+
+\begin{center}
+  \tikzset{
+    pics/four/.style n args={4}{
+      code={
+
+        \coordinate[vertex, fill=ks#1](a) at (3em/2,0);
+        \coordinate[vertex, fill=ks#2](b) at ($ (a) + (120:3em) $);
+        \coordinate[vertex, fill=ks#3](c) at ($ (a) + (180:3em) $);
+        \coordinate[vertex, fill=ks#4](d) at ($ (a) + (60:3em) $);
+
+        \draw[line width=2pt] (a) -- (b) -- (c) -- (a) -- (d);
+
+      },
+    },
+    common baseline/.style={text depth=1em/3, text height=2em/3},
+  }
+  \begin{tikzpicture}
+
+    \matrix[column sep=4em] {
+      \pic{four=2100}; & \pic{four=2120}; \\
+      \node[common baseline]{proper}; & \node[common baseline]{improper}; \\
+    };
+
+  \end{tikzpicture}
+\end{center}
+
+The game: \emph{given a graph, can you find a proper coloring for it?}
 
 
-\section{Materials and Methods}%
-
-Some basic information about how you went about doing your
-research.  You might want to have some images here that show some of
-your equipment, your lab setup, or some other relevant things.  (For
-example, for a project on image processing, you might have a
-``before'' and ``after'' image.)
-
-\begin{itemize}
-\item Use itemized lists rather than full paragraphs of text
-\item Remember, people are supposed to be intrigued by your poster
-\item The details should be in your full report or thesis
-\item Tell them how to get those (if they can) at the end of the poster
-\end{itemize}
-
-
-\section{Results}%
-
-Here we have the real meat of the poster.  Talk about what you did,
-how it worked out, and how it could have gone better.
-
-Diagrams and images---charts, graphs, photographs---are all good
-things to include here.
-
-
-\section{For Further Information}
-
-Possibly the most important section of your poster!  Tell people
-how they can find out more about your research.  Be sure to
-include
-\begin{itemize}
-\item Your e-mail address.  Mine's \url{cmc@math.hmc.edu}.
-\item A URL for a website with more information.  \url{http://www.math.hmc.edu/computing/support/printing/posters/}.
-\item If possible, a URL where they can download and read your full
-  report.  The same as the last.
-\item A URL where they can download your \emph{poster}.  And, again,
-  the same URL will do you.
-\end{itemize}
-
-
-\vfill
-\columnbreak
-
-
-\subsection{Figures in Small Multiples}
-
-Sometimes you need (or want) to include more than one image in a
-figure, such as when you have several close variations on a single
-image, as shown in Figure~\ref{fig:small-multiples}, which has
-subfigures \subref*{fig:small-mults-orig} or
-\subref{fig:small-mults-45}.  You could also refer to the subfigures
-as Figure~\ref{fig:small-mults-90} or
-Figure~\ref{fig:small-multiples}\subref{fig:small-mults-135}.
-
+\section{Exact-cover games}
 
 \section{Conclusions}
 
@@ -112,11 +220,17 @@ the previous section), write your \emph{conclusions} based on those
 results---what have you learned, and what does what you've learned
 mean for your reader, the world at large, and your future research?
 
-\section{Formatting References}
+\section{For more information…}
+
+\begin{itemize}[nosep]
+  \item Feel free to email me at \url{kwshi@hmc.edu}.
+  \item Check out the project website at \url{TODO}
+  \item download the full thesis report at \url{insert claremont thesis URL here}
+  \item GitHub page: \url{https://github.com/kwshi/hmc-math-thesis}
+\end{itemize}
 
 \bibliographystyle{hmcmath}
 \bibliography{sampleposter}
-\vfill
 
 \section{Acknowledgments}
 
@@ -124,16 +238,7 @@ If there are people or institutions that were particularly helpful
 to you during your research, thank them here.  It's especially
 important to mention anyone who gave you money.
 
-I want to express my appreciation to the Department of Biology at
-Swarthmore College, who provided an excellent sample poster
-\citep{swarthmore-poster} that helped inspire this version of our
-sample poster.  Colin Purrington also maintains an excellent page
-with information about designing scientific
-posters. \citeyearpar{purrington-sciposters}
 
-\vfill
 \end{poster}
 
 \end{document}
-
-
