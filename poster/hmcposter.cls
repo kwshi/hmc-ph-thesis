@@ -1,24 +1,24 @@
 % \iffalse meta-comment
 %
 % hmcposter.cls -- LaTeX class to create posters
-% 
-% Copyright (C) 2005-2015 Claire M. Connelly and 
+%
+% Copyright (C) 2005-2015 Claire M. Connelly and
 % the Department of Mathematics, Harvey Mudd College
-% 
+%
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
 % the Free Software Foundation; either version 2 of the License, or
 % (at your option) any later version.
-% 
+%
 % This program is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 % GNU General Public License for more details.
-% 
+%
 % You should have received a copy of the GNU General Public License
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-% 
+%
 % Contact: Claire Connelly <cmc@math.hmc.edu>
 %          Department of Mathematics
 %          Harvey Mudd College
@@ -78,9 +78,9 @@
 %% Set some dimensions for layout.
 \RequirePackage[
 centering,
-paperwidth=36in,
-paperheight=48in,
-top=1.75in,
+paperwidth=48in,
+paperheight=36in,
+top=0.5in,
 left=1.75in,
 right=1.75in,
 bottom=2in,
@@ -100,7 +100,7 @@ includefoot,
 % Headers and footers.
 \if@clinic
 \geometry{%
-headheight=5.6in,
+headheight=6.0in,
 headsep=0.5in,
 footskip=1in,
 }
@@ -109,7 +109,7 @@ footskip=1in,
 % Thesis has a taller header.
 \if@thesis
 \geometry{%
-headheight=6.5in,
+headheight=5.5in,
 headsep=0.5in,
 footskip=1in,
 }
@@ -139,6 +139,9 @@ footskip=1in,
 \def\sponsorlogowidth#1{\gdef\@sponsorlogowidth{#1}}
 \def\@sponsorlogowidth{2in}
 \fi
+
+\renewcommand\title[1]{\newcommand\@MyTitle{#1}}
+\newcommand\subtitle[1]{\newcommand\@MySubtitle{#1}}
 
 %% For a thesis poster.
 \if@thesis
@@ -222,15 +225,23 @@ footskip=1in,
   \fi
 
 %% For thesis
-\if@thesis
-\fancyhead[C]{%
-  \begin{center}
-    {\color{black}\Large\textsf{\@class}\\}%
-    {\color{hmcorange}\fontsize{100pt}{120pt}\selectfont\textsf{\textbf{\@title}}\\[0.25em]}
-    {\color{black}\Large\textsf{\@author}\\[-0.5em]}
-  \end{center}
+%\if@thesis
+\RequirePackage{array}
+\RequirePackage{multirow}
+\lhead{
+  \begin{tabular}[b]{@{}ll}
+    \multirow{3}{*}[1em]{\includegraphics{hmclogo}}
+    & {\fontsize{2em}{2em}\selectfont\color{black}\scshape\@class} \\[.5em]
+    & {\fontsize{3em}{3em}\selectfont\color{hmcorange}\bfseries\@MyTitle} \\[.75em]
+    & {\fontsize{2em}{2em}\selectfont\color{hmcorange}\bfseries\@MySubtitle} \\[1em]
+  \end{tabular}
 }
-\fi
+\rhead{
+  \includegraphics[width=6in]{hmcmath-hexen-logo}\\[1em]
+  \fontsize{1.5em}{1.5em}\selectfont\@author
+}
+%\RequirePackage{showframe}
+%\fi
 
 
 %% Define the footer.
@@ -320,12 +331,12 @@ footskip=1in,
 \newenvironment{poster}{%
 \raggedcolumns
 \raggedbottom
-\raggedright
+%\raggedright
 \thispagestyle{fancy}
 %{\color{hmcorange}\rule{\textwidth}{2pt}}
-\begin{multicols*}{2}
+\begin{multicols}{3}
 }%
-{\end{multicols*}
+{\end{multicols}
 }
 
 

@@ -1,14 +1,25 @@
 %% Use the hmcposter class with the thesis document-class option.
-\documentclass[thesis]{hmcposter}
+\documentclass[thesis, landscape]{hmcposter}
 
 \usepackage{mathtools}
 \usepackage{amsmath}
+%\usepackage{lmodern}
+%\usepackage{unicode-math}
 \usepackage{libertinus}
 \renewcommand\familydefault\sfdefault
 
-\usepackage{enumitem}
+\setlength\parindent{0pt}
+%\usepackage{parskip}
+
+\usepackage[compact, medium]{titlesec}
+\titlespacing\section{0pt}{.25em}{.25em}
+\titlespacing\paragraph{0pt}{.25em}{1em}
+
+
+\usepackage[inline]{enumitem}
 \setlist[itemize]{
   left=1em..2em,
+  label={\color{gray}\textbullet},
 }
 
 \usepackage{graphicx}
@@ -20,7 +31,8 @@
 
 \author{Kye Shi}
 \posteryear{2022}
-\title{Games for one, games for two!\\\LARGE\P{} vs \NP{} vs \SigmaP2 and more…}
+\title{Games for one, games for two!}
+\subtitle{Computationally complex fun for polynomial-hierarchical families}
 
 \class{Math 197: Senior Thesis}
 
@@ -29,6 +41,8 @@
 
 \usepackage{colortbl}
 \setlength\arraycolsep{.5em}
+\setlength\tabcolsep{.5em}
+%\setlength\tabrowsep{2em}
 \setlength\arrayrulewidth{2pt}
 \arrayrulecolor{gray}
 
@@ -38,75 +52,149 @@
 
 
 \tikzset{
-  input/.style={
-    circle,
-    fill,
-    inner sep=0pt,
-    minimum size=3pt,
-  },
   gate/.style={
     draw,
     line width=2pt,
     rounded corners=1em/8,
+    inner sep=1em/4,
   },
+  every path/.style={line width=2pt},
   pipe/.style={
-    line width=2pt,
-    rounded corners=1em/2,
-    to path={
-      (\tikztostart)
-      -- ($ (\tikztostart -| \tikztotarget)!1/2!(\tikztostart) $)
-      %-- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
-      -- (\tikztotarget)
-    },
-    -Stealth,
+    line width=3pt,
+    %rounded corners=1em/2,
+    %to path={
+    %  (\tikztostart)
+    %  -- ($ (\tikztostart -| \tikztotarget)!1/2!(\tikztostart) $)
+    %  %-- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
+    %  -- (\tikztotarget)
+    %},
+    -{Stealth[length=1em/2]},
   },
+  common baseline/.style={text depth=1em/3, text height=2em/3},
   over/.style={
     preaction={
       draw=white,
-      line width=8pt,
+      line width=7pt,
       -,
     },
   },
   gates/.style={
-    row sep=1em, column sep=3em, matrix of math nodes,
+    row sep=1em, column sep=2em, matrix of math nodes, inner sep=0pt,
   },
   input/.style={
     circle,
     inner sep=0pt,
     minimum size=1em,
-    fill,
-    fill opacity=1/4,
+    draw,
+    line width=2pt,
     text opacity=1,
   },
   vertex/.append style={
     line width=2pt,
   },
+  pics/circuit example/.style n args={8}{
+    code={
+      \matrix[gates, ampersand replacement=\&]{
+        |[input, #1](x)|x \& |[gate, #4](xy)|∧ \\
+        |[input, #2](y)|y \& |[gate, #5](yz)|∧ \&\& |[gate, #8](or')|∨ \\
+        |[input, #3](z)|z \& |[gate, #6](zx)|∧ \\
+      };
+
+      \node[gate, #7](or) at ($ (xy)!1/2!(or') $){\(∨\)};
+
+      \draw[pipe, #2] (y) to (xy);
+      \draw[pipe, #2] (y) to (yz);
+      \draw[pipe, #3] (z) to (yz);
+      \draw[pipe, #3] (z) to (zx);
+      \draw[pipe, #1, over] (x) to (zx.north west);
+      \draw[pipe, #1] (x) to (xy);
+
+      \draw[pipe, #4] (xy) to (or);
+      \draw[pipe, #5] (yz) to (or);
+      \draw[pipe, #7] (or) to (or');
+      \draw[pipe, #6] (zx) to (or');
+
+      \draw[pipe, #8] (or'.east) -- +(2em,0) coordinate(out);
+    },
+  },
+  group/.style={
+    draw,
+    rounded corners=1em/4,
+    densely dashed,
+    line width=2pt,
+    opacity=1/4,
+    node contents=,
+  },
+  pics/circuit game/.style n args={8}{
+    code={
+      \pic{circuit example={#1}{#2}{#3}{#4}{#5}{#6}{#7}{#8}};
+      \node[fit=(x), group, "\(I₁\)" {left, opacity=1/2}];
+      \node[fit=(y), group, "\(I₂\)" {left, opacity=1/2}];
+      \node[fit=(z), group, "\(I₃\)" {left, opacity=1/2}];
+    },
+  },
+  blank/.style={
+    draw opacity=1/2,
+  },
+  done/.style={
+    fill=ks#1,
+    draw=ks#1,
+    text=white,
+  },
+  pics/fake or/.style n args={5}{code={
+
+      \coordinate[vertex, #4](#2) at ($ (#1) + (0,-2em) $);
+      \coordinate[vertex, fill=ks2](aux) at ($ (#1) + (1em,-1em) $);
+      \coordinate[vertex](#1') at ($ (#1) + (2em,0) $);
+      \coordinate[vertex](#2') at ($ (#1) + (2em,-2em) $);
+      \coordinate[vertex, #5](#3) at ($ (#1) + (3em,-1em) $);
+      \draw (#1') -- (#3) -- (#2') -- (#2) -- (aux) -- (#1) -- (#1') -- (#2');
+
+  }},
+  vertex label/.style={
+    common baseline,
+    inner xsep=1em/4,
+    left,
+  },
+  pics/and or/.style 2 args={code={
+      \matrix[ampersand replacement=\&, inner sep=0pt]{
+        \coordinate[vertex, "\(#1x\)" vertex label](x);
+        \pic{fake or={x}{y}{t}{"\(#1y\)" vertex label}{}};
+        \pic{fake or={t}{nz}{o}{"\(#2z\)" vertex label}{fill=ks1}}; \&
+        \coordinate[vertex, "\(#2x\)" vertex label](nx) at (0,-1em);
+        \pic{fake or={nx}{z}{o}{"\(#1z\)" vertex label}{fill=ks1}}; \&
+        \coordinate[vertex, "\(#2y\)" vertex label](ny) at (0,-1em);
+        \pic{fake or={ny}{z}{o}{"\(#1z\)" vertex label}{fill=ks1}}; \\
+      };
+  }},
 }
 
 \begin{document}
-
 
 \begin{poster}
 
 \section{Puzzles, games, and hierarchies}
 
-\NP-complete problems
+Many well-known one-player games, such as \emph{Sudoku}, Minesweeper, and
+Solitaire, are ``difficult'' for computers to solve---formally: they are
+\emph{\NP-complete}. What is \NP?  What is \P?  How are they related, and how
+does that relationship generalize?
 
-P vs NP problem.
+My thesis takes the following perspective:
+\begin{itemize}
+  \item Problems in \P{} represent games with ``\(0\) turns'' (e.g., given a
+    fully-filled-in Sudoku grid, decide whether it's valid).
+  \item Problems in \NP{} represent games with \(1\) turn (e.g., given an
+    incomplete grid, decide whether a winning move exists).
+\end{itemize}
+There are infinitely many more classes of problems along this \emph{hierarchy}:
+\SigmaP k, representing decision problems for games with \(k\) turns, for each
+\(k∈\Set{0,1,2,3,\dotsc}\).  These classes form the \Term{polynomial hierarchy}.
 
-what is NP?  useful way to understand it: puzzles, or games with a single turn.
-a well-known example is the Sudoku puzzle
+We explore two collections of polynomial hierarchy games: boolean
+circuit satisfiability games, and graph 3-coloring games.
 
-
-takes us farther: games with 2 turns fall into a class known as sigma2p, games
-with k sigmakp (and yes, np=sigma1p).  together, these classes form the
-polynomial hierarchy,
-
-
-
-definition of a k-turn game.
-
-\section{First stop: boolean circuits}
+\section{Boolean circuits}
 
 \Term{Boolean circuits} consist of \Term{wires}, which carry \True/\False{}
 values, sent through various \Term{logic gates}:
@@ -118,43 +206,23 @@ values, sent through various \Term{logic gates}:
   \end{array}
 \]
 
-For example, the circuit below returns \True{} if and only if at least \(2/3\)
-of its inputs are \True:
+A circuit is \Term{satisfied} if its output is \True.  For example, the circuit
+below is satisfied if and only if at least \(2/3\) of its inputs are \True:
 
 \begin{center}
   \begin{tikzpicture}
-    \matrix[gates, ampersand replacement=\&]{
-      |[input](x)|x \& |[gate](xy)|∧ \\
-      |[input](y)|y \& |[gate](yz)|∧ \&\& |[gate](or')|∨ \\
-      |[input](z)|z \& |[gate](zx)|∧ \\
-    };
-
-    \node[gate](or) at ($ (xy)!1/2!(or') $){\(∨\)};
-
-    \draw[pipe] (y) to (xy.south west);
-    \draw[pipe] (y) to (yz);
-    \draw[pipe] (z) to (yz.south west);
-    \draw[pipe] (z) to (zx);
-    \draw[pipe, over] (x) to (zx.north west);
-    \draw[pipe] (x) to (xy);
-
-    \draw[pipe] (xy) to (or);
-    \draw[pipe] (yz) to (or);
-    \draw[pipe] (or) to (or');
-    \draw[pipe] (zx) to (or');
-
-    \draw[pipe] (or'.east) -- +(2em,0) node[right]{\(xy∨yz∨zx\)};
-
+    \pic{circuit example={}{}{}{}{}{}{}{}};
+    \node[right] at (out) {\(xy∨yz∨zx\)};
   \end{tikzpicture}
 \end{center}
 
-Here is a circuit that \emph{never} returns \True:
+Here is a circuit that is \emph{unsatisfiable}:
 
 \begin{center}
   \begin{tikzpicture}
     \matrix[gates, ampersand replacement=\&]{
-      \& |[gate](not)|¬ \& |[gate](and)|∧ \\
-      |[input](x)|x \\
+      |[input](x)|x \& \& |[gate, done=0](and)|∧ \\
+      \& |[gate](not)|¬ \\
     };
 
     %\draw[pipe] (x) to (buf);
@@ -162,25 +230,52 @@ Here is a circuit that \emph{never} returns \True:
     \draw[pipe] (x) to (and);
     \draw[pipe] (not) to (and);
 
-    \draw[pipe] (and) -- +(2em,0) node[right]{\(x∧¬x=\False\)};
+    \draw[pipe, draw=ks0] (and) -- +(2em,0) node[right]{\(x∧¬x=\False\)};
 
   \end{tikzpicture}
 \end{center}
 
-\subsection{\Problem{Circuit Satisfiability} games are hard}
+\columnbreak
 
-Some circuits are possible to \Term{satisfy}, i.e. cause to output \True; some
-are not.  The game: \emph{given a circuit, can you satisfy it?}
+\section{Circuit satisfiability games}
 
-NP-complete because circuits are universal; basic building blocks of logic \&
-computers, pretty much any statement can be encoded using booleans.
+The objective: \emph{given a circuit, can you satisfy it?}
 
-k-turn games definition, also np-complete.
+A \(k\)-turn circuit game proceeds as follows.
+\begin{itemize}
+  \item The game starts with a circuit whose inputs are partitioned into \(k\)
+    disjoint groups labeled \(I₁,I₂,\dotsc,Iₖ\).
+  \item Two players play against each other: on turn \(i\), player \((i\bmod2)\)
+    picks values for all inputs in \(Iᵢ\).
+\end{itemize}
+Player \(1\) wins if the circuit ends up satisfied; player \(2\) wins if the
+circuit is falsified.  Who has the winning strategy?
+
+Shown below is an example game in which player \(1\) wins.
+
+\begin{center}
+  \tikzset{every picture/.style={baseline=(y.base)}}
+  \begin{tabular}{c|c}
+    (start) & \tikz{\pic{circuit game={blank}{blank}{blank}{blank}{blank}{blank}{blank}{blank}}} \\\midrule
+    P\(1\): \(x=\True\) &
+    \tikz{\pic{circuit game={done=1}{blank}{blank}{blank}{blank}{blank}{blank}{blank}}} \\\midrule
+    P\(2\): \(y=\False\) &
+    \tikz{\pic{circuit game={done=1}{done=0}{blank}{done=0}{done=0}{blank}{done=0}{blank}}} \\\midrule
+    P\(1\): \(z=\True\) &
+    \tikz{\pic{circuit game={done=1}{done=0}{done=1}{done=0}{done=0}{done=1}{done=0}{done=1}}}
+  \end{tabular}
+\end{center}
+
+\emph{Any algorithm can be represented as a sequence of Boolean circuits.}  (In
+a sense, this is literally how real computers work!)
+
+Consequently, any \SigmaP k game can be converted to an equivalent \(k\)-turn
+\emph{circuit} game.  Thus, \(k\)-turn circuit games are \SigmaP k-complete.
 
 \section{Graph-coloring games}
 
-Assign to each vertex in a graph one of three colors: \(\Colors\).  The coloring
-is \Term{proper} if every two neighboring vertices have different colors:
+Give each vertex in a graph one of three colors \(\Colors\).  The coloring is
+\Term{proper} if every two neighboring vertices have different colors:
 
 \begin{center}
   \tikzset{
@@ -196,78 +291,103 @@ is \Term{proper} if every two neighboring vertices have different colors:
 
       },
     },
-    common baseline/.style={text depth=1em/3, text height=2em/3},
   }
   \begin{tikzpicture}
 
-    \matrix[column sep=4em] {
-      \pic{four=2100}; & \pic{four=2120}; \\
-      \node[common baseline]{proper}; & \node[common baseline]{improper}; \\
+    \matrix[column sep=2em, inner sep=0pt] {
+      \pic{four=2100}; & \pic{four=2120}; &
+      \coordinate[vertex](o) at (0,1em);
+      \foreach \i in {0,...,4} {
+        \coordinate[vertex](v\i) at ($ (o) + ({360/5*\i+90}:2em) $);
+        \draw[line width=2pt] (o) -- (v\i);
+      }
+      \draw[line width=2pt] (v0) -- (v1) -- (v2) -- (v3) -- (v4) -- (v0); \\
+      \node[common baseline]{proper}; & \node[common baseline]{improper}; &
+      \node[common baseline]{not properly-colorable}; \\
     };
 
   \end{tikzpicture}
 \end{center}
 
-Some graphs are impossible to properly 3-color:
+The objective: \emph{given a graph, can you find a proper coloring for it?}
+
+A \(k\)-turn 3-coloring game proceeds as follows:
+\begin{itemize}[nosep]
+  \item Start with a graph with vertices partitioned as \(V₁,\dotsc,Vₖ\).
+  \item On turn \(i\), player \((i\bmod 2)\) colors all vertices in \(Vᵢ\).
+\end{itemize}
+If, on any turn, a player creates an improper edge, they lose. Otherwise, if all
+turns are played properly, the last player wins.
+
+Any boolean circuit can be converted into an ``equivalent'' 3-coloring graph.
+Associate \(\ColorId1≡\True\), \(\ColorId0≡\False\); convert logic gates to
+graphs:
 
 \begin{center}
-  \begin{tikzpicture}
-    \coordinate[vertex](o);
-    \foreach \i in {0,...,4} {
-      \coordinate[vertex](v\i) at ({360/5*\i+90}:2em);
-      \draw[line width=2pt] (o) -- (v\i);
-    }
-    \draw[line width=2pt] (v0) -- (v1) -- (v2) -- (v3) -- (v4) -- (v0);
-  \end{tikzpicture}
+  \tikzset{every picture/.style={baseline=(current bounding box.center)}}
+  \begin{tabular}{c|c|c}
+    \NOT & \(y=¬x\) &
+    \begin{tikzpicture}
+      \coordinate[vertex, "\(x\)" vertex label](x);
+      \coordinate[vertex, "\(y\)" {vertex label, right}](y) at (2em,0);
+      \coordinate[vertex, fill=ks2](aux) at (1em,-1em);
+      \draw (x) -- (y) -- (aux) -- (x);
+    \end{tikzpicture} \\ \midrule
+    \AND & \(z=x∧y\) & \tikz{\pic{and or={¬}{}}} \\ \midrule
+    \OR & \(z=x∨y\) & \tikz{\pic{and or={}{¬}}}
+  \end{tabular}
 \end{center}
 
-The game: \emph{given a graph, can you find a proper coloring for it?}
-
-\subsection{Are graph-coloring games hard?}
-
-Yes!  Convert from circuits to graphs as follows:
-
-Assign so-and-so input vertices to which players; last player fills out
-remaining colors on gate gadgets.
-
-Requiring each player to play a proper move, constrains their colorings to be
-consistent with boolean circuit outputs.
-
-\section{Exact-cover games}
-
-Menu, select items
-
-
-\subsection{Are exact-cover games hard?}
-
-Convert from circuits to graphs.
+To convert between \emph{games}, map \(I₁,\dotsc,Iₖ\) to \(V₁,\dotsc,Vₖ\), and
+also include logic-gate-vertices in \(Vₖ\).  Pre-color the output vertex
+\ColorId1; the last player wins iff the circuit is finally satisfied.  Thus
+\(k\)-turn graph-coloring games are \SigmaP k-complete for odd \(k\), and
+\((\SigmaP k)\Complement\)-complete for even \(k\).
 
 \section{Conclusions}
 
-Rather than just a summary of your findings (which you presented in
-the previous section), write your \emph{conclusions} based on those
-results---what have you learned, and what does what you've learned
-mean for your reader, the world at large, and your future research?
-
-\section{For more information…}
-
-\begin{itemize}[nosep]
-  \item Feel free to email me at \url{kwshi@hmc.edu}.
-  \item Check out the project website at \url{TODO}
-  \item download the full thesis report at \url{insert claremont thesis URL here}
-  \item GitHub page: \url{https://github.com/kwshi/hmc-math-thesis}
-\end{itemize}
-
-\bibliographystyle{hmcmath}
-\bibliography{sampleposter}
-
-\section{Acknowledgments}
-
-If there are people or institutions that were particularly helpful
-to you during your research, thank them here.  It's especially
-important to mention anyone who gave you money.
-
+Only two ``flavors'' of \(\SigmaP k\)/\((\SigmaP k)\Complement\)-complete games
+are presented here.  However, there are certainly many more out there.  The
+basic ideas explored here are readily generalized; almost every \NP-complete
+problem, I suspect, gives rise to interesting \(k\)-turn generalization.
 
 \end{poster}
+
+\paragraph{Acknowledgments}
+
+Many thanks to Prof. Nicholas Pippenger, my advisor, for patiently putting up
+with me despite my slow pace of progress.  Also thanks to Prof. Jon Jacobsen,
+Melissa Hernandez-Alvarez, and DruAnn Thomas, for running the well-oiled thesis
+machine and providing a (generally) enjoyable senior thesis experience. And of
+course, thanks to Sheri Hsueh, mom, for funding my exorbitant college education.
+
+\paragraph{References}
+\begin{enumerate*}[label=\textcolor{gray}{[\arabic*]}]
+  \item Papadimitriou, Christos H. (1993). \textit{Computational Complexity}. University
+    of California -- San Diego: Addison-Wesley.
+  \item Cormen, Thomas H.; Leiserson, Charles E.; Rivest, Ronald L.; Stein, Clifford.
+    (2001). \textit{Introduction to Algorithms}. The MIT Press.
+\end{enumerate*}
+
+%\begin{enumerate*}
+%  \item 
+%  \item Potapov, Igor. ``\textit{3-Coloring is NP-Complete}'' (2020).
+%    \url{https://cgi.csc.liv.ac.uk/~igor/COMP309/3CP.pdf}.
+%\end{enumerate*}
+
+
+
+
+%\begin{itemize}[nosep]
+%  \item Feel free to email me at \url{kwshi@hmc.edu}.
+%  \item Check out the project website at \url{TODO}
+%  \item download the full thesis report at \url{insert claremont thesis URL here}
+%  \item GitHub page: \url{https://github.com/kwshi/hmc-math-thesis}
+%\end{itemize}
+
+%\bibliographystyle{hmcmath}
+%\bibliography{sampleposter}
+
+
 
 \end{document}
