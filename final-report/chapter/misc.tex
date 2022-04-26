@@ -1,17 +1,18 @@
-\chapter{Two fun games (and hopefully more)}
+\chapter{Graph 3-coloring games}
 
-In the last chapter, we set the polynomial-hierarchy stage, focusing on the
-circuit games \(\CircSatₖ\) as canonical examples of \SigmaP k-complete
-problems.  In this chapter, we expand that landscape by exploring two other
-(collections of) \SigmaP k-complete games: one played on graph colorings,
-another played on set coverings.
+In the last chapter, we set the polynomial-hierarchy stage, focusing on circuit
+games \(\CircSatₖ\) as canonical examples of \SigmaP k-complete problems.  In
+this chapter, we expand that landscape by exploring another collection \SigmaP
+k-complete games, played via colorings on graph vertices.
 
-It is only due to the time constraints on this thesis that we stop at two:
+It is only due to the time constraints on this thesis that we stop at one game:
 ultimately, I hope to convey, through the examples presented in this chapter,
 the sense that there are many, many \SigmaP k-complete games out there, all of
-which intuitive extensions of classic, well-known \NP-complete puzzles.
+which intuitively stem from classic, well-known \NP-complete puzzles.
 
-\section{Graph coloring games}
+%\section{Graph coloring games}
+
+\section{Preliminaries: graphs and proper colorings}
 
 First, we introduce some preliminary definitions about graphs and colorings.  A
 graph is a network of \emph{vertices} connected by \emph{edges}.  Formally:
@@ -72,13 +73,16 @@ the \Problem{3-Coloring Properness} problem, or \ColProp{} for short:
 
 \begin{problem}{\Problem{3-Coloring Properness} / \ColProp}{}
 
-  Given a graph and a 3-coloring \(κ\) of it (specified by listing out each
-  vertex and its assigned color), determine whether \(κ\) is a proper coloring.
+  \begin{description}[nosep]
+  \item[Given:] a graph and a 3-coloring \(κ\) of the graph (specified by
+    listing out each vertex with its color)
+  \item[Determine whether:] \(κ\) is a proper coloring
+  \end{description}
 
-  \tcblower
-  \ColProp=\SetBuilder{(\text{graph \(Γ\)},\text{coloring \(κ\)})}{
-    ∀(u,v)∈\Edges(Γ)\Q κ(u)≠κ(v)
-  }
+  %\tcblower
+  %\ColProp=\SetBuilder{(\text{graph \(Γ\)},\text{coloring \(κ\)})}{
+  %  ∀(u,v)∈\Edges(Γ)\Q κ(u)≠κ(v)
+  %}
 \end{problem}
 
 In order for \ColProp{} to be usable as a basis for polynomial-hierarchy games,
@@ -171,76 +175,107 @@ assigns \None{} to every vertex.  When a player makes a move, they
 
 \end{definition}
 
-Finally, we define the \(k\)-turn graph coloring games.  To make it easier to
-formulate the game inductively, we posit for now that games begin on a
-partially-colored graph, rather than an uncolored graph.  We discuss later in
-section TODO how to remove this requirement.
+Now, we are ready to give the full inductive formulation of \(k\)-turn graph
+coloring games.
+\begin{itemize}
 
-Thus we start with a graph \(Γ\) and a partial coloring \(κ\) of \(Γ\).  The
-\emph{uncolored} vertices in \(Γ\) are partitioned into \(k\) groups,
-\(U₁,U₂,\dotsc,Uₖ\).  For each turn \(i\) in \(1,2,\dotsc,k\), player
-\((i\bmod2)\) assigns colors to all vertices in \(Uᵢ\).  If, when doing so, they
-introduce an improper edge, they lose; otherwise, the game proceeds.  If all
-turns finish, and the resulting total coloring is proper, the last player wins.
+  \item The \(0\)-turn winning condition is \ColProp: given a totally-colored
+    graph, decide whether the coloring is proper.
 
-The inductive definition of this game is given below.
-\begin{enumerate}
-  \item On the first turn, the first player assigns a coloring \(δ₁\) to \(U₁\),
-    producing a new partial coloring \(κ'=κ[δ₁]\).  If \(κ'\) is improper, then
-    the first player automatically loses; otherwise, the game continues.
-  \item[{[\(2\)--\(k\)]}] The remaining \(k-1\) turns proceed inductively,
-    starting with the new partial coloring \(κ'\), with the first move made by
-    the second player.
-\end{enumerate}
-At the end of all turns, if the resulting coloring is improper, the player who
-introduced the improper edge loses; otherwise, the last player wins.  The
-decision problem: does the first player have a winning strategy?
+  \item \(k\)-turn games begin on a partially-colored graph \((Γ,κ)\), where the
+    partial coloring \(κ\) comprises color assignments made in previous turns.
+    (We discuss in \cref{sec:precolor} TODO restrictions of these games that
+    start with completely uncolored graphs.)
+
+    If \(κ\) is improper to begin with, then we posit that the first player
+    automatically wins, since that means that the opposite player must have made
+    an improper move on their previous turn. Otherwise, the first player colors
+    \(U₁\) with a coloring \(δ\), and wins if and only if the remaining
+    \((k-1)\)-turn game \(\Paren*{Γ,κ[δ],(U₂,\dotsc,Uₖ)}\) is now un-winnable by
+    the opposite player.
+\end{itemize}
+
+
+%In \cref{sec:pre-coloring}, we discuss how to
+%restrict this formulation to games that start on empty graphs.
+
+%Thus we start with a graph \(Γ\) and a partial coloring \(κ\) of \(Γ\).  The
+%\emph{uncolored} vertices in \(Γ\) are partitioned into \(k\) groups,
+%\(U₁,U₂,\dotsc,Uₖ\).  For each turn \(i\) in \(1,2,\dotsc,k\), player
+%\((i\bmod2)\) assigns colors to all vertices in \(Uᵢ\).  If, when doing so, they
+%introduce an improper edge, they lose; otherwise, the game proceeds.  If all
+%turns finish, and the resulting total coloring is proper, the last player wins.
+
+%\begin{enumerate}
+%  \item On the first turn, the first player assigns a coloring \(δ₁\) to \(U₁\),
+%    producing a new partial coloring \(κ'=κ[δ₁]\).  If \(κ'\) is improper, then
+%    the first player automatically loses; otherwise, the game continues.
+%  \item[{[\(2\)--\(k\)]}] The remaining \(k-1\) turns proceed inductively,
+%    starting with the new partial coloring \(κ'\), with the first move made by
+%    the second player.
+%\end{enumerate}
+%At the end of all turns, if the resulting coloring is improper, the player who
+%introduced the improper edge loses; otherwise, the last player wins.  The
+%decision problem: does the first player have a winning strategy?
 
 \begin{problem}{\Problem{3-Colorability} with \(k\) turns / \Col[k]}{}
 
-  Given a partially-colored graph \((Γ,κ)\), such that the uncolored vertices
-  are partitioned into sets \(U₁,U₂,\dotsc,Uₖ\), determine whether there is a
-  coloring of \(U₁\) so that
+  \begin{description}[nosep]
+    \item[Given:] a partially-colored graph together with a partitioning of its
+      vertices, \((Γ,κ,(U₁,U₂,\dotsc,Uₖ))\)
+    \item[Determine whether:] \(κ\) is improper, or there exists some \(δ\colon
+      U₁→\Colors\) such that
+      \begin{nest}
+        \(\Paren*{Γ,κ[δ],(U₂,\dotsc,Uₖ)}∉\Col[k-1]\)
+      \end{nest}
+    \end{description}
 
-  TODO finish, and also i think the recursive defn below is not exactly
-  right---I think the check-that-each-proper-coloring requirement needs to
-  happen in the subproblem in order to fit this defn to sigmap recursion
-
-  \tcblower
-  \Col[k] = \SetBuilderLong{(Γ,κ,(U₁,\dotsc,Uₖ))}{
-    ∃δ\colon U₁→\Colors\Q
-    \text{\(κ[δ]\) is proper and \((Γ,κ[δ],(U₂,\dotsc,Uₖ))∉\Col[k-1]\)}
-  }
 \end{problem}
 
-Unsurprisingly, \(\Col[k]∈\SigmaP k\).  This inclusion follows straightforwardly
-from the construction of \Col[k] as a \(k\)-turn game; we give a rigorous proof
-below by showing that it complies to the definition of \SigmaP k.
+Having defined \(\Col[k]\) as a \(k\)-turn game problem, we naturally expect
+that \(\Col[k]∈\SigmaP k\) (the class of all ``reasonable'' \(k\)-turn game
+problems).  Indeed, we claim it is, but it isn't immediately obvious \emph{how}.
+Specifically, membership in \(\Col[k]\) is conditioned on an extra ``\(κ\) is
+improper or'' clause that isn't present in the definition of \SigmaP k problems
+(\cref{def:ph}):
+\[
+  \begin{array}{r@{\;=\;\Big\{\,}c@{\;\Big\vert\;}c@{\quad∃}r@{\Q}c@{\:∉\:}c@{\,\Big\},}}
+    \Col[k] & (Γ,κ,\dotsc) & \underline{\text{\(κ\) is improper, or}} & δ &
+    (Γ,κ[δ],\dotsc) & \Col[k-1] \\[.5em]
+    \Ub[∈\SigmaP k]{Π} & B && M & (B,M) & \Ub[∈\SigmaP{k-1}]{Π'}
+  \end{array}
+\]
 
-\begin{proof}
 
-  For each \(k=0,1,\dotsc\), define \(\Col[k]'\) to be a modified version of
-  \Col[k] in which the first player automatically wins if the starting coloring
-  is invalid:
-  \[
-    \Col[k]' = \SetBuilderLong{(Γ,κ,(U₁,\dotsc,Uₖ))}{
-      \text{\(κ\) is improper, or \(∃δ\colon U₁→\Colors\Q(Γ,κ[δ],(U₂,\dotsc,Uₖ))∉\Col[k-1]'\)}
-    }
-  \]
 
-  When \(k=0\), there are no uncolored vertices, and \(κ\) is a total coloring.
-  Then \(\Col[0]'\) is simply the set of improperly colored graphs, the
-  complement of \ColProp:
-  \[
-    \Col[0]' = \SetBuilder{(Γ,κ)}{\text{\(κ\) is improper}} = \ColProp\Complement.
-  \]
-  Since \(\ColProp∈\P\) (\cref{th:3colprop-in-p}), we know that
-  \(\Col[0]'=\ColProp\Complement\) is also in \(\P=\SigmaP0\).
-
-  TODO
-
-\end{proof}
-
+%Unsurprisingly, \(\Col[k]∈\SigmaP k\).  This inclusion follows straightforwardly
+%from the construction of \Col[k] as a \(k\)-turn game; we give a rigorous proof
+%below by showing that it complies to the definition of \SigmaP k.
+%
+%\begin{proof}
+%
+%  For each \(k=0,1,\dotsc\), define \(\Col[k]'\) to be a modified version of
+%  \Col[k] in which the first player automatically wins if the starting coloring
+%  is invalid:
+%  \[
+%    \Col[k]' = \SetBuilderLong{(Γ,κ,(U₁,\dotsc,Uₖ))}{
+%      \text{\(κ\) is improper, or \(∃δ\colon U₁→\Colors\Q(Γ,κ[δ],(U₂,\dotsc,Uₖ))∉\Col[k-1]'\)}
+%    }
+%  \]
+%
+%  When \(k=0\), there are no uncolored vertices, and \(κ\) is a total coloring.
+%  Then \(\Col[0]'\) is simply the set of improperly colored graphs, the
+%  complement of \ColProp:
+%  \[
+%    \Col[0]' = \SetBuilder{(Γ,κ)}{\text{\(κ\) is improper}} = \ColProp\Complement.
+%  \]
+%  Since \(\ColProp∈\P\) (\cref{th:3colprop-in-p}), we know that
+%  \(\Col[0]'=\ColProp\Complement\) is also in \(\P=\SigmaP0\).
+%
+%  TODO
+%
+%\end{proof}
+%
 
 
 
@@ -837,14 +872,16 @@ the graph's colorings causes it to exactly compute the circuit.
 
 \end{proof}
 
+\section{Can we avoid pre-coloring vertices?}
 
 
-\section{Set covering games}
 
-introduce exact set covering problem
-
-introduce set covering game
-
-key idea: embedding circuits in set coverings
-
-proofs of game completeness
+%\section{Set covering games}
+%
+%introduce exact set covering problem
+%
+%introduce set covering game
+%
+%key idea: embedding circuits in set coverings
+%
+%proofs of game completeness

@@ -10,6 +10,8 @@
 \RequirePackage{microtype}
 \RequirePackage{parskip}
 
+\RequirePackage[normalem]{ulem}
+
 \RequirePackage{fontspec}
 \RequirePackage{lmodern}
 \RequirePackage[math-style=ISO]{unicode-math}
@@ -155,7 +157,7 @@
 %}
 \newtcolorbox{aside}{
   %shade box=black,
-  before upper=\tikz{\node[inner sep=0pt, opacity=1/2]{\scshape\bfseries Aside}}\quad,
+  before upper=\tikz{\node[inner sep=0pt, opacity=1/2]{\scshape\bfseries Aside}}\hspace{.5em},
   breakable,
   parbox=false,
   enhanced jigsaw,

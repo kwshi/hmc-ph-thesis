@@ -73,10 +73,13 @@
 
 \newcommand\Q{.\;}
 
+\newcommand\Ub[2][]{{}\underbrace{#2}\ifx#1\relax\else_{#1}\fi{}}
+
 \newcommand\True{\ensuremath{\mathrm{\color{ks-true}True}}}
 \newcommand\False{\ensuremath{\mathrm{\color{ks-false}False}}}
 \newcommand\Aux{{\mathrm{Aux}}}
 \newcommand\TF[1][]{\Set{\True,\False}\ifx#1\undefined\relax\else^{#1}\fi}
+\newcommand\YN[1][]{\Set{\text{yes},\text{no}}\ifx#1\undefined\relax\else^{#1}\fi}
 \newcommand\Strings[1][*]{\Set{0,1}\ifx#1\undefined\relax\else^{#1}\fi}
 
 \newcommand\Term{\textbf}
@@ -93,7 +96,7 @@
 \definecolor{ks0}{HTML}{0050c0}
 \definecolor{ks1}{HTML}{e00040}
 %\definecolor{ks2}{HTML}{f0b000}
-\definecolor{ks2}{HTML}{a06000}
+\definecolor{ks2}{HTML}{a08000}
 
 \definecolor{ks-false}{HTML}{0050c0}
 \definecolor{ks-true}{HTML}{e00060}
@@ -132,6 +135,8 @@
 
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
+\usetikzlibrary{quotes}
+\usetikzlibrary{fit}
 \usetikzlibrary{matrix}
 \usetikzlibrary{positioning}
 \usetikzlibrary{arrows.meta}

@@ -1,4 +1,5 @@
 \chapter{Boolean circuit puzzles and games}
+\label{ch:circuit}
 
 In this chapter, we begin to explore landscape of puzzle-and-game complexity
 classes---specifically, the \emph{polynomial hierarchy}---through a series of
@@ -19,12 +20,17 @@ To set the stage, we start with a relatively ``easy'' problem, known as the
 %\end{definition}
 
 \begin{problem}[lefthand ratio=.5]{\Problem{Circuit Value} / \CircVal}{circ-val}
+  \begin{description}[nosep]
+    \item[Given:] a boolean circuit with all inputs specified
+    \item[Return whether:] the circuit outputs \True
+  \end{description}
+  %
 
-  Given a boolean circuit with all inputs specified, compute its output. Return
-  \emph{yes} if the output is \True.
-
-  \tcblower
-  \CircVal = \SetBuilder{\text{circuit \(C\)}}{C()=\True}
+  %Given a boolean circuit with all inputs specified, compute its output. Return
+  %\emph{yes} if the output is \True.
+%
+%  \tcblower
+%  \CircVal = \SetBuilder{\text{circuit \(C\)}}{C()=\True}
 \end{problem}
 
 It is well-known that \(\CircVal∈\P\) (i.e., it is actually ``easy'').  We give
@@ -108,9 +114,9 @@ called \Problem{Circuit Satisfiability}, or \Problem{CircSat} for short:
   Given a boolean circuit \(C\), determine whether there exists some assignment
   to its inputs causing its output to be set to \True.  Such an assignment is
   called a \Term{satisfying assignment of \(C\)}.
-
-  \tcblower
-  \CircSat = \SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{∃X∈\TF[n]\Q C(X)=\True}
+%
+%  \tcblower
+%  \CircSat = \SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{∃X∈\TF[n]\Q C(X)=\True}
 \end{problem}
 
 Briefly: how (computationally) difficult is \Problem{CircSat}?  As it turns
@@ -164,7 +170,7 @@ be polynomially-bounded by the size of \(X\).  This requirement guarantees that
 size of \((X,Y)\) is also polynomial with respect to the size of \(X\).  We call
 problems with this constraint \emph{polynomially balanced}.
 
-\begin{definition}{polynomially balanced}{}
+\begin{definition}{polynomially balanced}{balance}
 
   Let \(Π⊆\Set{0,1}^*×\Set{0,1}^*\) be a decision problem whose inputs are
   \emph{pairs} of strings.  We say \(Π\) is \Term{polynomially balanced} if
@@ -290,73 +296,73 @@ sequence of circuit computations, one for each time-step of the algorithm. Thus
 every \(1\)-turn game is really just a \emph{special case} of the
 \Problem{Circuit Satisfiability} problem.
 
-\subsection{\True{} or \False?}
-
-In our definition of \CircSat, we say the player wins if the output of the
-circuit is set to \True.  But there is nothing special about \True---we could
-have defined the puzzle so that the player wins if the circuit outputs \False;
-the two formulations are exactly equivalent in difficulty.  Call the
-win-if-\False{} version of the puzzle \Problem{Circuit Falsifiability}:
-
-\begin{problem}{\Problem{Circuit Falsifiability}}{}
-
-  Given a boolean circuit \(C\), determine whether there exists some assignment
-  to its inputs causing its output to be set to \False.  Such an assignment is
-  called a \Term{falsifying assignment of \(C\)}.
-
-  \tcblower
-  \Problem{Circuit Falsifiability}=\SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{
-    ∃X∈\TF[n]\Q C(X)=\False
-  }
-\end{problem}
-
-Note that \Problem{Circuit Falsifiability} is not the same as the
-\emph{complement} of \Problem{Circuit Satisfiability}, whose answer is ``yes''
-when the player's moves \emph{always} lead to a \False{} output:
-\begin{align*}
-  \Problem{Circuit Satisfiability} &= \SetBuilder{C}{∃X\ldotp C(X)=\True} \\
-  (\Problem{Circuit Satisfiability})\Complement &= \SetBuilder{C}{∄X\ldotp C(X)=\True}
-  = \SetBuilder{C}{∀X\ldotp C(X)=\False} \\
-  \Problem{Circuit Falsifiability} &= \SetBuilder{C}{∃X\ldotp C(X)=\False}.
-\end{align*}
-
-To see that this formulation is equivalent in difficulty to \Problem{Circuit
-Satisfiability}, we show that both problems reduce to each other.
-
-\begin{theorem}{}{}
-
-  \Problem{Circuit Satisfiability} and \Problem{Circuit Falsifiability} are
-  equivalent in difficulty.
-
-\end{theorem}
-
-\begin{proof}
-
-  Let any circuit \(C\) be given.  Compose its output with a \NOT{} gate,
-  forming a new circuit \(¬C\) whose output is always opposite that of \(C\).
-
-  Therefore, \(C\) is satisfiable if and only if \(¬C\) is falsifiable;
-  conversely, \(C\) is falsifiable if and only if \(¬C\) is satisfiable.  Thus
-  the compose-with-\NOT-gate transformation is a reduction going both ways:
-  \begin{align*}
-    \Problem{Circuit Falsifiability} &≤ \Problem{Circuit Satisfiability}, \\
-    \Problem{Circuit Satisfiability} &≤ \Problem{Circuit Falsifiability}.
-    \qedhere
-  \end{align*}
-
-\end{proof}
-
-
-
-A corollary of this result is that \Problem{Circuit Falsifiability} is also
-\NP-complete and therefore fully ``characterizes'' \NP.
-
-\[
-  \Problem{Circuit Falsifiability} =
-  \SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{¬C∈\CircSat}.
-\]
-
-TODO think about reframing this
+%\subsection{\True{} or \False?}
+%
+%In our definition of \CircSat, we say the player wins if the output of the
+%circuit is set to \True.  But there is nothing special about \True---we could
+%have defined the puzzle so that the player wins if the circuit outputs \False;
+%the two formulations are exactly equivalent in difficulty.  Call the
+%win-if-\False{} version of the puzzle \Problem{Circuit Falsifiability}:
+%
+%\begin{problem}{\Problem{Circuit Falsifiability}}{}
+%
+%  Given a boolean circuit \(C\), determine whether there exists some assignment
+%  to its inputs causing its output to be set to \False.  Such an assignment is
+%  called a \Term{falsifying assignment of \(C\)}.
+%
+%  \tcblower
+%  \Problem{Circuit Falsifiability}=\SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{
+%    ∃X∈\TF[n]\Q C(X)=\False
+%  }
+%\end{problem}
+%
+%Note that \Problem{Circuit Falsifiability} is not the same as the
+%\emph{complement} of \Problem{Circuit Satisfiability}, whose answer is ``yes''
+%when the player's moves \emph{always} lead to a \False{} output:
+%\begin{align*}
+%  \Problem{Circuit Satisfiability} &= \SetBuilder{C}{∃X\ldotp C(X)=\True} \\
+%  (\Problem{Circuit Satisfiability})\Complement &= \SetBuilder{C}{∄X\ldotp C(X)=\True}
+%  = \SetBuilder{C}{∀X\ldotp C(X)=\False} \\
+%  \Problem{Circuit Falsifiability} &= \SetBuilder{C}{∃X\ldotp C(X)=\False}.
+%\end{align*}
+%
+%To see that this formulation is equivalent in difficulty to \Problem{Circuit
+%Satisfiability}, we show that both problems reduce to each other.
+%
+%\begin{theorem}{}{}
+%
+%  \Problem{Circuit Satisfiability} and \Problem{Circuit Falsifiability} are
+%  equivalent in difficulty.
+%
+%\end{theorem}
+%
+%\begin{proof}
+%
+%  Let any circuit \(C\) be given.  Compose its output with a \NOT{} gate,
+%  forming a new circuit \(¬C\) whose output is always opposite that of \(C\).
+%
+%  Therefore, \(C\) is satisfiable if and only if \(¬C\) is falsifiable;
+%  conversely, \(C\) is falsifiable if and only if \(¬C\) is satisfiable.  Thus
+%  the compose-with-\NOT-gate transformation is a reduction going both ways:
+%  \begin{align*}
+%    \Problem{Circuit Falsifiability} &≤ \Problem{Circuit Satisfiability}, \\
+%    \Problem{Circuit Satisfiability} &≤ \Problem{Circuit Falsifiability}.
+%    \qedhere
+%  \end{align*}
+%
+%\end{proof}
+%
+%
+%
+%A corollary of this result is that \Problem{Circuit Falsifiability} is also
+%\NP-complete and therefore fully ``characterizes'' \NP.
+%
+%\[
+%  \Problem{Circuit Falsifiability} =
+%  \SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{¬C∈\CircSat}.
+%\]
+%
+%TODO think about reframing this
 
 
 %A corollary-corollary,
@@ -411,29 +417,30 @@ problem \(\CircSat₂\).
 
 \begin{problem}[lefthand ratio=.5]{\Problem{Circuit Satisfiability} with \(2\) turns / \(\CircSat₂\)}{}
 
-  Given a boolean circuit \(C\), with inputs partitioned into two groups
-  \(I₁,I₂\), determine whether
-  \begin{nest}
-    there exists some \(X₁∈\TF[\Abs{I₁}]\) such that
+  \begin{description}
+  \item[Given:] a boolean circuit \(C\), with inputs partitioned into two groups
+    \(I₁,I₂\)
+
+  \item[Determine whether:] there exists some \(X₁∈\TF[\Abs{I₁}]\) such that
     \begin{nest}
       there does \emph{not} exist any \(X₂∈\TF[\Abs{I₂}]\) such that
       \begin{nest}
         \(C(I₁≔X₁,I₂≔X₂)=\False\)
       \end{nest}
     \end{nest}
-  \end{nest}
+  \end{description}
 
-  \tcblower
-  \CircSat₂=\SetBuilderLong{\text{circuit \(C\) with inputs \(I₁⊔I₂\)}}{
-    ∃X₁∈\TF[\Abs{I₁}]\Q
-    ∄X₂∈\TF[\Abs{I₂}]\Q
-    C(I₁≔X₁,I₂≔X₂)=\False
-  }.
+  %\tcblower
+  %\CircSat₂=\SetBuilderLong{\text{circuit \(C\) with inputs \(I₁⊔I₂\)}}{
+  %  ∃X₁∈\TF[\Abs{I₁}]\Q
+  %  ∄X₂∈\TF[\Abs{I₂}]\Q
+  %  C(I₁≔X₁,I₂≔X₂)=\False
+  %}.
 \end{problem}
 
-Earlier, we formulated \(\CircSat\) inductively, as an add-one-turn extension of
-\CircVal.  Similarly, we can formulate \(\CircSat₂\) as an inductive extension
-of \CircSat.
+Earlier, we observed that \(\CircSat\) could be thought of as an add-one-turn
+extension of \CircVal.  Similarly, we can formulate \(\CircSat₂\) as such an
+extension of \CircSat.
 
 To help do so, let's first formalize what it means for a player to take a single
 turn.  When the player makes an assignment to some inputs, we say the player
@@ -470,63 +477,111 @@ negation \(¬C'\) is unsatisfiable.
   }.
 \]
 
-Continuing this process gives a general way to construct general \(k\)-turn
-circuit games, in which the two players take turns assigning values to groups of
-inputs.  Start with a boolean circuit \(C\), whose inputs are partitioned into
-\(k\) groups, \(I₁,I₂,\dotsc,Iₖ\).  On the \(i\)-th turn, the \((i\bmod2)\)-th
-player assigns values to the inputs in \(Iᵢ\).
+Continuing this process gives a general construction for \(k\)-turn circuit
+games, in which the two players take turns assigning values to groups of inputs.
+Start with a boolean circuit \(C\), with inputs partitioned into \(k\) groups,
+\(I₁,I₂,\dotsc,Iₖ\).  On the \(i\)-th turn, the \((i\bmod2)\)-th player assigns
+values to the inputs in \(Iᵢ\); the initial player wins if the final circuit
+outputs \True.
 
-We formulate this game inductively as follows:
-\begin{enumerate}[left=1.5em]
-  \item[{[\(1\)]}] On the first turn, the first player assigns values
-    \(X₁∈\TF[\Abs{I₁}]\) to the inputs \(I₁\).
-  \item[{[\(2\)--\(k\)]}] The remaining \(k-1\) turns proceed inductively.  It
-    is played on the augmented circuit \(C'=C[I₁≔X₁]\), whose inputs are
-    partitioned into \(k-1\) groups, \(I₂,\dotsc,Iₖ\), starting with the second
-    player's move.
-\end{enumerate}
-The first player's initial move is a winning move if and only if, in the
-remaining \((k-1)\)-turn game, the responding player does \emph{not} have a
-(counter-)winning strategy.  Finally, the first player wins if and only if the
-completed circuit (after all turns) passes \CircVal.
+We formulate this game inductively as follows.
+\begin{itemize}
+  \item In the base-case game with \(k=0\) turns, all inputs have been assigned
+    values.  The winning condition is determined by whether the circuit's output
+    is \True.  This is the \CircVal{} problem.
+  \item For \(k≥1\), the game starts with a circuit \(C\) with inputs
+    partitioned as \(I₁⊔I₂⊔\dotsb⊔Iₖ\).
+
+    On the first turn, the first player assigns values \(X∈\TF[\Abs{I₁}]\) to
+    the inputs \(I₁\), resulting in the augmented circuit \(C[I₁≔X]\) with
+    (unassigned) inputs now partitioned into \(k-1\) remaining groups,
+    \(I₂⊔\dotsb⊔Iₖ\).
+
+    Now, a \((k-1)\)-turn game is played, starting with the opposite player, on
+    the \emph{negated circuit} \(C'=¬C[I₁≔X₁]\).  The negation ensures that the
+    opposite player wins (satisfying \(C'≡¬C\)) exactly by falsifying \(C\).
+    Thus the original first player wins if and only if \(C'\) is un-winnable for
+    the second player.
+\end{itemize}
+
+
+%\begin{enumerate}[left=1.5em]
+%  \item[{[\(1\)]}] On the first turn, the first player assigns values
+%    \(X₁∈\TF[\Abs{I₁}]\) to the inputs \(I₁\).
+%  \item[{[\(2\)--\(k\)]}] The remaining \(k-1\) turns proceed inductively.  It
+%    is played on the augmented circuit \(C'=C[I₁≔X₁]\), whose inputs are
+%    partitioned into \(k-1\) groups, \(I₂,\dotsc,Iₖ\), starting with the second
+%    player's move.
+%\end{enumerate}
+%The first player's initial move is a winning move if and only if, in the
+%remaining \((k-1)\)-turn game, the responding player does \emph{not} have a
+%(counter-)winning strategy.  Finally, the first player wins if and only if the
+%completed circuit (after all turns) passes \CircVal.
 
 \begin{problem}{\Problem{Circuit Satisfiability} with \(k\) turns / \(\CircSat_k\)}{}
 
-  Given a boolean circuit \(C\) with inputs partitioned into \(k\) groups
-  \(I₁,I₂,\dotsc,Iₖ\), determine whether the first player has a winning
-  strategy.
+  For \(k=0\), define \(\CircSat₀=\CircVal\).  For \(k≥1\), define
+  \(\CircSat[k]\) as follows:
 
   \tcblower
-  \CircSat₀ &= \CircVal, \\
-  \CircSat₁ &= \CircSat, \\
-  \CircSat_k &= \SetBuilderLong{
-    \text{circuit \(C\) with inputs \(I₁⊔I₂⊔\dotsb⊔Iₖ\)}
-  }{
-    ∃X₁∈\TF[\Abs{I₁}]\Q
-    ¬C[I₁≔X₁]∉\CircSat_{k-1}
-  }
+
+  \begin{description}[nosep]
+    \item[Given:] a circuit with inputs partitioned into \(k\) groups,
+      \((C,(I₁,\dotsc,Iₖ))\)
+    \item[Determine whether:] there exists an \(X∈\TF[\Abs{I₁}]\) such that
+      \begin{nest}
+        \((¬C[I₁≔X],(I₂,\dotsc,Iₖ))∉\CircSat[k-1]\)
+      \end{nest}
+    \end{description}
+
+  \begin{aside}
+    Also, observe that \(\CircSat[1]=\CircSat\).
+  \end{aside}
+
+
+  %Given a boolean circuit \(C\) with inputs partitioned into \(k\) groups
+  %\(I₁,I₂,\dotsc,Iₖ\), determine whether the first player has a winning
+  %strategy.
+
+  %\tcblower
+  %\CircSat₀ &= \CircVal, \\
+  %\CircSat₁ &= \CircSat, \\
+  %\CircSat_k &= \SetBuilderLong{
+  %  \text{circuit \(C\) with inputs \(I₁⊔I₂⊔\dotsb⊔Iₖ\)}
+  %}{
+  %  ∃X₁∈\TF[\Abs{I₁}]\Q
+  %  ¬C[I₁≔X₁]∉\CircSat_{k-1}
+  %}
 \end{problem}
 
-Finally, we can apply the same generalization to arbitrary games, not just
-circuit games.  Consider an arbitrary game of \(k\) turns, played on some game
-board \(B∈\TF[*]\).  Two players take turns making moves
-\(M₁,M₂,\dotsc,Mₖ∈\TF[*]\).  At the end, an efficient algorithm determines
-which player wins.  To state this game precisely, we adopt the following
-inductive formulation:
-\begin{enumerate}
-  \item[{[\(1\)]}] On the first turn, the first player makes some move
-    \(M₁∈\TF[*]\).  whose size is bounded by some polynomial function of \(\Abs
-    B\) (thereby preventing the player's move from distorting the size of the
-    game; see the discussion at the end of \cref{def:np}).
-  \item[{[\(2\)--\(k\)]}] The remaining turns constitute a \((k-1)\)-turn game.
-    It is played on the ``augmented'' board \((B,M₁)\), starting now with the
-    second player.
-\end{enumerate}
-The first player's move is a winning move if and only if the responding player
-has \emph{no} winning strategy for the \((k-1)\)-turn game.  Finally, after
-all turns have been played (the base case), the \(0\)-turn game's winner is
-dictated by a winning condition checkable in polynomial time.  The decision
-problem asks whether the first player can guarantee a win.
+Finally, we can generalize this construction to arbitrary games beyond those
+player on circuits.  Consider an arbitrary game of \(k\) turns, played on some
+game board \(B∈\Strings\).  Two players take turns making moves
+\(M₁,M₂,\dotsc,Mₖ∈\Strings\).  At the end, an efficient algorithm determines
+which player wins.  Stating this inductively:
+\begin{itemize}
+  \item \(0\)-turn games (winning conditions) are \emph{polynomially-balanced}
+    (see \cref{def:balance}) problems in \P.
+  \item \(k\)-turn games start with a game board \(B∈\Strings\).  The first
+    player makes a move \(M∈\Strings\), and then wins if and only if the
+    ``augmented'' \((k-1)\)-turn game, \((B,M)\), is a losing game for the
+    opposite player.
+\end{itemize}
+
+%\begin{enumerate}
+%  \item[{[\(1\)]}] On the first turn, the first player makes some move
+%    \(M₁∈\TF[*]\).  whose size is bounded by some polynomial function of \(\Abs
+%    B\) (thereby preventing the player's move from distorting the size of the
+%    game; see the discussion at the end of \cref{def:np}).
+%  \item[{[\(2\)--\(k\)]}] The remaining turns constitute a \((k-1)\)-turn game.
+%    It is played on the ``augmented'' board \((B,M₁)\), starting now with the
+%    second player.
+%\end{enumerate}
+%The first player's move is a winning move if and only if the responding player
+%has \emph{no} winning strategy for the \((k-1)\)-turn game.  Finally, after all
+%turns have been played (the base case), the \(0\)-turn game's winner is dictated
+%by a winning condition checkable in polynomial time.  The decision problem asks
+%whether the first player can guarantee a win.
 
 For each \(k\), the complexity class of all such decision problems is called
 \SigmaP k.  There are also the complements of problems in \(\SigmaP k\), which,
@@ -537,9 +592,10 @@ is called \(\PiP k=\co\SigmaP k\).
 Together, \(\SigmaP k\)s and \(\PiP k\)s constitute the \emph{polynomial
 hierarchy}.
 
-\begin{definition}{polynomial hierarchy}{}
+\begin{definition}{polynomial hierarchy}{ph}
 
-  \(\SigmaP0=\PiP0=\P\) is the class of (efficient) \(0\)-turn game deciders.
+  \(\SigmaP0=\PiP0=\P=\co\P\) is the class of (efficient) \(0\)-turn game
+  deciders.
 
   \(\SigmaP1=\NP\) is the class of \(1\)-turn game winning-strategy problems
   (given a \(1\)-turn board, return ``yes'' if the player has a winning move).
@@ -549,21 +605,19 @@ hierarchy}.
 
   In general, for any \(k\), \(\SigmaP k\) is the class of \(k\)-turn
   winning-strategy problems, and \(\PiP k=\co\SigmaP k\) the class of \(k\)-turn
-  no-winning-strategy problems.  Let \(Π\) be any decision problem; we say \(Π\)
-  is in \(\SigmaP k\) if
+  no-winning-strategy problems.  Formally: let \(Π\) be any decision problem; we
+  say \(Π\) is in \(\SigmaP k\) if
   \begin{nest}
-    there exists another problem \(Π'∈\SigmaP{k-1}\) (the \((k-1)\)-turn game)
-    and a polynomial \(p\) such that
+    there exists a polynomially-balanced problem \(Π'∈\SigmaP{k-1}\) such that
     \begin{nest}
-      for each input \(B∈\Strings[*]\) (the game board)
+      for each (game board) \(B∈\Strings[*]\)
       \begin{nest}
-        \(B∈\SigmaP k\) (the first player has a winning strategy) if and only if
+        \(B∈Π\) (the first player has a winning strategy) if and only if
         \begin{nest}
-          there exists \(M∈\Strings[*]\) (an initial move) such that \(\Abs
-          M≤p(\Abs B)\), and
+          there exists an (initial move) \(M∈\Strings[*]\) such that
           \begin{nest}
-            \((B,M)∉Π'\) (the responding player cannot win in the remaining
-            \(k-1\) turns).
+            \((B,M)∉Π'\) (the game is a guaranteed defeat for the responding
+            player).
           \end{nest}
         \end{nest}
       \end{nest}

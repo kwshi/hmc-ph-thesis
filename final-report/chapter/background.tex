@@ -475,12 +475,47 @@ Note that \(\co\C\) is \emph{not} the same thing as the set-complement of \C.
 
 Since decision problems in general aren't guaranteed to have same complexity as
 their complements, \(\C\) and \(\co\C\) aren't necessarily the same complexity
-class.  However, \P{} (and, in general, any class defined by
-\emph{deterministic} algorithms) \emph{is} equal to its complement, because
-modifying any deterministic decision algorithm by inverting its responses yields
-an algorithm that solves the complementary problem.
+class.
 
+However, it \emph{is} true that \(\P=\co\P\).  In fact, this property holds for
+any complexity class defined by \emph{deterministic} algorithm running times,
+essentially because inverting a (deterministic) algorithm's responses solves the
+complement problem without changing the algorithm's running time. We state and
+prove this result more precisely below. (For contrast, complexity classes
+\emph{not} defined by deterministic running times, and therefore not subject to
+this result, are introduced later in \cref{ch:circuit}.)
 
+\begin{theorem}{}{complement-same}
+
+  Let \(Π\) be a decision problem solvable by a deterministic algorithm in time
+  \(T(n)\), where \(T\) is a function of the input size \(n\).  Then
+  \(Π\Complement\) is also solvable in time \(T(n)\).
+
+\end{theorem}
+
+\begin{proof}
+
+  Let \(A\) be an algorithm that solves \(Π\) within \(T(n)\) steps.  Obtain a
+  new algorithm \(A'\) by inverting all responses in \(A\).  That is, run
+  exactly as \(A\) does, but return ``yes'' everywhere \(A\) returns ``no'', and
+  vice versa.
+
+  By construction, \(A'\) solves the complement problem \(Π\Complement\).  Also,
+  because \(A'\) changes nothing about the execution of \(A\) except the final
+  return values, it runs in the exact same amount of time as \(A\).  \qedhere
+
+\end{proof}
+
+\begin{corollary}{}{}
+  \(\P=\co\P\).
+\end{corollary}
+
+\begin{proof}
+  If \(Π∈\P\), then by \cref{th:complement-same}, \(Π\Complement∈\P\) as well,
+  which means \(Π∈\co\P\). Conversely, if \(Π∈\co\P\), which by definition of
+  \co{} means that \(Π\Complement∈\P\), then again by \cref{th:complement-same},
+  \(\Paren*{Π\Complement}\Complement=Π∈\P\).
+\end{proof}
 
 
 %By studying complete problems for a spectrum of complexity classes, we gain

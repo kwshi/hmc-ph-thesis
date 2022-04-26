@@ -17,7 +17,7 @@
   bottom=1in,
   footskip=.5in,
 }
-\fancypagestyle{plain}{%
+\fancypagestyle{thesis}{%
   \fancyhf{}%
   \renewcommand\headrule{}%
   \fancyhead[LE,RO]{\leftmark}%
@@ -28,7 +28,15 @@
     \textsc{page \thepage{} of \pageref{LastPage}}%
   }%
 }
-\pagestyle{plain}
+\pagestyle{thesis}
+
+\newcommand{\FormatMark}[2]{%
+  \color{black!50}%
+  \footnotesize{\MakeUppercase{#1}}\\%
+  \small{\bfseries #2}%
+}
+\renewcommand{\chaptermark}[1]{\markboth{\FormatMark{\chaptername{} \thechapter}{#1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\FormatMark{section \thesection}{#1}}}
 %\pagestyle{thesis}
 
 \RequirePackage{tikz}
@@ -157,7 +165,7 @@
   theorem=orange,
   %before upper*=\textbf{\small\transparent{.5}given:}\quad\IgnoreSpacesAndPars,
   %before lower*=\textbf{\small\transparent{.5}return whether:}\quad\IgnoreSpacesAndPars,
-  ams align* lower,
+  %ams align* lower,
   %before lower*=\IgnoreSpacesAndPars,
   segmentation style={black, solid, opacity=1/4, shorten <=1em, shorten >=1em},
   segmentation at break,
