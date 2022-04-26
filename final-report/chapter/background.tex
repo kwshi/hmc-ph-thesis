@@ -434,11 +434,11 @@ general \(Π\) and \(Π\Complement\) aren't necessarily reducible to each other.
 This is perhaps counter to what one might expect, because aren't \(Π\) and
 \(Π\Complement\) just two faces of the same problem?  Not entirely.
 
-To see why not, consider again the example from earlier, \(Π=\Problem{Primes}\)
-and \(Π\Complement=\Problem{Composites}\).  Suppose some integer \(n\) is given,
-and you are asked to \emph{prove} that either \(n∈Π\) (\(n\) is prime) or
-\(n∈Π\Complement\) (\(n\) is composite).  Which proof would be more
-straightforward?
+To understand why not, consider again the example from earlier,
+\(Π=\Problem{Primes}\) and \(Π\Complement=\Problem{Composites}\).  Suppose some
+integer \(n\) is given, and you are asked to \emph{prove} that either \(n∈Π\)
+(\(n\) is prime) or \(n∈Π\Complement\) (\(n\) is composite).  Which proof would
+be more straightforward?
 \begin{itemize}
   \item If \(n\) is composite, the proof is straightforward: simply provide an
     example of a divisor \(1<m<n\), and demonstrate that indeed \(m\) divides
@@ -454,12 +454,23 @@ be different.  Our definition of reduction, therefore, distinguishes between the
 difficulty of proving ``yes''-ness and the difficulty of proving ``no''-ness.
 (There are other more generous definitions of reducibility out there, under
 which \(Π\) and \(Π\Complement\) do reduce to each other, but that's besides the
-point: our definition makes a finer, more careful distinction and is easier to
-work with.)
+point: our definition makes a finer, more careful distinction and is also
+simpler to work with.)
+
+So problems are not necessarily reducible to their complements.  However,
+complementation \emph{preserves} reducibility, in the following sense:
+\begin{theorem}{}{}
+  Let \(Π₁\) and \(Π₂\) be decision problems.  If \(Π₁≤Π₂\), then
+  \(Π₁\Complement≤Π₂\Complement\).
+\end{theorem}
+
+\begin{proof}
+  Suppose \(Π₁≤Π₂\).  Then there exists a (polynomial-time) reduction \(R\)
+\end{proof}
 
 For a complexity class of problems \C, the ``dual'' class formed by taking the
-complement of each problem in \C{} is denoted \co\C{} (I don't know if this has
-an actual name).
+complement of each problem in \C{} is denoted \(\co\C\) (I don't know if this
+has an actual name).
 
 \begin{definition}{\(\operatorname{co}\)}{co}
 
@@ -506,20 +517,17 @@ this result, are introduced later in \cref{ch:circuit}.)
 
 \end{proof}
 
+
 \begin{corollary}{}{}
   \(\P=\co\P\).
 \end{corollary}
 
 \begin{proof}
   If \(Π∈\P\), then by \cref{th:complement-same}, \(Π\Complement∈\P\) as well,
-  which means \(Π∈\co\P\). Conversely, if \(Π∈\co\P\), which by definition of
-  \co{} means that \(Π\Complement∈\P\), then again by \cref{th:complement-same},
+  which by definition of \co{} means \(Π∈\co\P\). Conversely, if \(Π∈\co\P\),
+  then \(Π\Complement∈\P\), and again by \cref{th:complement-same},
   \(\Paren*{Π\Complement}\Complement=Π∈\P\).
 \end{proof}
-
-
-%By studying complete problems for a spectrum of complexity classes, we gain
-%wholesale but vivid insight
 
 % TODO: define co-, and co-P=P
 

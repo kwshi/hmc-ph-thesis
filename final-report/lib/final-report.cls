@@ -155,8 +155,9 @@
 
 \newtcbtheorem[%
   crefname={corollary}{corollaries},%
-  number within=chapter,%
-]{corollary}{Corollary}{theorem=green!50!blue}{cor}
+  use counter from=theorem,
+  %number within=chapter,%
+]{corollary}{Corollary}{theorem=green!50!blue!50}{cor}
 
 \newtcbtheorem[
   crefname={problem}{problems},
