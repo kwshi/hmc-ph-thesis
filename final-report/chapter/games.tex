@@ -5,7 +5,7 @@ In this chapter, we begin to explore landscape of puzzle-and-game complexity
 classes---specifically, the \emph{polynomial hierarchy}---through a series of
 games played on boolean circuits.
 
-\section{The \Problem{Circuit Value} problem, and \P}
+\section{The \Problem{Circuit Value} problem, and \texorpdfstring{\(\ComplexityClass{P}\)}{𝐏}}
 
 To set the stage, we start with a relatively ``easy'' problem, known as the
 \Problem{Circuit Value} problem, or \Problem{CircVal} for short:
@@ -163,23 +163,25 @@ polynomial-time with respect to the size of the \emph{game board} \(X\).
 However, the input string to the \(Π\) isn't just \(X\) but the pair \((X,Y)\),
 so simply requiring \(Π∈\P\) is insufficient: polynomial with respect to the
 size of \((X,Y)\) does not imply polynomial with respect to the size of \(X\)
-(\(Y\) could be arbitrarily long).  To fix this disparity, we require that the
-player's input scales controlledly with the game board: the size of \(Y\) must
-be polynomially-bounded by the size of \(X\).  This requirement guarantees that
-\(Y\) does not unduly distort the input size, and any polynomial function on the
-size of \((X,Y)\) is also polynomial with respect to the size of \(X\).  We call
-problems with this constraint \emph{polynomially balanced}.
+(\(Y\) could be arbitrarily long).  To fix this disparity, we additionally
+require that the player's input scales controlledly with the game board: the
+size of \(Y\) must be polynomially-bounded by the size of \(X\).
 
-\begin{definition}{polynomially balanced}{balance}
-
-  Let \(Π⊆\Set{0,1}^*×\Set{0,1}^*\) be a decision problem whose inputs are
-  \emph{pairs} of strings.  We say \(Π\) is \Term{polynomially balanced} if
-  there exists a polynomial function \(p\) such that, for every \((X,Y)∈Π\),
-  \[
-    \Abs Y≤p(\Abs X).
-  \]
-
-\end{definition}
+%This requirement guarantees that
+%\(Y\) does not unduly distort the input size, and any polynomial function on the
+%size of \((X,Y)\) is also polynomial with respect to the size of \(X\).  We call
+%problems with this constraint \emph{polynomially balanced}.
+%
+%\begin{definition}{polynomially balanced}{balance}
+%
+%  Let \(Π⊆\Set{0,1}^*×\Set{0,1}^*\) be a decision problem whose inputs are
+%  \emph{pairs} of strings.  We say \(Π\) is \Term{polynomially balanced} if
+%  there exists a polynomial function \(p\) such that, for every \((X,Y)∈Π\),
+%  \[
+%    \Abs Y≤p(\Abs X).
+%  \]
+%
+%\end{definition}
 
 We are now ready to give the full definition of \NP{} (the class of all
 \(1\)-turn games).
@@ -188,14 +190,15 @@ We are now ready to give the full definition of \NP{} (the class of all
 
   \NP{} is the class of decision problems \(Π\) such that
   \begin{nest}
-    there exists a \emph{polynomially-balanced} \(Π'∈\P\) (the \(0\)-turn
-    winning condition) such that
+    there exists a \(Π'∈\P\) (the \(0\)-turn winning condition) and a polynomial
+    \(p\) such that
     \begin{nest}
       for each input \(X∈\Strings\) (the game board)
       \begin{nest}
         \(X∈Π\) (the player can guarantee a win) if and only if
         \begin{nest}
-          there exists \(Y∈\Strings\) (the player's move) such that
+          there exists \(Y∈\Strings\) (the player's move) such that \(\Abs
+          Y≤p(\Abs X)\), and
           \begin{nest}
             \((X,Y)∈Π'\) (the move meets the winning condition).
           \end{nest}
@@ -222,10 +225,9 @@ of \NP.
 
   Let \(Π'=\CircVal\).  Specifically, think of \(Π'\) as a set of \emph{pairs}
   \((C,X)\) where \(C\) specifies the boolean circuit, and \(X\) specifies a
-  input assignment to \(C\) so that \(C(X)=\True\).  Note that \(Π'\) is
-  polynomially-balanced, because the length of \(X\) always matches the number
-  of input variables in \(C\), which by definition is bounded by the size of
-  \(C\).
+  input assignment to \(C\) so that \(C(X)=\True\).  The length of \(X\) always
+  matches the number of input variables in \(C\), which by definition is
+  polynomially bounded by the size of \(C\).
 
   \CircSat{} comprises exactly the set of circuits \(C\) (the game board) for
   which there exists an \(X\) (the player's move) such that
@@ -267,7 +269,7 @@ of \NP.
 
 
 
-\subsection{\CircSat{} is \NP-complete}
+\subsection{\Problem{CircSat} is \NP-complete}
 
 %We can also think of problems in \NP, or puzzles, as problems solvable by
 %guess-and-check: guess a move \(Y\), and check whether it meets the winning
@@ -556,15 +558,15 @@ We formulate this game inductively as follows.
 
 Finally, we can generalize this construction to arbitrary games beyond those
 player on circuits.  Consider an arbitrary game of \(k\) turns, played on some
-game board \(B∈\Strings\).  Two players take turns making moves
-\(M₁,M₂,\dotsc,Mₖ∈\Strings\).  At the end, an efficient algorithm determines
+game board \(X∈\Strings\).  Two players take turns making moves
+\(Y₁,Y₂,\dotsc,Yₖ∈\Strings\).  At the end, an efficient algorithm determines
 which player wins.  Stating this inductively:
 \begin{itemize}
-  \item \(0\)-turn games (winning conditions) are \emph{polynomially-balanced}
-    (see \cref{def:balance}) problems in \P.
-  \item \(k\)-turn games start with a game board \(B∈\Strings\).  The first
-    player makes a move \(M∈\Strings\), and then wins if and only if the
-    ``augmented'' \((k-1)\)-turn game, \((B,M)\), is a losing game for the
+  \item \(0\)-turn games (winning conditions) are (see \cref{def:balance})
+    problems in \P.
+  \item \(k\)-turn games start with a game board \(X∈\Strings\).  The first
+    player makes a move \(Y∈\Strings\), and then wins if and only if the
+    ``augmented'' \((k-1)\)-turn game, \((X,Y)\), is a losing game for the
     opposite player.
 \end{itemize}
 
@@ -594,29 +596,32 @@ hierarchy}.
 
 \begin{definition}{polynomial hierarchy}{ph}
 
-  \(\SigmaP0=\PiP0=\P=\co\P\) is the class of (efficient) \(0\)-turn game
-  deciders.
+  \(\SigmaP0=\PiP0=\P=\co\P\) (\cref{cor:p-cop}) is the class of (efficient)
+  \(0\)-turn game deciders.
 
-  \(\SigmaP1=\NP\) is the class of \(1\)-turn game winning-strategy problems
+  \(\SigmaP1=\NP\) is the class of \(1\)-turn game ``possible to win'' problems
   (given a \(1\)-turn board, return ``yes'' if the player has a winning move).
-  \(\PiP1=\co\NP\) is the class of \(1\)-turn game, impossible-to-win problems
-  (given a \(1\)-turn board, return ``yes'' if the player has \emph{no} winning
-  move).
+  \(\PiP1=\co\NP\) is the class of \(1\)-turn game, ``impossible to win''
+  problems (given a \(1\)-turn board, return ``yes'' if the player has \emph{no}
+  winning move).
 
   In general, for any \(k\), \(\SigmaP k\) is the class of \(k\)-turn
-  winning-strategy problems, and \(\PiP k=\co\SigmaP k\) the class of \(k\)-turn
-  no-winning-strategy problems.  Formally: let \(Π\) be any decision problem; we
-  say \(Π\) is in \(\SigmaP k\) if
+  ``possible to win'' problems, and \(\PiP k=\co\SigmaP k\) the class of
+  \(k\)-turn ``impossible to win'' problems.
+
+  Formally: let \(Π\) be any decision problem; we say \(Π\) is in \(\SigmaP k\)
+  if
   \begin{nest}
-    there exists a polynomially-balanced problem \(Π'∈\SigmaP{k-1}\) such that
+    there exists a \(Π'∈\PiP{k-1}\) and a polynomial \(p\) such that
     \begin{nest}
-      for each (game board) \(B∈\Strings[*]\)
+      for each (game board) \(X∈\Strings[*]\)
       \begin{nest}
-        \(B∈Π\) (the first player has a winning strategy) if and only if
+        \(X∈Π\) (is a winning game for the first player) if and only if
         \begin{nest}
-          there exists an (initial move) \(M∈\Strings[*]\) such that
+          there exists an (initial move) \(Y∈\Strings[*]\) such that \(\Abs
+          Y≤p(\Abs X)\), and
           \begin{nest}
-            \((B,M)∉Π'\) (the game is a guaranteed defeat for the responding
+            \((X,Y)∈Π'\) (the remaining game guarantees loss for the responding
             player).
           \end{nest}
         \end{nest}

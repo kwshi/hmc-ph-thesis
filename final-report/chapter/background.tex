@@ -361,12 +361,18 @@ itself must be efficient---formally, that it runs in polynomial time.
   time.  (The \(≤\) notation evokes the intuition that \(Π₁\) is easier than,
   or \emph{at most as hard as}, \(Π₂\).)
 
+  We say \(Π₁\) and \(Π₂\) are \Term{equivalent}, denoted
+  \[
+    Π₁≡Π₂,
+  \]
+  if \(Π₁≤Π₂\) and \(Π₂≤Π₁\).
+
 \end{definition}
 
 Finally, we introduce some terminology to describe how one problem compares to
 a \emph{class} of problems:
 
-\begin{definition}{hardness and completeness}{}
+\begin{definition}{hardness and completeness}{hard-complete}
 
   Let \(Π\) be a decision problem, and let \(\C\) be a class of decision
   problems.
@@ -457,22 +463,10 @@ which \(Π\) and \(Π\Complement\) do reduce to each other, but that's besides t
 point: our definition makes a finer, more careful distinction and is also
 simpler to work with.)
 
-So problems are not necessarily reducible to their complements.  However,
-complementation \emph{preserves} reducibility, in the following sense:
-\begin{theorem}{}{}
-  Let \(Π₁\) and \(Π₂\) be decision problems.  If \(Π₁≤Π₂\), then
-  \(Π₁\Complement≤Π₂\Complement\).
-\end{theorem}
-
-\begin{proof}
-  Suppose \(Π₁≤Π₂\).  Then there exists a (polynomial-time) reduction \(R\)
-\end{proof}
-
 For a complexity class of problems \C, the ``dual'' class formed by taking the
-complement of each problem in \C{} is denoted \(\co\C\) (I don't know if this
-has an actual name).
+complement of each problem in \C{} is denoted \(\co\C\).
 
-\begin{definition}{\(\operatorname{co}\)}{co}
+\begin{definition}{\co{} of a complexity class}{co}
 
   Let \C{} be a complexity class.  The complexity class \(\co\C\) comprises the
   complement of each problem in \C:
@@ -482,11 +476,70 @@ has an actual name).
 
 \end{definition}
 
-Note that \(\co\C\) is \emph{not} the same thing as the set-complement of \C.
+Note that \(\co\C\) is \emph{not} the same thing as the set complement of \C{}
+(the complements are of \emph{elements in} \C, not \C{} itself).
 
-Since decision problems in general aren't guaranteed to have same complexity as
-their complements, \(\C\) and \(\co\C\) aren't necessarily the same complexity
-class.
+In general,
+
+omplementation \emph{preserves} reducibility, in the following sense:
+\begin{theorem}{}{complement-reduction}
+
+  Let \(Π₁\) and \(Π₂\) be decision problems.  \(Π₁≤Π₂\) under some
+  (polynomial-time) reduction \(R\colon\Strings→\Strings\) if and only if
+  \(Π₁\Complement≤Π₂\Complement\) under the same reduction \(R\).
+
+\end{theorem}
+
+\begin{proof}
+  Suppose \(Π₁≤Π₂\) under the (polynomial-time) reduction \(R\).  Then for all
+  \(X∈\Strings\),
+  \[
+    X∈Π₁⟺R(X)∈Π₂.
+  \]
+  Equivalently, \(X∉Π₁⟺R(X)∉Π₂\), which is to say,
+  \[
+    X∈Π₁\Complement⟺R(X)∈Π₂\Complement.
+  \]
+  Thus \(R\) is also a reduction from \(Π₁\Complement\) to \(Π₂\Complement\).
+  Thus \(Π₁≤Π₂\) under \(R\) implies \(Π₁\Complement≤Π₂\Complement\) under
+  \(R\).
+
+  The converse is true by the same proof, since
+  \(Π=\Paren*{Π\Complement}\Complement\).
+\end{proof}
+
+A corollary of this result is that hardness and completeness
+(\cref{def:hard-complete}) are also preserved under complementation.
+
+\begin{corollary}{}{}
+
+  Let \(Π\) be a decision problem, and \(\C\) a complexity class.  \(Π\) is
+  \C-hard if and only if \(Π\Complement\) is \(\co\C\)-hard.  Also, \(Π\) is
+  \C-complete if and only if \(Π\Complement\) is \(\co\C\)-complete.
+
+\end{corollary}
+
+\begin{proof}
+
+  Suppose \(Π\) is \C-hard; we wish to show that \(Π\Complement\) is
+  \(\co\C\)-hard.  Let \(Ψ\) be an arbitrary problem in \(\co\C\).  Then
+  \(Ψ\Complement∈\C\), by definition of \co, and therefore \(Ψ\Complement≤Π\)
+  because \(Π\) is \C-hard.  Then, by \cref{th:complement-reduction},
+  \(Ψ≤Π\Complement\).  Thus every problem in \(Ψ\) reduces to \(Π\Complement\),
+  so \(Π\Complement\) is \(\co\C\)-hard.
+
+  Next, if \(Π\) is \C-complete, then \(Π\) is \(\C\)-hard \emph{and} \(Π∈\C\).
+  By the above argument, \(Π\Complement\) is \(\co\C\)-hard, and by definition
+  of \co, \(Π\Complement∈\co\C\).  Thus \(Π\Complement\) is \(\co\C\)-complete.
+
+  The converses of both statements hold by the same proof, since
+  \(Π=(Π\Complement)\Complement\).  \qedhere
+
+\end{proof}
+
+We noted earlier that decision problems in general aren't guaranteed to have
+same complexity as their complements, so \(\C\) and \(\co\C\) aren't necessarily
+the same complexity class.
 
 However, it \emph{is} true that \(\P=\co\P\).  In fact, this property holds for
 any complexity class defined by \emph{deterministic} algorithm running times,
@@ -517,8 +570,9 @@ this result, are introduced later in \cref{ch:circuit}.)
 
 \end{proof}
 
+Just to be explicit, we prove below the aforementioned result that \(\P=\co\P\).
 
-\begin{corollary}{}{}
+\begin{corollary}{}{p-cop}
   \(\P=\co\P\).
 \end{corollary}
 
@@ -529,11 +583,7 @@ this result, are introduced later in \cref{ch:circuit}.)
   \(\Paren*{Π\Complement}\Complement=Π∈\P\).
 \end{proof}
 
-% TODO: define co-, and co-P=P
 
-% TODO i feel like i want to have a conclusion punchline here
-
-% TODO brief comments on padding exploits
 
 %Now, it is time to study a collection of complete problems
 %

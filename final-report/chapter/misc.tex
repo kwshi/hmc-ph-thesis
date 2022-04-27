@@ -64,7 +64,7 @@ below.
 Having established the basic terminology, we now introduce the graph
 (3-)coloring games.
 
-\subsection{The \(0\)-turn game}
+\section{The \(0\)-turn game}
 
 The goal of graph coloring games is to assign colors to all vertices so that
 the resulting coloring is proper.  To this end, the \(0\)-turn
@@ -122,7 +122,7 @@ we must first ensure that it itself is in \P.  Indeed, it is:
 
 \end{proof}
 
-\subsection{The \(k\)-turn games}
+\section{The \(𝑘\)-turn games}
 
 
 
@@ -226,26 +226,355 @@ coloring games.
     \item[Determine whether:] \(κ\) is improper, or there exists some \(δ\colon
       U₁→\Colors\) such that
       \begin{nest}
-        \(\Paren*{Γ,κ[δ],(U₂,\dotsc,Uₖ)}∉\Col[k-1]\)
+        \(\Paren*{Γ,κ[δ],(U₂,\dotsc,Uₖ)}∈\Paren*{\Col[k-1]}\Complement\)
       \end{nest}
     \end{description}
 
 \end{problem}
 
+\section{\texorpdfstring{\(\Problem{3Col}ₖ∈\SigmaP k\)}{\(\Problem{3Col}ₖ∈𝚺ₖ𝐏\)}, right?}
+
 Having defined \(\Col[k]\) as a \(k\)-turn game problem, we naturally expect
-that \(\Col[k]∈\SigmaP k\) (the class of all ``reasonable'' \(k\)-turn game
+that \(\Col[k]∈\SigmaP k\) (the class of all (``reasonable'') \(k\)-turn game
 problems).  Indeed, we claim it is, but it isn't immediately obvious \emph{how}.
 Specifically, membership in \(\Col[k]\) is conditioned on an extra ``\(κ\) is
 improper or'' clause that isn't present in the definition of \SigmaP k problems
 (\cref{def:ph}):
 \[
-  \begin{array}{r@{\;=\;\Big\{\,}c@{\;\Big\vert\;}c@{\quad∃}r@{\Q}c@{\:∉\:}c@{\,\Big\},}}
+  \begin{array}{r@{\;=\;\Big\{\,}c@{\;\Big\vert\;}c@{\quad∃}r@{\Q}c@{\:∈\:}c@{\,\Big\},}}
     \Col[k] & (Γ,κ,\dotsc) & \underline{\text{\(κ\) is improper, or}} & δ &
-    (Γ,κ[δ],\dotsc) & \Col[k-1] \\[.5em]
-    \Ub[∈\SigmaP k]{Π} & B && M & (B,M) & \Ub[∈\SigmaP{k-1}]{Π'}
+    (Γ,κ[δ],\dotsc) & \Paren*{\Col[k-1]}\Complement \\[.5em]
+    \Ub[∈\SigmaP k]{Π} & B && M & (B,M) & \Ub[∈\PiP{k-1}]{Π'}
   \end{array}
 \]
 
+By splitting up the two conditions, we can think of \Col[k] \emph{union} of two
+problems:
+\[
+  \Col[k] = \SetBuilder{(Γ,κ,\dotsc)}{\text{\(κ\) is improper}}
+  ∪ \SetBuilder*{(Γ,κ,\dotsc)}{∃δ\Q(Γ,κ[δ],\dotsc)∈\Col[k-1]}
+\]
+The first term in the union, determining improperness of \(κ\), is basically
+equivalent to \(\ColProp\Complement\), which is in \P{} (\cref{th:3colprop-in-p}
+and \cref{cor:p-cop}).  Meanwhile, the second term appears to comply with the
+\SigmaP k definition---if we assume (yet unproven, but sort of as an inductive
+hypothesis) that \(\Col[k-1]∈\SigmaP{k-1}\), then the second term is indeed in
+\(\SigmaP k\).
+
+So \Col[k] is the union of a problem in \P{} with a problem \emph{allegedly} in
+\SigmaP k.
+
+Then, it makes sense to expect \(\Col[k]∈\SigmaP k\) for the
+following (conjectured) reasons:
+\begin{itemize}
+  \item We expect \(\P⊆\SigmaP k\): intuitively, \(0\)-turn games must be easier
+    than (at least as easy as) \(k\)-turn games.
+  \item The union of two problems in \SigmaP k should also be in \SigmaP k
+    (i.e., \SigmaP k is \emph{closed} under union): intuitively, directly
+    combining two problems doesn't make them harder.
+\end{itemize}
+Below, we state these conjectures in general terms and prove them.
+
+\begin{theorem}{games with fewer turns are ``easier''}{fewer-easier}
+
+  For every \(k=0,1,2,\dotsc\),
+  \[
+    \SigmaP k⊆\SigmaP{k+1}, \qquad
+    \SigmaP k⊆\PiP{k+1}, \qquad
+    \PiP k⊆\SigmaP{k+1}, \qquad
+    \PiP k⊆\PiP{k+1}.
+  \]
+
+\end{theorem}
+
+\begin{proof}
+
+  We prove each of the four inclusions separately.
+  \begin{enumerate}
+    \item \label{it:fewer.ps} Claim: \(\PiP k⊆\SigmaP{k+1}\).
+
+      This follows directly from the definition of \(\SigmaP{k+1}\).  Let
+      \(Π∈\PiP k\), and define
+      \[
+        Π'=\SetBuilder{(X,\text{\color{gray}(empty)})}{X∈Π}, \qquad p(n)=0.
+      \]
+      Note that \(Π'\) is the same problem as \(Π\), differing only in
+      ``formatting'' of inputs, so \(Π'∈\PiP k\) as well.  Thus \(Π\) fits the
+      definition of a \(\SigmaP{k+1}\) game:
+      \begin{nest}
+        For all inputs \(X∈\Strings\), \(X∈Π\) if and only if
+        \begin{nest}
+          letting \(Y\) be the empty string, we have \(\Abs Y=0≤p(\Abs X)\), and
+          \begin{nest}
+            \((X,Y)=(X,\text{\color{gray}(empty)})∈Π'\).
+          \end{nest}
+        \end{nest}
+      \end{nest}
+      Thus \(Π∈\SigmaP{k+1}\).
+
+      \begin{aside}
+        The intuition here: \(Π∈\PiP k\) is an impossible-to-win \(k\)-turn
+        game.  Then, \(Π'\) is a \((k+1)\)-turn game in which, on the first
+        turn, the other player does \emph{nothing}. Still, they guarantee a win,
+        because the remaining game already dooms the second player to a loss.
+      \end{aside}
+
+    \item Claim: \(\SigmaP k⊆\PiP{k+1}\).
+
+      This follows directly from the previous result \ref{it:fewer.ps}, since
+      \(\SigmaP k=\co\PiP k\) and \(\PiP{k+1}=\co\SigmaP{k+1}\).
+
+    \item \label{it:fewer.ss} Claim: \(\SigmaP k⊆\SigmaP{k+1}\).
+
+      We prove this by induction on \(k\).
+      \begin{itemize}
+        \item For \(k=0\), \(\SigmaP0=\P=\PiP0\) by definition.  Thus the
+          argument from part \ref{it:fewer.ps} applies in this case:
+          \(\SigmaP0=\PiP0⊆\SigmaP1\).
+        \item For \(k≥1\), assume \(\SigmaP{k-1}⊆\SigmaP k\). Suppose
+          \(Π∈\SigmaP k\).  Then there exists a \(Π'∈\PiP{k-1}\) and a
+          polynomial \(p\) such that
+          \[
+            Π=\SetBuilder{X}{∃Y\Q \Abs Y≤p(\Abs X), \quad (X,Y)∈Π'}.
+          \]
+          Recalling that \(\mathbf{Π}\) is just \(\co\mathbf{Σ}\), the induction
+          hypothesis implies \(\PiP{k-1}⊆\PiP k\).  Thus \(Π'∈\PiP{k-1}\) is
+          also in \(\PiP k\).  Consequently, \(Π\) is also in \(\SigmaP{k+1}\).
+          Since \(Π\) was arbitrary, we conclude \(\SigmaP k⊆\SigmaP{k+1}\).
+      \end{itemize}
+
+    \item Claim: \(\PiP k⊆\PiP{k+1}\).
+
+      This follows directly from the previous result \ref{it:fewer.ss}, since
+      \(\mathbf{Π}=\co\mathbf{Σ}\).  \qedhere
+
+  \end{enumerate}
+
+\end{proof}
+
+As a side note, \ref{th:fewer-easier} provides justification for calling the
+collection of complexity classes \SigmaP k/\PiP k a \emph{hierarchy}---each
+level of the hierarchy is contained within the next, etc.  The following diagram
+illustrates this hierarchy of containments:
+
+\begin{center}
+  \begin{tikzpicture}
+
+    \tikzset{
+      subset/.style={->},
+    }
+
+    \matrix[row sep=1em, column sep=4em, matrix of math nodes, nodes={
+      draw, draw opacity=1/2, rounded corners=1em/4,
+    }]{
+      & |(s1)|\SigmaP1=\NP & |(s2)|\SigmaP2 & |(s3)|\SigmaP3 & |(s)[draw=none]|\cdots \\
+      |(0)|\SigmaP0=\PiP0=\P & \\
+      & |(p1)|\PiP1=\co\NP & |(p2)|\PiP2 & |(p3)|\PiP3 & |(p)[draw=none]|\cdots \\
+    };
+
+    \draw[subset] (0) to["\(⊆\)" {above, sloped}] (s1);
+    \draw[subset] (0) to["\(⊆\)" {below, sloped}] (p1);
+
+    \foreach \i in {p,s} {
+      \foreach \j in {p,s} {
+        \draw[subset] (\i1) to (\j2);
+        \draw[subset] (\i2) to (\j3);
+        \draw[subset] (\i3) to (\j);
+      }
+    }
+
+  \end{tikzpicture}
+\end{center}
+
+%
+%\begin{proof}
+%
+%  %Let \(Π∈\SigmaP k\); we wish to show that \(Π∈\SigmaP{k+1}\).
+%
+%  %Define the problem
+%  %\[
+%  %  Π'=\SetBuilder{(X,ϵ)}{X∈Π},
+%  %\]
+%  %where \(ϵ\) denotes the empty string.  First, note that \(Π'\) is trivially
+%  %equivalent to \(Π\), differing only in the ``formatting'' of instances.  Thus
+%  %\(Π'∈\SigmaP k\) as well.  Next, observe that \(Π'\) is polynomially balanced,
+%  %since the second element \(ϵ\) always has length \(0\).
+%
+%  %Then we see that \(Π\) fits the definition of a \SigmaP{k+1} problem:
+%  %\begin{nest}
+%  %  there is a polynomially-balanced problem in \(\SigmaP k\), namely \(Π'\)
+%  %  such that
+%  %  \begin{nest}
+%  %    for every \(X∈\Strings\), \(X∈Π\) if and only if
+%  %    \begin{nest}
+%  %      there exists a \(Y∈\Strings\), in this case \(ϵ\), with \((X,ϵ)∈Π'\).
+%  %    \end{nest}
+%  %  \end{nest}
+%  %\end{nest}
+%
+%  %Since \(Π∈\SigmaP k\) was arbitrarily chosen, this inclusion holds for all
+%  %problems in \(\SigmaP k\).  Thus \(\SigmaP k⊆\SigmaP{k+1}\).
+%
+%  %The inclusion \(\PiP k⊆\PiP{k+1}\) follows directly, then, from the definition
+%  %of \PiP k/\PiP{k+1}.
+%  %\[
+%  %  \PiP k=\co\SigmaP k⊆\co\SigmaP{k+1}=\PiP{k+1}.  \qedhere
+%  %\]
+%
+%\end{proof}
+%
+\begin{theorem}{\(\SigmaP k\) and \(\PiP k\) are closed under union, intersection}{ph-closure}
+
+  If \(Π₁,Π₂∈\SigmaP k\), then \(Π₁∪Π₂\) and \(Π₁∩Π₂\) are
+  both in \(\SigmaP k\).
+
+  Likewise, if \(Π₁,Π₂∈\PiP k\), then \(Π₁∪Π₂\) and \(Π₁∩Π₂\) are both in \(\PiP
+  k\).
+
+\end{theorem}
+
+\begin{proof}
+
+  By induction on \(k\).
+  \begin{itemize}
+
+    \item For \(k=0\), let \(Π₁,Π₂∈\SigmaP0=\PiP0=\P\); we wish to show that
+      \(Π₁∪Π₂,Π₁∩Π₂∈\P\).
+
+      Let \(A₁,A₂\) be polynomial-time algorithms deciding \(Π₁,Π₂\)
+      respectively.  To decide \(Π₁∪Π₂\), run the two algorithms in sequence,
+      returning ``yes'' if at least one of the two algorithms returns ``yes'';
+      to decide \(Π₁∩Π₂\), run both algorithms and return ``yes'' if both return
+      ``yes''.
+
+      \begin{algorithm}{decider for union or intersection of two \P{} problems}{}
+        \begin{algorithmic}
+          \Given{an arbitrary input string \(X∈\Strings\)}
+          \State{\(y₁←A₁(X)\)}
+          \State{\(y₂←A₂(X)\)}
+          \If{deciding \(Π₁∪Π₂\)}
+          \State{\Return ``yes'' if at least one of \(y₁,y₂\) is ``yes'' (i.e., \(y₁∨y₂\))}
+          \ElsIf{deciding \(Π₁∩Π₂\)}
+          \State{\Return ``yes'' if both \(y₁,y₂\) are ``yes'' (i.e., \(y₁∧y₂\))}
+          \EndIf
+        \end{algorithmic}
+      \end{algorithm}
+
+      This algorithm runs in polynomial time because both \(A₁\) and \(A₂\) run
+      in polynomial time; the overall running time is a sum of two polynomials
+      (plus some constants for the last comparison), which is still a
+      polynomial.  Thus \(Π₁∪Π₂,Π₁∩Π₂∈\P\).
+
+    \item Suppose that the claim holds for all levels below some \(k≥1\).
+      First, we show that \(\SigmaP k\) is closed under union and intersection.
+
+      Let \(Π₁,Π₂∈\SigmaP k\). Then there exist \(Π₁',Π₂'∈\PiP{k-1}\) and
+      polynomials \(p₁,p₂\) such that
+      \begin{align*}
+        Π₁&=\SetBuilder*{X}{∃Y\Q\Abs Y≤p₁(\Abs X), \quad (X,Y)∈Π₁'}, \\
+        Π₂&=\SetBuilder*{X}{∃Y\Q\Abs Y≤p₂(\Abs X), \quad (X,Y)∈Π₂'}.
+      \end{align*}
+
+      Define two new problems
+      \begin{align*}
+        Π₁''&=\SetBuilder*{(X,(Y₁,Y₂))}{(X,Y₁)∈Π₁'}, \\
+        Π₂''&=\SetBuilder*{(X,(Y₁,Y₂))}{(X,Y₂)∈Π₂'}.
+      \end{align*}
+      Notice that \(Πᵢ''\) is the same problem as \(Πᵢ'\), differing only in
+      that it takes in and ignores an additional component in the input.
+      Therefore, they are equivalent; \(Πᵢ'∈\PiP{k-1}\) implies
+      \(Πᵢ''∈\PiP{k-1}\) as well.
+
+      Now, construct the problems
+      \begin{align*}
+        Π_∪&=\SetBuilder*{X}{∃(Y₁,Y₂)\Q(X,(Y₁,Y₂))∈Π₁''∪Π₂''}, \\
+        Π_∩&=\SetBuilder*{X}{∃(Y₁,Y₂)\Q(X,(Y₁,Y₂))∈Π₁''∩Π₂''}.
+      \end{align*}
+      By the induction hypothesis, \(\PiP{k-1}\) is closed under union and
+      intersection, so \(Π₁''∪Π₂'',Π₁''∩Π₂''∈\PiP{k-1}\).  Additionally, the
+      length of the second component \((Y₁,Y₂)\) is bounded by \(p₁+p₂\) (plus
+      some constants to account for delimiters), polynomial in the size of the
+      ``board'' \(X\).  Thus \(Π_∪,Π_∩∈\SigmaP k\).
+
+      Finally, we claim that \(Π_∪=Π₁∪Π₂\), and \(Π_∩=Π₁∩Π₂\).  We show both
+      equalities below.
+      \begin{itemize}
+        \item Claim: \(Π_∪=Π₁∩Π₂\).  The following statements are equivalent:
+          \begin{itemize}[nosep]
+            \item \(X∈Π_∪\).
+            \item There exists \((Y₁,Y₂)\) so that \((X,(Y₁,Y₂))\) is in either
+              (or both) of \(Π₁'',Π₂''\).
+            \item There exists \(Y₁\) so that \((X,Y₁)∈Π₁'\), or there exists
+              \(Y₂\) so that \((X,Y₂)∈Π₂'\).
+            \item \(X∈Π₁\) or \(X∈Π₂\).
+            \item \(X∈Π₁∪Π₂\).
+          \end{itemize}
+
+        \item Claim: \(Π_∩=Π₁∩Π₂\).  The following are equivalent:
+          \begin{itemize}[nosep]
+            \item \(X∈Π_∩\).
+            \item There exists \((Y₁,Y₂)\) so that \((X,(Y₁,Y₂))\) is in both of
+              \(Π₁'',Π₂''\).
+            \item There exists \(Y₁\) so that \((X,Y₁)∈Π₁'\), and there exists
+              \(Y₂\) so that \((X,Y₂)∈Π₂'\).
+            \item \(X∈Π₁\) and \(X∈Π₂\).
+            \item \(X∈Π₁∩Π₂\).
+          \end{itemize}
+
+      \end{itemize}
+
+      This concludes the main proof: for any \(Π₁,Π₂∈\SigmaP k\), both
+      \(Π₁∪Π₂=Π_∪\) and \(Π₁∩Π₂=Π_∩\) are in \(\SigmaP k\), as desired.  Thus
+      \(\SigmaP k\) is closed under union and intersection.
+
+      Closure of \(\PiP k\) under union and intersection follows from \(\PiP
+      k=\co\SigmaP k\), and from DeMorgan's set identities:
+      \[
+        \Paren*{Π₁∪Π₂}\Complement=Π₁\Complement∩Π₂\Complement, \qquad
+        \Paren*{Π₁∩Π₂}\Complement=Π₁\Complement∪Π₂\Complement.  \qedhere
+      \]
+
+  \end{itemize}
+
+\end{proof}
+
+We may now confidently conclude, having proven these two theorems, that
+\(\Col[k]∈\SigmaP k\).  We discussed why earlier, but just to be thorough, we
+restate the full proof below.
+
+\begin{corollary}{}{}
+
+  \(\Col[k]∈\SigmaP k\).
+
+\end{corollary}
+
+\begin{proof}
+
+  By induction on \(k\).
+  \begin{itemize}
+    \item For \(k=0\), \(\Col[0]=\ColProp∈\P=\SigmaP0\).
+    \item For some \(k≥1\), assume \(\Col[k-1]∈\SigmaP{k-1}\).  We have
+      \[
+        \Col[k]
+        = \SetBuilder{(Γ,κ,\dotsc)}{\text{\(κ\) is improper}}
+        ∪ \SetBuilder*{(Γ,κ,\dotsc)}{∃δ\Q(Γ,κ[δ],\dotsc)∈\Col[k-1]}.
+      \]
+      The first set in the union is equivalent to \(\ColProp\Complement\), which
+      is in \(\P\) and therefore also in \(\SigmaP k\) (\cref{th:fewer-easier}).
+      The second set in the union is by construction a \(\SigmaP k\) problem,
+      since \(\Paren*{\Col[k-1]}\Complement∈\PiP{k-1}\).  Thus the union of the
+      two is also in \SigmaP k (\cref{th:ph-closure}). \qedhere
+  \end{itemize}
+
+\end{proof}
+
+Of course, \cref{th:fewer-easier,th:ph-closure} are useful beyond \Col[k]; they
+make it much more convenient for us to construct and describe \SigmaP k/\PiP k
+problems in general.  One important use-case, as exemplified by \Col[k], is for
+incorporating game rules checked at \emph{each turn} of gameplay, rather than
+only at the end after all turns have been played.  These rules, for example, can
+stipulate conditions on what types of moves are valid, shortcuts to
+winning/losing, etc.
 
 
 %Unsurprisingly, \(\Col[k]∈\SigmaP k\).  This inclusion follows straightforwardly
@@ -314,98 +643,111 @@ improper or'' clause that isn't present in the definition of \SigmaP k problems
 %
 %\section{Reduction from CSAT}
 
-\subsection{Key idea: using colorings to emulate circuits}
+\section{\texorpdfstring{\Col[k]}{\Problem{3Col}ₖ} is \texorpdfstring{\SigmaP k}{𝚺ₖ𝐏}-complete}
 
-Of course, the interesting result we are really after is that \Col[k] is not
-just \emph{in} \SigmaP k but also \emph{\SigmaP k-complete}.  Before jumping
-directly into that proof, let us flesh out the key idea underlying the result
-and (hopefully) thereby develop an intuitive appreciation for why the result
-makes sense.
+So, we just showed that \(\Col[k]∈\SigmaP k\).  But that's hardly surprising.
+Given what we understand now about \SigmaP k/\PiP k, almost anything we can
+conceive of as a \(k\)-turn game---that is, with polynomial-time-checkable
+rules, and \(k\) fixed turns of reasonable size---most likely falls within
+\SigmaP k/\PiP k.
 
-The key idea is that proper graph colorings can \emph{emulate} boolean circuits.
-To see what this means, associate each boolean value with a color: we take the
-(convenient) convention that \ColorId0 means \False{} and \ColorId1 means
-\True{} (\ColorId2 is only used as an ``auxiliary'' color for enforcing
-intermediate constraints, but never used to represent a boolean value). Then, it
-is possible to convert any boolean circuit into a graph so that properness on
-the graph's colorings causes it to exactly compute the circuit.
+Really, the more interesting, more profound result is that \Col[k] is among the
+\emph{hardest} \(k\)-turn games: it is \emph{\SigmaP k-complete}.  Before
+jumping into the proof of this claim, we first discuss the basic idea behind
+it---that graph 3-colorings are ``powerful'' enough to encode boolean circuits.
 
-\begin{definition}{boolean graph}{boolean-graph}%
-  A \Term{boolean graph} is a graph \(G\) whose vertices satisfy the following:
+\subsection{Key idea: using 3-colorings to emulate circuits}
+
+Graph 3-colorings can \emph{emulate} boolean circuits. To illustrate what this
+means, associate each boolean value with a color: we take the (convenient)
+convention that \ColorId0 means \False{} and \ColorId1 means \True{} (\ColorId2
+is an ``auxiliary'' color used to enforce intermediate constraints but never to
+represent a boolean value). Then, it is possible to convert any boolean circuit
+into a graph so that properness on the graph's colorings causes it to exactly
+compute the circuit.
+
+First, we define what it means for a graph to \emph{emulate} boolean functions.
+
+\begin{definition}{boolean 3-coloring graphs}{boolean-graph}
+
+  Let \(Γ\) be a partially pre-colored graph with the following
+  specially-labeled vertices:
   \begin{itemize}
-    \item There are three vertices labeled
-      \(s_\True,s_\False,s_\Aux∈\Vertices[G]\), called the ``special''
-      vertices, joined to each other by a triangle.
-    \item There are \(n\) (not necessarily distinct) vertices
-      \(i_1,\dotsc,i_n∈\Vertices[G]\), called the ``input'' vertices, each
-      joined by an edge to \(s_\Aux\).  Purely for convenience, we allow each
-      of the input vertices to be the same vertex as \(s_\True\) or
-      \(s_\False\) (but not \(s_\Aux\), since that would require edges from
-      \(s_\Aux\) to itself, which we forbid).
-    \item There exists a vertex \(o∈\Vertices[G]\), called the ``output''
-      vertex, also joined by an edge to \(s_\Aux\).  Again, for convenience, we
-      allow \(o\) to coincide with \(s_\True\), \(s_\False\), or any of the
-      input vertices.
+    \item There are \(n\) distinct \Term{input vertices}
+      \(𝒊₁,\dotsc,𝒊ₙ∈\Vertices(G)\) each joined by an edge to a vertex
+      pre-assigned the color \ColorId2.
+    \item There exists an \Term{output vertex} \(𝒐∈\Vertices(G)\) also joined by
+      an edge to a pre-colored \ColorId2.
   \end{itemize}
 
-  Now, let \(κ\colon\Vertices[G]→\Set{0,1,2}\) be an arbitrary \emph{proper}
-  3-coloring.  Because the three special vertices \(s_\True,s_\False,s_\Aux\)
-  are joined by a triangle, we know that \(κ\) assigns them all three
-  (distinct) available colors.
+  Let \(κ\) be an arbitrary proper total coloring of \(Γ\).  For each input or
+  output vertex \(v\), since \(v\) neighbors a \ColorId2 by construction and
+  \(κ\) is proper, \(κ(v)∈\TF\).  We say the \Term{boolean value} assigned by
+  \(κ\) to \(v\) is \(\True\) if \(κ(v)=\ColorId1\), and \False{} if
+  \(κ(v)=\ColorId0\).
 
-  For each input/output vertex \(v\), since \(v\) neighbors \(s_\Aux\) by
-  construction, we know \(κ(v)≠κ(s_\Aux)\); then, since there are only three
-  colors, we know \(κ(v)\) must equal \(κ(s_\True)\) or \(κ(s_\False)\).  We
-  say the \Term{boolean value} assigned (by \(κ\)) to each input/output vertex
-  \(v\) is \(\True\) if \(κ(v)=κ(s_\True)\) and \(\False\) if
-  \(κ(v)=κ(s_\False)\).
+  %Now, let \(κ\colon\Vertices(G)→\Set{0,1,2}\) be an arbitrary \emph{proper}
+  %3-coloring.  Because the three special vertices \(s_\True,s_\False,s_\Aux\)
+  %are joined by a triangle, we know that \(κ\) assigns them all three
+  %(distinct) available colors.
 
-  To simplify later discussions, we overload/abuse the notation \(κ(v)\) to
-  denote the boolean value of \(v\); i.e., \(κ(v)=\True\) if \(v\) shares a
-  color with \(s_\True\), etc.
-\end{definition}
+  %For each input/output vertex \(v\), since \(v\) neighbors \(s_\Aux\) by
+  %construction, we know \(κ(v)≠κ(s_\Aux)\); then, since there are only three
+  %colors, we know \(κ(v)\) must equal \(κ(s_\True)\) or \(κ(s_\False)\).  We
+  %say the \Term{boolean value} assigned (by \(κ\)) to each input/output vertex
+  %\(v\) is \(\True\) if \(κ(v)=κ(s_\True)\) and \(\False\) if
+  %\(κ(v)=κ(s_\False)\).
 
-\begin{definition}{boolean graphs as boolean functions}{boolean-graph-functions}%
+  To simplify notation, we will conflate the colors \ColorId1/\ColorId0 with
+  their corresponding boolean values \True/\False (respectively), except where
+  the distinction is needed for clarity.
 
-  Let \(G\) be a boolean graph.  We say that \(G\) computes a well-defined
-  boolean function \(ϕ\colon\Set{\True,\False}^n→\Set{\True,\False}\), if, for
-  every combination of boolean values \(x_1,\dotsc,x_n∈\Set{\True,\False}^n\),
-  the following hold:
-  \begin{itemize}
-    \item There exists at least one proper 3-coloring that assigns boolean
-      values \(x_1,\dotsc,x_n\) to input vertices \(i_1,\dotsc,i_n\),
-      respectively.
-
-      (There exists at least one 3-coloring \(κ\) such that \(κ\) is proper,
-      and \(κ(i_j)=x_j\) for each \(j=1,\dotsc,n\).)
-    \item Every such coloring assigns the (same) boolean value
-      \(ϕ(x_1,\dotsc,x_n)\) to the output vertex \(o\).
-
-      (For every such coloring \(κ\), \(κ(o)=ϕ(x₁,\dotsc,xₙ)\).)
+  Next, let \(ϕ\colon\TF[n]→\TF\) be a boolean function.  We say that \(Γ\)
+  \Term{emulates} \(ϕ\) if, for every combination of boolean values
+  \((x₁,\dotsc,xₙ)\in\TF[n]\), the following hold:
+  \begin{itemize}[nosep]
+    \item There exists at least one proper 3-coloring \(κ\) such that
+      \(κ(𝒊ⱼ)=xⱼ\) for each \(j=1,\dotsc,n\).
+    \item For every such coloring \(κ\), \(κ(𝒐)=ϕ(x₁,\dotsc,xₙ)\).
   \end{itemize}
+
+  %For example, we may say \(κ(v)=\True\) to really mean
+  %\(κ(v)=\ColorId1\), or write \(¬κ(v)\) to mean the negation of \emph{the
+  %boolean value of} \(v\) (despite \(κ(v)\) being a color).
+
+  %\(κ(v)\) to
+  %denote the boolean value of \(v\); i.e., \(κ(v)=\True\)
 \end{definition}
 
-\begin{example}{A graph computing the boolean identity function}{}%
-  The following boolean graph computes the boolean identity function,
-  \(ϕ(x_1)=x_1\).
-  \begin{center}
-    \begin{tikzpicture}[x=3em, y=3em]
-      \coordinate[vertex](t) at (120:1);
-      \coordinate[vertex](f) at (60:1);
-      \coordinate[vertex](a);
-      \draw (t) -- (f) -- (a) -- (t);
-      \node[vertex label, left] at (t) {\(s_\True\)};
-      \node[vertex label, right] at (f) {\(s_\False\)};
-      \node[vertex label, left] at (a) {\(s_\Aux\)};
+%\begin{definition}{boolean graphs as boolean functions}{boolean-graph-functions}%
+%
+%  Let \(G\) be a boolean graph.  We say that \(G\) computes a well-defined
+%  boolean function \(ϕ\colon\Set{\True,\False}^n→\Set{\True,\False}\), if, for
+%  every combination of boolean values \(x_1,\dotsc,x_n∈\Set{\True,\False}^n\),
+%  the following hold:
+%\end{definition}
 
-      \coordinate[vertex](i) at (-90:1);
-      \node[vertex label, below] at (i.south) {\(i_1=o\)};
-      \draw (i) -- (a);
-    \end{tikzpicture}
-  \end{center}
-
-  TODO is explanation even needed, or is it actually obvious that this works?
-\end{example}
+%\begin{example}{A graph computing the boolean identity function}{}%
+%  The following boolean graph computes the boolean identity function,
+%  \(ϕ(x_1)=x_1\).
+%  \begin{center}
+%    \begin{tikzpicture}[x=3em, y=3em]
+%      \coordinate[vertex](t) at (120:1);
+%      \coordinate[vertex](f) at (60:1);
+%      \coordinate[vertex](a);
+%      \draw (t) -- (f) -- (a) -- (t);
+%      \node[vertex label, left] at (t) {\(s_\True\)};
+%      \node[vertex label, right] at (f) {\(s_\False\)};
+%      \node[vertex label, left] at (a) {\(s_\Aux\)};
+%
+%      \coordinate[vertex](i) at (-90:1);
+%      \node[vertex label, below] at (i.south) {\(i_1=o\)};
+%      \draw (i) -- (a);
+%    \end{tikzpicture}
+%  \end{center}
+%
+%  TODO is explanation even needed, or is it actually obvious that this works?
+%\end{example}
 
 \begin{lemma}{\NOT, \OR, and \AND{} graphs}{boolean-operation-graphs}%
   There exist graphs computing each of the basic boolean operations \NOT, \OR,
