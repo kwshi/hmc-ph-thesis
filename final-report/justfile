@@ -1,5 +1,5 @@
 setup:
-  @mkdir -p '_build/_tikz'
+  @mkdir -p '_build/_tikz' '_build/chapter'
   @ln -sf '_build/_tikz'
 
 build: setup

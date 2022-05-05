@@ -90,7 +90,7 @@ one version of a proof below.
   performs only a constant-time amount of work, plus some (insubstantial)
   polynomial-time bookkeeping factor—e.g., keeping track of how many gates have
   been visited, marking wires with their values, etc.  Thus the overall running
-  time of the algorithm is polynomial.
+  time of the algorithm is polynomial.  \qedhere
 
   %We argue that this algorithm terminates in polynomial time.  On each
   %iteration of the ``while'' loop, at least one logic gate is guaranteed to
@@ -154,7 +154,7 @@ force with optimizations that enhance performance on ``practical'', real-world
 inputs but do not save them from performing poorly in the worst case.
 Tentatively, then, most computer scientists suspect that
 \(\Problem{CircSat}∉\P\)---i.e., there is no polynomial-time solution for
-\Problem{CircSat} \citep{gasarch.pnp}.
+\Problem{CircSat} \parencite{gasarch.pnp}.
 
 %TODO: here's a survey to cite on on pnp opinion:
 %\url{https://dl.acm.org/doi/10.1145/564585.564599}.  cite it correctly later.
@@ -306,11 +306,11 @@ of \NP.
 What makes \CircSat{} especially interesting, compared to all the other puzzles
 in \NP, is that \CircSat{} is \NP-\emph{complete}.  In other words, \CircSat{}
 is the hardest of the \NP{} puzzles: any other \NP{} problem reduces to
-\CircSat. This result is known as the Cook--Levin theorem \citep{cook.np,levin.np}:
+\CircSat. This result is known as the Cook--Levin theorem:
 
 \begin{theorem}{Cook--Levin}{cook-levin}
 
-  \CircSat{} is \NP-complete.
+  \CircSat{} is \NP-complete \parencite{cook.np,levin.np}.
 
 \end{theorem}
 
@@ -663,15 +663,16 @@ Notably, the circuit games \(\CircSat_k\) are \SigmaP k-complete for each
 
 \begin{theorem}{}{}
 
-  For each \(k=1,2,\dotsc\), \(\CircSat_k\) is \SigmaP k-complete.
+  For each \(k=1,2,\dotsc\), \(\CircSat_k\) is \SigmaP k-complete
+  \parencite{wrathall.qsat}.
 
 \end{theorem}
 
-Again, a full proof of this result is beyond the scope of this paper.
+Again, a full proof of this result is beyond the scope of this thesis.
 Essentially, this theorem holds for the same reason as the Cook--Levin theorem
 (\cref{th:cook-levin}): all algorithms can be encoded as circuits, so all
-problems are just special-cases of circuit problems.  For our purposes, we
-take this theorem to be given.
+problems are just special-cases of circuit problems.  For our purposes, we take
+this theorem to be given.
 
 In the next chapter, we will use this theorem as the central starting point for
 exploring and ``benchmarking'' the complexities of other puzzles and games.

@@ -267,6 +267,7 @@ This chain of assignments may be visualized as a sort of data-processing
     },
   }
 
+  \begin{figure}[H]
   \begin{center}
     \begin{tikzpicture}
       \matrix[gates, ampersand replacement=\&]{
@@ -281,7 +282,9 @@ This chain of assignments may be visualized as a sort of data-processing
       \draw[pipe] (zx.east) to (out.south west);
       \draw[->] (out.east) -- +(2em,0) node[right]{\(ϕ=XY∨YZ∨ZX\)};
     \end{tikzpicture}
+    \caption{A ``pipeline'' of boolean operations; \emph{almost} a boolean circuit, excepting that the last \OR-gate takes three inputs.}
   \end{center}
+\end{figure}
 
   This is \emph{essentially} a boolean circuit.  More precisely, in a boolean
   circuit, each variable (e.g., \(x₂\) or \(Y\)) is represented as a \emph{wire}
@@ -293,6 +296,7 @@ This chain of assignments may be visualized as a sort of data-processing
   actually be associatively grouped as \((XY∨YZ)∨ZX\).  The corrected circuit
   is shown below:
 
+  \begin{figure}[H]
   \begin{center}
     \begin{tikzpicture}
       \matrix[gates, ampersand replacement=\&]{
@@ -312,7 +316,9 @@ This chain of assignments may be visualized as a sort of data-processing
       \draw[->] (or'.east) -- +(2em,0) node[right]{\(ϕ=(XY∨YZ)∨ZX\)};
 
     \end{tikzpicture}
+    \caption{A boolean circuit.}
   \end{center}
+\end{figure}
 
 }
 

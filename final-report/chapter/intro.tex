@@ -1,5 +1,14 @@
 \chapter{Introduction}
 
+A quick note before we start: an up-to-date version of this document, along with
+its full \LaTeX{} source code, is published on the GitHub repository
+\url{https://github.com/kwshi/hmc-ph-thesis}.  I encourage the interested reader
+to engage with this project (suggesting revisions, requesting clarifications,
+pointing out errors or typos, etc.) by submitting
+\href{https://github.com/kwshi/hmc-ph-thesis/issues}{issue reports on the GitHub
+repository} or directly contacting me at
+\href{mailto:kwshi@hmc.edu}{\texttt{kwshi@hmc.edu}}.
+
 The basic question of computational complexity---``how hard is this problem for
 a computer to solve?''---is central to nearly every topic in computer science.
 And yet the formalisms of complexity theory often seem, in my own experience,
@@ -42,28 +51,29 @@ future directions of this work and its broader implications.
 
 Much of the background exposition on complexity theory referenced in this thesis
 is reproduced from Christos Papadimitriou's textbook,
-\citet{papadimitriou.cc} (though many of the foundational ideas were
+\textcite{papadimitriou.cc} (though many of the foundational ideas were
 originally introduced/proven elsewhere, e.g.
-\citet{cook.np,levin.np,stockmeyer.ph}), reframed through the
+\textcite{cook.np,levin.np,stockmeyer.ph}), reframed through the
 puzzles-and-games perspective and supplemented with a few comments on intuition.
 
 The main family of games explored in this thesis, fixed-turn
 \Problem{3-Colorability} games (\cref{ch:misc}), is a generalization of
 (one-turn) \Problem{3-Colorability}, a well-known \NP-complete puzzle originally
-proven \NP-complete by \citet{karp.np}.  Others have studied (multi-turn)
+proven \NP-complete by \textcite{karp.np}.  Others have studied (multi-turn)
 game generalizations of \Problem{3-Colorability}, but all versions that I've
 encountered are \PSPACE-complete, in which the number of turns played during the
 game scales proportionally with the size of the graph
-\citep{bodlaender.coloring,bh.placement,kbd.impartial,cpss.coloring,schaefer.games}. As far as I'm aware, the variations I explore here—with fixed
+\parencite{bodlaender.coloring,bh.placement,kbd.impartial,cpss.coloring,schaefer.games}. As far as I'm aware, the variations I explore here—with fixed
 numbers of turns regardless of the size of the graph—is unexplored, and the main
 theorem about its \SigmaP k-completeness (\cref{th:yayay}) is novel.  The basic
 idea underlying my proof is the composition of two well-known results:
 \begin{itemize}[nosep]
-  \item \citet{karp.np}'s classic proof of the \NP-hardness of the \Problem{3-Colorability} puzzle, via a reduction from \Problem{3CNF-Satisfiability};
-  \item 's transformation from boolean circuits to equivalent 3CNF-clauses.
+  \item \textcite{karp.np}'s classic proof of the \NP-hardness of the \Problem{3-Colorability} puzzle, via a reduction from \Problem{3CNF-Satisfiability};
+  \item \textcite{tseitin}'s transformation from boolean circuits to equivalent 3CNF-clauses.
 \end{itemize}
 
 Without further ado, let's begin.
+
 
 
 %TODO: outline/overview of chapters, after those chapters are written

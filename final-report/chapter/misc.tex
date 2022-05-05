@@ -425,6 +425,7 @@ complexity classes \SigmaP k/\PiP k a \emph{hierarchy}---each level of the
 hierarchy is contained within the next, etc.  The following diagram illustrates
 this hierarchy of containments:
 
+\begin{figure}[H]
 \begin{center}
   \begin{tikzpicture}
 
@@ -452,7 +453,9 @@ this hierarchy of containments:
     }
 
   \end{tikzpicture}
+  \caption{Hierarchy of inclusions in the polynomial hierarchy.}
 \end{center}
+\end{figure}
 
 %
 %\begin{proof}
@@ -828,6 +831,7 @@ definition, we represent each \emph{wire} to a boolean vertex, i.e. a vertex
 joined to a pre-colored \ColorId2, so that it can only be colored \ColorId0 or
 \ColorId1 (namely, a boolean value).
 
+\begin{figure}[H]
 \begin{center}
   \begin{tikzpicture}
     \matrix[column sep=2em, row sep=1em]{
@@ -837,7 +841,9 @@ joined to a pre-colored \ColorId2, so that it can only be colored \ColorId0 or
     \draw[wire] (x) -- (x') node[midway, above, vertex label]{\(x\)};
     \draw[edge] (vx) -- (aux);
   \end{tikzpicture}
+  \caption{Representation of a wire as a boolean vertex.}
 \end{center}
+\end{figure}
 
 To negate the boolean value of a vertex, create an edge joining the input and
 output vertices, which forces them to have opposite colors:
@@ -848,6 +854,7 @@ output vertices, which forces them to have opposite colors:
   by introducing a new boolean vertex \(𝒐\), i.e., the \emph{output} vertex, and
   an edge \(𝒊↔𝒐\).
 
+  \begin{figure}[H]
   \begin{center}
     \begin{tikzpicture}
       \matrix[column sep=1em, row sep=1em]{
@@ -862,7 +869,9 @@ output vertices, which forces them to have opposite colors:
       \draw[wire, -> ] (neg) -- (y);
       \draw[edge] (vx) -- (vy) -- (aux) -- (vx);
     \end{tikzpicture}
+    \caption{Conversion of \NOT{} gates to \NOT{} graphs.}
   \end{center}
+\end{figure}
 
 \end{definition}
 
@@ -876,6 +885,7 @@ row (\(¬¬x=x\)):
   by creating two new vertices, \(\bar i\) and \(𝒐\) (the \emph{output}), and
   edges \(𝒊↔\bar 𝒊↔𝒐\).
 
+  \begin{figure}[H]
   \begin{center}
     \begin{tikzpicture}
       \matrix[column sep=1em, row sep=1em]{
@@ -892,7 +902,9 @@ row (\(¬¬x=x\)):
       \draw[wire, ->] (x) -- (y);
       \draw[edge] (v) -- (vx) -- (aux) -- (v) -- (vy) -- (aux);
     \end{tikzpicture}
+    \caption{Conversion of buffer gates to buffer graphs.}
   \end{center}
+\end{figure}
 
 \end{definition}
 
@@ -911,6 +923,7 @@ their construction, we first introduce an auxiliary graph that ``approximates''
     \item Pre-assign \(t\) the color \ColorId1.
   \end{itemize}
 
+  \begin{figure}[H]
   \begin{center}
     \begin{tikzpicture}
       \matrix[row sep=1em, column sep=1em]{
@@ -925,7 +938,9 @@ their construction, we first introduce an auxiliary graph that ``approximates''
       \node[right, vertex label] at (t.east) {\(t\)};
       \draw[edge] (x') -- (x) -- (aux) -- (y) -- (y') -- (t) -- (x') -- (y');
     \end{tikzpicture}
+    \caption{A semi-\OR{} graph on two vertices.}
   \end{center}
+\end{figure}
 
 \end{definition}
 
@@ -987,6 +1002,7 @@ example, we define below the semi-\OR{} graph on three vertices.
     \item  Create a two-vertex semi-\OR{} graph on \(t₁\) and \(z\).
   \end{itemize}
 
+  \begin{figure}[H]
   \begin{center}
     \begin{tikzpicture}
 
@@ -1012,7 +1028,9 @@ example, we define below the semi-\OR{} graph on three vertices.
       \node[vertex label, right=0pt of t2] {\(t₂\)};
 
     \end{tikzpicture}
+    \caption{A three-vertex semi-\OR{} graph.}
   \end{center}
+\end{figure}
 
 \end{definition}
 
@@ -1075,9 +1093,24 @@ simultaneously hold:
   \item At least one of \(z\) and \(¬y\) is \ColorId1.
   \item At least one of \(x,y\), and \(¬z\) is \ColorId1.
 \end{itemize}
-Thus we construct an \OR{} graph by using \NOT{} graphs to compute \(¬x,¬y,¬z\),
-and then constraining them using semi-\OR{} graphs on \(z,¬x\); \(z,¬y\); and
+
+\begin{aside}
+  I recently learned that this conversion—from ``structured'' relations like
+  \(z=x∨y\) to conjunctions of constraints like \((z∨¬x)(z∨¬y)(x∨y∨¬z)\)—is a
+  well-known result called the Tseitin transformation \parencite{tseitin}.
+
+  I happened to derive this on my own before coming across it on Wikipedia,
+  which I found rewarding for two reasons: first, it tells me that I, too, am
+  capable of coming up with fame-worthy math, like the ``pro'' mathematicians of
+  old; second, it reveals that these famous results are often backed by
+  exceedingly simple ideas—in this case, basic algebra.
+
+\end{aside}
+
+We construct an \OR{} graph by using \NOT{} graphs to compute \(¬x,¬y,¬z\), and
+then constraining them using semi-\OR{} graphs on \(z,¬x\); \(z,¬y\); and
 \(x,y,¬z\).
+
 
 \tikzset{
   %pics/fake or/.style n args={5}{code={
@@ -1251,14 +1284,16 @@ and then constraining them using semi-\OR{} graphs on \(z,¬x\); \(z,¬y\); and
     \item Construct a three-vertex semi-\OR{} graph on \(𝒊₁,𝒊₂,\bar o\).
   \end{itemize}
 
-  A picture of this construction is shown below; for readability, some vertices
-  are drawn as duplicates sharing the same label to indicate that each copy
-  refers to the same vertex.
-  \begin{center}
-    \begin{tikzpicture}
-      \pic{and or={\bar}{\mathbfit}};
-    \end{tikzpicture}
-  \end{center}
+  \begin{figure}[H]
+    \begin{center}
+      \begin{tikzpicture}
+        \pic{and or={\bar}{\mathbfit}};
+      \end{tikzpicture}
+      \caption{An \OR{} graph. For readability, some vertices are drawn as
+        duplicates, with copies sharing the same label to indicate that they
+      refer to the same vertex.}
+    \end{center}
+  \end{figure}
 
   \begin{aside}
     Just for fun, here's what the fully-assembled \OR{} graph looks like.  This
@@ -1266,6 +1301,7 @@ and then constraining them using semi-\OR{} graphs on \(z,¬x\); \(z,¬y\); and
     vertices have been added/elided/rearranged, but the functional structure is
     otherwise the same.
 
+    \begin{figure}[H]
     \begin{center}
       \begin{tikzpicture}
         \pic{assembled and or};
@@ -1282,7 +1318,9 @@ and then constraining them using semi-\OR{} graphs on \(z,¬x\); \(z,¬y\); and
 
       \end{tikzpicture}
 
+      \caption{A fully-assembled \OR{} graph (drawn without duplicated boolean vertices).}
     \end{center}
+  \end{figure}
   \end{aside}
 
 \end{definition}
@@ -1309,14 +1347,18 @@ with \(¬x,¬y,¬z\) in the construction of the \OR{} graph.
     \item Construct a three-vertex semi-\OR{} graph on \(\bar i₁,\bar i₂,𝒐\).
   \end{itemize}
 
+  \begin{figure}[H]
   \begin{center}
     \begin{tikzpicture}
       \pic{and or={\mathbfit}{\bar}};
     \end{tikzpicture}
+    \caption{An \AND{} graph.}
   \end{center}
+\end{figure}
 
   \begin{aside}
-    Here's what the fully-assembled \AND{} graph looks like.
+    I did it for the \OR{} graph, so I might as well also do it for the \AND{} graph:
+    \begin{figure}[H]
     \begin{center}
       \begin{tikzpicture}
 
@@ -1331,14 +1373,16 @@ with \(¬x,¬y,¬z\) in the construction of the \OR{} graph.
         \node[vertex label, above=0pt of nz]{\(𝒐\)};
 
       \end{tikzpicture}
+      \caption{A fully-assembled \AND{} graph.}
     \end{center}
+  \end{figure}
   \end{aside}
 
 \end{definition}
 
-Thus we have defined graph encodings for all three logic gates.  We
-summarize this discussion by proving, per \cref{def:boolean-graph}, that these
-constructions actually compute the boolean operations correctly.
+Thus we have defined graph encodings for all three logic gates.  We summarize
+this discussion by proving the correctness of these constructions, according to
+\cref{def:boolean-graph}.
 
 \begin{theorem}{}{logic-graphs}
 

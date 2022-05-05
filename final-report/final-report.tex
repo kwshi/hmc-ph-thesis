@@ -9,11 +9,18 @@
 \reader{Arthur T. Benjamin}
 \date{May 2022}
 
+%\titlespacing\chapter{0em}{0em}{0em}
+%\setlength{\beforechapskip}{0em}
 
+\usepackage{caption}
+\captionsetup{labelsep=period, labelfont=bf, margin=.5in}
 
-\usepackage{natbib}
+\usepackage{tocloft}
+\setlength\cftbeforetoctitleskip{-.5in}
+
+%\usepackage{natbib}
 %\bibliography{bibliography.bib}
-%\bibliography{newbib.bib}
+\bibliography{newbib.bib}
 
 \tikzset{
   gates/.style={
@@ -26,24 +33,24 @@
     fill opacity=1/8,
     anchor=output,
   },
-  vertex/.style={
-    circle,
-    draw,
-    minimum size=1em/2,
-    inner sep=0pt,
-  },
+  %vertex/.style={
+  %  circle,
+  %  draw,
+  %  minimum size=1em/2,
+  %  inner sep=0pt,
+  %},
   %vertex label/.style={
   %  text height=2em/3,
   %  text depth=1em/3,
   %},
-  wire/.style={
-    rounded corners=1em/4,
-    to path={
-      -- ($ (\tikztostart)!1em!(\tikztostart -| \tikztotarget) $)
-      -- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
-      -- (\tikztotarget)
-    },
-  },
+  %wire/.style={
+  %  rounded corners=1em/4,
+  %  to path={
+  %    -- ($ (\tikztostart)!1em!(\tikztostart -| \tikztotarget) $)
+  %    -- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
+  %    -- (\tikztotarget)
+  %  },
+  %},
 }
 
 \begin{document}
@@ -52,10 +59,89 @@
 \frontmatter
 \maketitle
 
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+%perspective of viewing
+
+In the first half of this thesis, we explore the \emph{polynomial-time
+hierarchy}, emphasizing an intuitive perspective that associates decision
+problems in the polynomial hierarchy to combinatorial games with fixed numbers
+of turns. Specifically, problems in \P{} are thought of as \(0\)-turn games,
+\NP{} as \(1\)-turn ``puzzle'' games, and in general \(\SigmaP k\) as \(k\)-turn
+games, in which decision problems answer the binary question, ``can the starting
+player guarantee a win?'' We introduce the formalisms of the polynomial
+hierarchy through this perspective, alongside definitions of \(k\)-turn
+\Problem{Circuit Satisfiability} games, whose \SigmaP k-completeness is assumed
+from prior work (we briefly justify this assumption on intuitive grounds, but no
+proof is given).
+
+In the second half, we introduce and explore the properties of a novel family of
+games called the \(k\)-turn \Problem{Graph 3-Colorability} games.  By embedding
+boolean circuits in proper graph 3-colorings, we construct reductions from
+\(k\)-turn \Problem{Circuit Satisfiability} games to \(k\)-turn
+\Problem{3-Colorability} games, thereby showing that \(k\)-turn
+\Problem{3-Colorability} is \SigmaP k-complete.
+
+%Viewing the polynomial hierarchy as classes of fixed-turn-games frames the
+%infamous \P-vs-\NP{} question as part of a more general question, ``does the
+%number of turns in a game make a difference (to its difficulty)?''  Given how
+%thoroughly this question has been explored at the first level,
+
+Finally, we conclude by discussing possible future generalizations of this work,
+vis-\`a-vis extending arbitrary \NP-complete puzzles to interesting \SigmaP
+k-complete games.
+
+%Ultimately, I hope that this games-and-puzzles interpretation of the polynomial
+%hierarchy sheds intuitive light on the (sometimes daunting) abstractions of
+%complexity theory,
+
+
+
+
+%In this thesis, I give a detailed exposition of the \emph{polynomial-time
+%hierarchy}, particularly emphasizing the perspective
+%
+%lens of viewing
+%
+%combinatorial games with fixed numbers of turns.
+
 \pagestyle{plain}
+%\vspace*{-1in}
+\newpage
 \tableofcontents
+
+\chapter*{Acknowledgments}
+\addcontentsline{toc}{chapter}{Acknowledgments}
+
+First and foremost, I wish to thank my thesis advisor, Professor Nicholas
+Pippenger, for generously signing on to advise me despite being retired, for
+being tremendously patient with me despite how frequently I showed up to our
+weekly meetings empty-handed, and of course for his helpful guidance throughout
+this project.  While we're at it, let me also thank all the other wonderful
+professors who have mentored me through the years—Professor Stephan Garcia,
+Professor Dagan Karp, Professor Lucas Bang, Professor Weiqing Gu—you helped make
+me the mathematician and the person I am now.
+
+I am also grateful to my friends at
+\href{http://mathily.org}{MathILy}—sarah-marie, Tom, Hannah, Brian, Corrine,
+Max, Josh—you're the reason I fell in love with math in the first place, and
+working with you continually inspires me to approach math with unrelenting
+levity.
+
+%Thank you, especially, to Corrine and Josh, for being there to support
+%me that one time I \emph{really} needed it—
+
+And finally, dearest thanks to my close friends outside of math: Sophia Cheng,
+for supporting me in every way and for being a fabulous dance partner; Forest
+Kobayashi, for befriending me ; Cole Kurashige, for his
+sagely life advice; Kaveh Pezeshki, my OneWheel buddy for life; and last but not
+least, my mom, for funding my exorbitant college education (and also, of course,
+for taking care of me my entire life).  Cheers!
+
 \cleardoublepage
 \pagenumbering{arabic}
+
 \pagestyle{thesis}
 
 %draft outline:
@@ -108,10 +194,10 @@
 %\include{chapter/future}
 %\include{chapter/bib}
 
-\bibliographystyle{hmcmath}
+%\bibliographystyle{hmcmath}
 %\bibliography{newbib.bib}
-\bibliography{shitbib.bib}
+%\bibliography{shitbib.bib}
 
-%\printbibliography[heading=bibintoc]
+\printbibliography[heading=bibintoc]
 
 \end{document}
