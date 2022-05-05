@@ -1,14 +1,15 @@
 \chapter{Graph 3-coloring games}
+\label{ch:misc}
 
 In the last chapter, we set the polynomial-hierarchy stage, focusing on circuit
 games \(\CircSatₖ\) as canonical examples of \SigmaP k-complete problems.  In
 this chapter, we expand that landscape by exploring another collection \SigmaP
 k-complete games, played via colorings on graph vertices.
 
-It is only due to the time constraints on this thesis that we stop at one game:
-ultimately, I hope to convey, through the examples presented in this chapter,
-the sense that there are many, many \SigmaP k-complete games out there, all of
-which intuitively stem from classic, well-known \NP-complete puzzles.
+It is only due to time constraints on this thesis that we stop at one game: I
+hope to convey, through the examples presented in this chapter, the sense that
+there are many, many \SigmaP k-complete games out there, all of which
+intuitively stem from classic, well-known \NP-complete puzzles.
 
 %\section{Graph coloring games}
 
@@ -21,19 +22,66 @@ graph is a network of \emph{vertices} connected by \emph{edges}.  Formally:
 
   A \Term{graph} \(Γ\) is a pair \((\Vertices(Γ),\Edges(Γ))\) consisting of:
   \begin{itemize}[nosep]
-    \item a finite set of \Term{vertices} \(\Vertices(Γ)\), and
-    \item a finite set of \Term{edges} \(\Edges(Γ)⊆\Vertices(Γ)×\Vertices(Γ)\),
-      which represent connections between pairs of vertices.
+    \item A finite set of \Term{vertices} \(\Vertices(Γ)\).
+    \item A finite set of \Term{edges}
+      \(\Edges(Γ)⊆\SetBuilder{u↔v}{u,v∈\Vertices(Γ)}\).  Visually, an edge is
+      illustrated as a \emph{connection} between a pair of vertices.
   \end{itemize}
 
   For our purposes, edges have no directionality.  That is, when specifying an
-  edge, the ordering of vertices doesn't matter: \((u,v)\) specifies the same
-  edge as \((v,u)\).
+  edge, the ordering of vertices doesn't matter: \(u↔v\) is the same edge as
+  \(v↔u\).
 
-  We say that two vertices \(u,v∈\Vertices(Γ)\) are \Term{neighbors}, or that
-  they neighbor each other, if \((u,v)∈\Edges(Γ)\).
+  We say that two vertices \(u,v∈\Vertices(Γ)\) are \Term{adjacent}, or that
+  they \Term{neighbor} each other, if \((u,v)∈\Edges(Γ)\).
 
 \end{definition}
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{tikzpicture}[scale=1.5]
+      
+      \coordinate[vertex](top);
+      \coordinate[vertex](mouth) at (-1.3em,-.9em);
+      \coordinate[vertex](chin) at (-.2em,-.7em);
+      \coordinate[vertex](shoulder) at (1.7em,-5em);
+      \coordinate[vertex](neck) at (2.3em,-4.5em);
+      \coordinate[vertex](back) at (4.5em,-4.4em);
+      \coordinate[vertex](tail) at (5.4em,-5.1em);
+      \coordinate[vertex](leg1) at (1.5em,-9em);
+      \coordinate[vertex](leg2) at (2.7em,-8.8em);
+      \coordinate[vertex](leg3) at (4.3em,-9.1em);
+      \coordinate[vertex](leg4) at (5.4em,-8.9em);
+
+      \draw[edge]
+      (top) .. controls +(-.4em,-.1em) and +(.5em,.3em) .. (mouth) 
+      .. controls +(.4em,0) and +(-.3em,-.1em) .. (chin)
+      .. controls +(.4em,-3.3em) and +(-.1em,6em) .. (leg1)
+      (tail) .. controls +(-.3em,.4em) and +(.2em,-.1em) .. (back) 
+      .. controls +(-.6em,.1em) and +(.7em,0em) .. (neck) 
+      .. controls +(-2.1em,2.5em) and +(.6em,-.8em) .. (top)
+      (chin) .. controls +(.4em,-2.2em) and +(-.2em,.8em) .. (shoulder)
+      .. controls +(-.1em,-1em) and +(.2em,.9em) .. (leg1)
+      (shoulder) .. controls +(.3em,-1.5em) and +(-.8em,1.5em) .. (leg2) 
+      .. controls +(-.3em,1.6em) and +(0em,-2em) .. (neck)
+      (back) .. controls +(.2em,-2.5em) and +(-.3em,1.5em) .. (leg4)
+      .. controls +(0em,2.5em) and +(-.3em,-1.5em) .. (tail);
+
+      \draw[edge, over]
+      (leg1) .. controls +(.3em,.5em) and +(-.4em,-.2em) .. +(.7em,3.1em)
+      .. controls +(1em,.5em) and +(-.2em,3.4em) .. (leg3)
+      .. controls +(.3em,1.5em) and +(-1em,-.8em) .. (tail) 
+      (shoulder) .. controls +(2em,.2em) and +(-1em,.2em) .. (tail);
+
+      \draw[edge, over]
+      (back) .. controls +(-.2em,-1.5em) and +(.1em,1em) .. (leg3);
+
+
+    \end{tikzpicture}
+
+    \caption{A giraph.}
+  \end{center}
+\end{figure}
 
 % TODO example giraph (fun)
 
@@ -74,8 +122,8 @@ the \Problem{3-Coloring Properness} problem, or \ColProp{} for short:
 \begin{problem}{\Problem{3-Coloring Properness} / \ColProp}{}
 
   \begin{description}[nosep]
-  \item[Given:] a graph and a 3-coloring \(κ\) of the graph (specified by
-    listing out each vertex with its color)
+  \item[Given:] a 3-colored graph \((Γ,κ)\) (specified by listing out each
+    vertex with its color)
   \item[Determine whether:] \(κ\) is a proper coloring
   \end{description}
 
@@ -97,8 +145,7 @@ we must first ensure that it itself is in \P.  Indeed, it is:
 \begin{proof}
 
   We describe below a straightforward polynomial-time algorithm computing
-  \ColProp.  It iterates through the edges and simply verifies the properness
-  condition on each pair of neighbors:
+  \ColProp.  Simply iterate through and verify properness on each edge:
 
   \begin{algorithm}{a polynomial-time \ColProp{} solver}{}
     \begin{algorithmic}
@@ -109,8 +156,8 @@ we must first ensure that it itself is in \P.  Indeed, it is:
       \State{\Return no}%
       \EndIf%
       \EndFor%
-      \LComment{all edges have been checked, and no improper ones were found,
-      so the coloring is proper}
+      \LComment{all edges have been checked, no improper ones were found; the
+      coloring is proper}
       \State{\Return yes}%
     \end{algorithmic}
   \end{algorithm}
@@ -173,6 +220,9 @@ assigns \None{} to every vertex.  When a player makes a move, they
     \end{cases}.
   \]
 
+  For any partial coloring \(κ'\), we say \(κ'\) is an \Term{extension} of \(κ\)
+  if there exists some \(δ\colon U→\Colors\) such that \(κ'=κ[δ]\).
+
 \end{definition}
 
 Now, we are ready to give the full inductive formulation of \(k\)-turn graph
@@ -184,8 +234,8 @@ coloring games.
 
   \item \(k\)-turn games begin on a partially-colored graph \((Γ,κ)\), where the
     partial coloring \(κ\) comprises color assignments made in previous turns.
-    (We discuss in \cref{sec:precolor} TODO restrictions of these games that
-    start with completely uncolored graphs.)
+    (We discuss in \cref{sec:precolor} restrictions of these games to entirely
+    uncolored graphs.)
 
     If \(κ\) is improper to begin with, then we posit that the first player
     automatically wins, since that means that the opposite player must have made
@@ -220,9 +270,17 @@ coloring games.
 
 \begin{problem}{\Problem{3-Colorability} with \(k\) turns / \Col[k]}{}
 
+  For \(k=0\), define \(\Col[0]=\ColProp\Complement\).  For \(k≥1\), define
+  \(\Col[k]\) as follows:
+
+  \tcblower
+
   \begin{description}[nosep]
-    \item[Given:] a partially-colored graph together with a partitioning of its
-      vertices, \((Γ,κ,(U₁,U₂,\dotsc,Uₖ))\)
+    \item[Given:] a partially-colored graph and a partitioning of its uncolored
+      vertices, 
+      \begin{nest}
+        \((Γ,κ,(U₁,U₂,\dotsc,Uₖ))\)
+      \end{nest}
     \item[Determine whether:] \(κ\) is improper, or there exists some \(δ\colon
       U₁→\Colors\) such that
       \begin{nest}
@@ -232,7 +290,15 @@ coloring games.
 
 \end{problem}
 
-\section{\texorpdfstring{\(\Problem{3Col}ₖ∈\SigmaP k\)}{\(\Problem{3Col}ₖ∈𝚺ₖ𝐏\)}, right?}
+Pay particular attention to the fact that \(\Col[0]\) is defined as the
+\emph{complement} of \ColProp—that is, return ``yes'' if the graph coloring is
+\emph{improper}. This might seem a little weird, but using
+\(\ColProp\Complement\) rather than \ColProp{} as the ``base case'' game turns
+out to be the more natural definition: it matches the \(k≥1\) definition better
+(specifically, the first half of the winning condition, ``\(κ\) is improper'')
+overall makes generalizations on \Col[k] cleaner to state and prove.
+
+\section{\(k\)-turn \Problem{3-Colorability} is in \texorpdfstring{\SigmaP k}{𝚺ₖ𝐏}, right?}
 
 Having defined \(\Col[k]\) as a \(k\)-turn game problem, we naturally expect
 that \(\Col[k]∈\SigmaP k\) (the class of all (``reasonable'') \(k\)-turn game
@@ -264,18 +330,20 @@ hypothesis) that \(\Col[k-1]∈\SigmaP{k-1}\), then the second term is indeed in
 So \Col[k] is the union of a problem in \P{} with a problem \emph{allegedly} in
 \SigmaP k.
 
-Then, it makes sense to expect \(\Col[k]∈\SigmaP k\) for the
-following (conjectured) reasons:
+Then, it makes sense to expect \(\Col[k]∈\SigmaP k\) for the following
+(conjectured) reasons:
 \begin{itemize}
-  \item We expect \(\P⊆\SigmaP k\): intuitively, \(0\)-turn games must be easier
-    than (at least as easy as) \(k\)-turn games.
+  \item We expect \(\P⊆\SigmaP k\): any game with \(0\) turns can be thought of
+    as game with \(k\) no-op turns. More generally, any \(k\)-turn game is also
+    a \((k+1)\)-turn game, with an extra no-op move by the first (or last)
+    player; games with fewer turns are no harder than games with more turns.
   \item The union of two problems in \SigmaP k should also be in \SigmaP k
     (i.e., \SigmaP k is \emph{closed} under union): intuitively, directly
     combining two problems doesn't make them harder.
 \end{itemize}
 Below, we state these conjectures in general terms and prove them.
 
-\begin{theorem}{games with fewer turns are ``easier''}{fewer-easier}
+\begin{theorem}{polynomial hierarchy inclusions}{fewer-easier}
 
   For every \(k=0,1,2,\dotsc\),
   \[
@@ -352,10 +420,10 @@ Below, we state these conjectures in general terms and prove them.
 
 \end{proof}
 
-As a side note, \ref{th:fewer-easier} provides justification for calling the
-collection of complexity classes \SigmaP k/\PiP k a \emph{hierarchy}---each
-level of the hierarchy is contained within the next, etc.  The following diagram
-illustrates this hierarchy of containments:
+As a side note, \ref{th:fewer-easier} justifies calling the collection of
+complexity classes \SigmaP k/\PiP k a \emph{hierarchy}---each level of the
+hierarchy is contained within the next, etc.  The following diagram illustrates
+this hierarchy of containments:
 
 \begin{center}
   \begin{tikzpicture}
@@ -444,8 +512,7 @@ illustrates this hierarchy of containments:
       Let \(A₁,A₂\) be polynomial-time algorithms deciding \(Π₁,Π₂\)
       respectively.  To decide \(Π₁∪Π₂\), run the two algorithms in sequence,
       returning ``yes'' if at least one of the two algorithms returns ``yes'';
-      to decide \(Π₁∩Π₂\), run both algorithms and return ``yes'' if both return
-      ``yes''.
+      to decide \(Π₁∩Π₂\), return ``yes'' if both return ``yes''.
 
       \begin{algorithm}{decider for union or intersection of two \P{} problems}{}
         \begin{algorithmic}
@@ -542,7 +609,7 @@ We may now confidently conclude, having proven these two theorems, that
 \(\Col[k]∈\SigmaP k\).  We discussed why earlier, but just to be thorough, we
 restate the full proof below.
 
-\begin{corollary}{}{}
+\begin{corollary}{}{col-in-sigma}
 
   \(\Col[k]∈\SigmaP k\).
 
@@ -552,12 +619,12 @@ restate the full proof below.
 
   By induction on \(k\).
   \begin{itemize}
-    \item For \(k=0\), \(\Col[0]=\ColProp∈\P=\SigmaP0\).
+    \item For \(k=0\), we have \(\Col[0]=\ColProp\Complement∈\P=\SigmaP0\).
     \item For some \(k≥1\), assume \(\Col[k-1]∈\SigmaP{k-1}\).  We have
       \[
         \Col[k]
         = \SetBuilder{(Γ,κ,\dotsc)}{\text{\(κ\) is improper}}
-        ∪ \SetBuilder*{(Γ,κ,\dotsc)}{∃δ\Q(Γ,κ[δ],\dotsc)∈\Col[k-1]}.
+        ∪ \SetBuilder*{(Γ,κ,\dotsc)}{∃δ\Q(Γ,κ[δ],\dotsc)∈\Paren*{\Col[k-1]}\Complement}.
       \]
       The first set in the union is equivalent to \(\ColProp\Complement\), which
       is in \(\P\) and therefore also in \(\SigmaP k\) (\cref{th:fewer-easier}).
@@ -643,48 +710,51 @@ winning/losing, etc.
 %
 %\section{Reduction from CSAT}
 
-\section{\texorpdfstring{\Col[k]}{\Problem{3Col}ₖ} is \texorpdfstring{\SigmaP k}{𝚺ₖ𝐏}-complete}
+\section{\(k\)-turn \Problem{3-Colorability} is \texorpdfstring{\SigmaP k}{𝚺ₖ𝐏}-complete}
 
-So, we just showed that \(\Col[k]∈\SigmaP k\).  But that's hardly surprising.
-Given what we understand now about \SigmaP k/\PiP k, almost anything we can
+So, we just showed that \(\Col[k]∈\SigmaP k\).  But that's hardly surprising:
+given what we understand now about \SigmaP k/\PiP k, almost anything we can
 conceive of as a \(k\)-turn game---that is, with polynomial-time-checkable
 rules, and \(k\) fixed turns of reasonable size---most likely falls within
 \SigmaP k/\PiP k.
 
 Really, the more interesting, more profound result is that \Col[k] is among the
 \emph{hardest} \(k\)-turn games: it is \emph{\SigmaP k-complete}.  Before
-jumping into the proof of this claim, we first discuss the basic idea behind
-it---that graph 3-colorings are ``powerful'' enough to encode boolean circuits.
+jumping into the proof of this claim, we first discuss the key idea behind
+it: graph 3-colorings are powerful enough to ``encode'' boolean circuits.
 
-\subsection{Key idea: using 3-colorings to emulate circuits}
+\subsection{Using 3-colorings to emulate circuits}
 
 Graph 3-colorings can \emph{emulate} boolean circuits. To illustrate what this
 means, associate each boolean value with a color: we take the (convenient)
 convention that \ColorId0 means \False{} and \ColorId1 means \True{} (\ColorId2
 is an ``auxiliary'' color used to enforce intermediate constraints but never to
 represent a boolean value). Then, it is possible to convert any boolean circuit
-into a graph so that properness on the graph's colorings causes it to exactly
+into a graph so that properness on the graph's colorings causes them to exactly
 compute the circuit.
 
-First, we define what it means for a graph to \emph{emulate} boolean functions.
+We define this idea more precisely below.
 
 \begin{definition}{boolean 3-coloring graphs}{boolean-graph}
 
-  Let \(Γ\) be a partially pre-colored graph with the following
-  specially-labeled vertices:
-  \begin{itemize}
-    \item There are \(n\) distinct \Term{input vertices}
-      \(𝒊₁,\dotsc,𝒊ₙ∈\Vertices(G)\) each joined by an edge to a vertex
-      pre-assigned the color \ColorId2.
-    \item There exists an \Term{output vertex} \(𝒐∈\Vertices(G)\) also joined by
-      an edge to a pre-colored \ColorId2.
-  \end{itemize}
+  Let \(Γ\) be a graph, and let \(κ\) be a proper \emph{partial} coloring on
+  \(Γ\).
 
-  Let \(κ\) be an arbitrary proper total coloring of \(Γ\).  For each input or
-  output vertex \(v\), since \(v\) neighbors a \ColorId2 by construction and
-  \(κ\) is proper, \(κ(v)∈\TF\).  We say the \Term{boolean value} assigned by
-  \(κ\) to \(v\) is \(\True\) if \(κ(v)=\ColorId1\), and \False{} if
-  \(κ(v)=\ColorId0\).
+  A vertex \(v\) is called a \Term{boolean vertex} if \(v\) neighbors some
+  vertex \(v'\) such that \(κ(v')=\ColorId2\).
+
+  Assume \(Γ\) contains the following ``special'' boolean vertices:
+  \begin{itemize}[nosep]
+    \item \(n\) distinct \Term{input vertices} \(𝒊₁,\dotsc,𝒊ₙ\);
+    \item an \Term{output vertex} \(𝒐\).
+  \end{itemize}
+  We call any non-input/output vertex as a \Term{internal vertex} of \(Γ\).
+
+  Let \(κ'\) be an arbitrary proper total coloring that \emph{extends} \(κ\).
+  For each input or output vertex \(v\), since \(v\) neighbors a (pre-colored)
+  \ColorId2 by construction and \(κ'\) is proper, we know \(κ'(v)∈\TF\).  We say
+  the \Term{boolean value} assigned by \(κ'\) to \(v\) is \(\True\) if
+  \(κ'(v)=\ColorId1\), and \False{} if \(κ'(v)=\ColorId0\).
 
   %Now, let \(κ\colon\Vertices(G)→\Set{0,1,2}\) be an arbitrary \emph{proper}
   %3-coloring.  Because the three special vertices \(s_\True,s_\False,s_\Aux\)
@@ -703,13 +773,16 @@ First, we define what it means for a graph to \emph{emulate} boolean functions.
   the distinction is needed for clarity.
 
   Next, let \(ϕ\colon\TF[n]→\TF\) be a boolean function.  We say that \(Γ\)
-  \Term{emulates} \(ϕ\) if, for every combination of boolean values
-  \((x₁,\dotsc,xₙ)\in\TF[n]\), the following hold:
-  \begin{itemize}[nosep]
-    \item There exists at least one proper 3-coloring \(κ\) such that
-      \(κ(𝒊ⱼ)=xⱼ\) for each \(j=1,\dotsc,n\).
-    \item For every such coloring \(κ\), \(κ(𝒐)=ϕ(x₁,\dotsc,xₙ)\).
-  \end{itemize}
+  \Term{computes} \(ϕ\) if the following properties hold:
+  \begin{description}[nosep]
+  \item[Attainability] For every combination of boolean values
+    \((x₁,\dotsc,xₙ)\in\TF[n]\), there exists at least one proper 3-coloring
+    \(κ\) such that \(κ(𝒊ⱼ)=xⱼ\) for each \(j=1,\dotsc,n\).
+  \item[Consistency] For every proper coloring \(κ\),
+    \[
+      κ(𝒐)=ϕ(κ(𝒊₁),κ(𝒊₂),\dotsc,κ(𝒊ₙ)).
+    \]
+  \end{description}
 
   %For example, we may say \(κ(v)=\True\) to really mean
   %\(κ(v)=\ColorId1\), or write \(¬κ(v)\) to mean the negation of \emph{the
@@ -749,403 +822,1504 @@ First, we define what it means for a graph to \emph{emulate} boolean functions.
 %  TODO is explanation even needed, or is it actually obvious that this works?
 %\end{example}
 
-\begin{lemma}{\NOT, \OR, and \AND{} graphs}{boolean-operation-graphs}%
-  There exist graphs computing each of the basic boolean operations \NOT, \OR,
-  and \AND.
+In order to convert circuits in general to boolean graphs, we start by
+converting the basic building blocks of circuits.  As mentioned in the
+definition, we represent each \emph{wire} to a boolean vertex, i.e. a vertex
+joined to a pre-colored \ColorId2, so that it can only be colored \ColorId0 or
+\ColorId1 (namely, a boolean value).
+
+\begin{center}
+  \begin{tikzpicture}
+    \matrix[column sep=2em, row sep=1em]{
+      \coordinate(x); & \coordinate(x'); & \node[opacity=1/2]{\(⟼\)}; &
+      \coordinate["above:\(x\)", vertex](vx); \\ &&& \coordinate[vertex, fill=ks2](aux); \\
+    };
+    \draw[wire] (x) -- (x') node[midway, above, vertex label]{\(x\)};
+    \draw[edge] (vx) -- (aux);
+  \end{tikzpicture}
+\end{center}
+
+To negate the boolean value of a vertex, create an edge joining the input and
+output vertices, which forces them to have opposite colors:
+
+\begin{definition}{\NOT{} graph}{not-graph}
+
+  Let \(𝒊\) be a boolean vertex.  Construct a \Term{\NOT{} graph} on input \(𝒊\)
+  by introducing a new boolean vertex \(𝒐\), i.e., the \emph{output} vertex, and
+  an edge \(𝒊↔𝒐\).
+
+  \begin{center}
+    \begin{tikzpicture}
+      \matrix[column sep=1em, row sep=1em]{
+        \coordinate["above:\(𝒊\)"](x); & \node[gate](neg){\(¬\)}; & \coordinate["above:\(𝒐\)"](y); &[1em]
+        \node[opacity=1/2]{\(⟼\)}; &[1em]
+        \coordinate[vertex](vx); && \coordinate[vertex](vy); \\
+        &&&&& \coordinate[vertex, fill=ks2](aux); \\
+      };
+      \node[vertex label, above=0pt of vx]{\(𝒊\)};
+      \node[vertex label, above=0pt of vy]{\(𝒐\)};
+      \draw[wire, ->] (x) -- (neg);
+      \draw[wire, -> ] (neg) -- (y);
+      \draw[edge] (vx) -- (vy) -- (aux) -- (vx);
+    \end{tikzpicture}
+  \end{center}
+
+\end{definition}
+
+If, for whatever reason, we wish to replicate/propagate a boolean value across
+multiple vertices (called a ``buffer'' gate), we can use two \NOT{} gates in a
+row (\(¬¬x=x\)):
+
+\begin{definition}{buffer graph}{buffer-graph}
+
+  Let \(𝒊\) be a boolean vertex.  Construct a \Term{buffer graph} on input \(𝒊\)
+  by creating two new vertices, \(\bar i\) and \(𝒐\) (the \emph{output}), and
+  edges \(𝒊↔\bar 𝒊↔𝒐\).
+
+  \begin{center}
+    \begin{tikzpicture}
+      \matrix[column sep=1em, row sep=1em]{
+        \coordinate["above:\(𝒊\)"](x); & \coordinate["above:\(𝒐\)"](y); &[1em]
+        \node[opacity=1/2]{\(⟼\)}; &[1em]
+        \coordinate[vertex](vx); &
+        \coordinate[vertex](v); &
+        \coordinate[vertex](vy); \\
+        &&&& \coordinate[vertex, fill=ks2](aux); \\
+      };
+      \node[above=0pt of vx, vertex label]{\(𝒊\)};
+      \node[above=0pt of vy, vertex label]{\(𝒐\)};
+      \node[above=0pt of v, vertex label]{\(\bar i\)};
+      \draw[wire, ->] (x) -- (y);
+      \draw[edge] (v) -- (vx) -- (aux) -- (v) -- (vy) -- (aux);
+    \end{tikzpicture}
+  \end{center}
+
+\end{definition}
+
+\AND{} and \OR{} gates are somewhat trickier to implement as graphs. To help in
+their construction, we first introduce an auxiliary graph that ``approximates''
+\AND/\OR{} gates, which we call the \Term{semi-\OR{} graph}:
+
+\begin{definition}{semi-\OR{} graph on two (boolean) vertices}{}
+
+  Let \(x,y\) be boolean vertices.  The \Term{semi-\OR{} graph} on \(x,y\) is
+  constructed as follows:
+  \begin{itemize}[nosep]
+    \item Create three vertices \(x',y',t\) and edges joining them in a
+      triangle.
+    \item Create edges \(x↔x'\) and \(y↔y'\).
+    \item Pre-assign \(t\) the color \ColorId1.
+  \end{itemize}
+
+  \begin{center}
+    \begin{tikzpicture}
+      \matrix[row sep=1em, column sep=1em]{
+        \coordinate[vertex](x); && \coordinate[vertex](x'); \\
+        & \coordinate[vertex, fill=ks2](aux); && \coordinate[vertex, fill=ks1](t); \\
+        \coordinate[vertex](y); && \coordinate[vertex](y'); \\
+      };
+      \node[above, vertex label] at (x.north) {\(x\)};
+      \node[below, vertex label] at (y.south) {\(y\)};
+      \node[above, vertex label] at (x'.north) {\(x'\)};
+      \node[below, vertex label] at (y'.south) {\(y'\)};
+      \node[right, vertex label] at (t.east) {\(t\)};
+      \draw[edge] (x') -- (x) -- (aux) -- (y) -- (y') -- (t) -- (x') -- (y');
+    \end{tikzpicture}
+  \end{center}
+
+\end{definition}
+
+The semi-\OR{} graph is named as such because it \emph{constrains} at least one
+of \(x,y\) to have the \ColorId1; no proper coloring exists if both \(x,y\) are
+colored \ColorId0.  We state and prove this property below.
+
+\begin{lemma}{}{semior2-constraint}
+
+  Let \(x,y\) be boolean vertices, and let \(κ\) be a proper coloring of the
+  semi-\OR{} graph on \(x,y\).  Then it must \emph{not} be the case that
+  \(κ(x)=κ(y)=\ColorId0\).
+
+  In other words, the following implications hold:
+  \begin{itemize}[nosep]
+    \item If \(κ(x)=\ColorId0\), then \(κ(y)=\ColorId1\).
+    \item If \(κ(y)=\ColorId0\), then \(κ(x)=\ColorId1\).
+  \end{itemize}
+  %Together, these two constraints imply that \(κ(x)=κ(y)=\ColorId0\) is
+  %impossible (assuming \(κ\) is indeed proper).
+
 \end{lemma}
 
 \begin{proof}
 
-  \tikzset{
-    boolean graph/.style={x=3em, y=3em},
-    over/.style={
-      preaction={draw=white, line width=3pt},
-    },
-    triangle/.pic={
-      \draw (0,0) -- (0,-1) -- (1,0) -- cycle
-      (0,0) coordinate[vertex, fill=ks-true] node[left]{\(s_\True\)}
-      (1,0) coordinate[vertex, fill=ks-false] node[right]{\(s_\False\)}
-      (0,-1) coordinate[vertex, fill=ks-aux] node[left]{\(s_\Aux\)};
-    },
-    semi-or graph/.pic={
-      \coordinate[vertex](i1);
-      \coordinate[vertex](i2) at (0,-1);
-      \coordinate[vertex](i1') at (1,0);
-      \coordinate[vertex](i2') at (1,-1);
-      \coordinate[vertex](t) at (2,0);
-      \coordinate[vertex](a) at (0,-1/2);
-
-      \node[vertex label, left] at (i1){\(i_1\)};
-      \node[vertex label, left] at (i2){\(i_2\)};
-      \node[vertex label, left] at (a){\(s_\Aux\)};
-      \node[vertex label, right] at (t){\(s_\True\)};
-
-      \draw (i2') -- (i2) -- (a) -- (i1) -- (i1') -- (t) -- (i2') -- (i1');
-    },
-    and-or graph/.pic={
-      \coordinate[vertex](i1) at (-1,-1);
-      \coordinate[vertex](ai) at (0,-3/2);
-      \coordinate[vertex](i2) at (-1,-2);
-
-      \coordinate[vertex](i1') at (1,1);
-      \coordinate[vertex](i2') at (1,0);
-
-      \coordinate[vertex](i') at (2,1);
-      \coordinate[vertex](a') at (2,0);
-
-      \coordinate[vertex](n1) at (1,-1);
-      %\coordinate[vertex](an) at (1,-3/2);
-      \coordinate[vertex](n2) at (1,-2);
-
-      \coordinate[vertex](no) at (5,1);
-      \coordinate[vertex](o) at (6,0);
-      \coordinate[vertex](ao) at (6,1);
-
-      \coordinate[vertex](i'') at (3,1);
-      \coordinate[vertex](n1') at (2,-1);
-      \coordinate[vertex](n2') at (2,-2);
-
-      \coordinate[vertex](no') at (4,1);
-      \coordinate[vertex](o1') at (4,-1);
-      \coordinate[vertex](o2') at (4,-2);
-
-      \coordinate[vertex](to) at (3,0);
-      \coordinate[vertex](ti) at (3,-3/2);
-
-      \node[vertex label, below] at (ai) {\(s_\Aux\)};
-      \node[vertex label, below] at (a') {\(s_\Aux\)};
-
-      \node[vertex label, below] at (to) {\(s_\True\)};
-      \node[vertex label, below] at (ti) {\(s_\True\)};
-
-      \node[vertex label, above] at (ao) {\(s_\Aux\)};
-
-      \node[vertex label, above] at (i') {\(i'\)};
-
-
-      \draw
-      (i1) -- (ai) -- (i2) (n1) -- (ai) -- (n2)
-      (i1) -- (n1) -- (n1') -- (o1') -- (o) (n1') -- (ti) -- (o1')
-      (i2) -- (n2) -- (n2') -- (o2') -- (o) (n2') -- (ti) -- (o2')
-      %(n1) -- (an) -- (n2)
-      (o) -- (no) -- (ao) -- (o)
-      (i1) -- (i1') -- (i2') -- (i') -- (i1')
-      (a') -- (i') -- (i'') -- (no') -- (no) (no') -- (to) -- (i'');
-
-      \draw[over] (i2) -- (i2');
-
-
-    },
-    or graph/.pic={
-
-      \pic{and-or graph};
-      \node[vertex label, left] at (i1) {\(i₁\)};
-      \node[vertex label, left] at (i2) {\(i₂\)};
-      \node[vertex label, below] at (n1) {\(¬i₁\)};
-      \node[vertex label, below] at (n2) {\(¬i₂\)};
-      \node[vertex label, right] at (o) {\(o\)};
-      \node[vertex label, above] at (no) {\(¬o\)};
-
-    },
-    and graph/.pic={
-
-      \pic{and-or graph};
-      \node[vertex label, left] at (i1) {\(¬i₁\)};
-      \node[vertex label, left] at (i2) {\(¬i₂\)};
-      \node[vertex label, below] at (n1) {\(i₁\)};
-      \node[vertex label, below] at (n2) {\(i₂\)};
-      \node[vertex label, right] at (o) {\(¬o\)};
-      \node[vertex label, above] at (no) {\(o\)};
-
-    },
-    not graph/.pic={
-      \coordinate[vertex](i);
-      \coordinate[vertex](o) at (1,0);
-      \coordinate[vertex](a) at (0,-1);
-
-      \node[vertex label, left] at (a) {\(s_\Aux\)};
-      \node[vertex label, left] at (i) {\(i₁\)};
-      \node[vertex label, right] at (o) {\(o\)};
-      \draw (i) -- (o) -- (a) -- (i);
-    },
-  }
-
-  We demonstrate constructions of graphs computing each of the boolean
-  operations.
-
-  To improve readability, we adopt the following conventions in the
-  illustrations below:
-  \begin{itemize}
-    \item Assume implicitly the presence of special vertices
-      \(s_\True,s_\False,s_\Aux\) joined by a triangle.  We omit them from the
-      diagrams, using them only when needed.
-    \item To avoid excessive edge crossings, we sometimes illustrate one vertex
-      as multiple ``duplicate'' vertices with the same label.
-  \end{itemize}
-
-  \begin{description}
-
-  \item[\NOT] The following graph computes the boolean \NOT{} operation:
-
-    \begin{center}
-      \begin{tikzpicture}[boolean graph]
-        \pic{not graph};
-      \end{tikzpicture}
-    \end{center}
-
-    Since \(i₁\) neighbors \(o\) (and both neighbor \(s_\Aux\)), they
-    necessarily have opposite colors.  Below we show colorings for both
-    possible input values (unique up to permutation of colors):
-
-    \[
-      \begin{array}{c|c}
-        x₁=\True & x₁=\False \\ \midrule
-        \begin{tikzpicture}[boolean graph]
-          \pic{not graph};
-          \coordinate[vertex, fill=ks-true]() at (i);
-          \coordinate[vertex, fill=ks-false]() at (o);
-          \coordinate[vertex, fill=ks-aux]() at (a);
-
-          \pic at (3,0) {triangle};
-        \end{tikzpicture}
-        &
-        \begin{tikzpicture}[boolean graph]
-          \pic{not graph};
-          \coordinate[vertex, fill=ks-false]() at (i);
-          \coordinate[vertex, fill=ks-true]() at (o);
-          \coordinate[vertex, fill=ks-aux]() at (a);
-
-          \pic at (3,0) {triangle};
-        \end{tikzpicture}
-      \end{array}
-    \]
-
-  \item[\OR] Our construction of the boolean \OR{} gate is slightly
-    complicated.  To that end, before giving that construction, we first
-    introduce a \emph{helper} graph, which we call the ``semi-\OR'' graph.
-
-    \begin{aside}
-
-      \begin{center}
-        \begin{tikzpicture}[boolean graph]
-          \pic{semi-or graph};
-        \end{tikzpicture}
-      \end{center}
-
-      Notice that this graph does not yet define a boolean graph, because it has
-      no output vertex.  However, it has some useful properties resembling that
-      of an \OR-gate.  Examine each of the possible input combinations:
-      \begin{itemize}
-        \item When \(i_1\) and \(i_2\) are both assigned \True, a proper
-          coloring exists:
-          \begin{center}
-            \begin{tikzpicture}[boolean graph]
-              \pic{semi-or graph};
-              \coordinate[vertex, fill=ks-true]() at (i1);
-              \coordinate[vertex, fill=ks-true]() at (i2);
-              \coordinate[vertex, fill=ks-false]() at (i1');
-              \coordinate[vertex, fill=ks-aux]() at (i2');
-              \coordinate[vertex, fill=ks-aux]() at (a);
-              \coordinate[vertex, fill=ks-true]() at (t);
-
-              \pic at (4,0){triangle};
-            \end{tikzpicture}
-          \end{center}
-
-        \item When \(i_1\) and \(i_2\) are both assigned \False, then no proper
-          coloring exists:
-          \begin{center}
-            \begin{tikzpicture}[boolean graph]
-              \pic{semi-or graph};
-              \coordinate[vertex, fill=ks-false]() at (i1);
-              \coordinate[vertex, fill=ks-false]() at (i2);
-              %\coordinate[vertex, fill=ks-false]() at (i1');
-              %\coordinate[vertex, fill=ks-aux]() at (i2');
-              \coordinate[vertex, fill=ks-aux]() at (a);
-              \coordinate[vertex, fill=ks-true]() at (t);
-              %\node[above] at (i1') {\(i₁'\)};
-              %\node[below] at (i2') {\(i₂'\)};
-
-              \pic at (4,0) {triangle};
-            \end{tikzpicture}
-          \end{center}
-
-          Each of the two uncolored vertices neighbor \(s_\True\) and an input
-          vertex \(i₁\) or \(i₂\), whose color matches \(s_\False\).  Thus the
-          uncolored vertices would have to be colored same as \(s_\Aux\).
-          However, they neighbor each other as well, forcing them to share a
-          color.  Thus there is no proper coloring.
-
-        \item When exactly one of \(i_1,i_2\) is assigned \True{} and the other
-          \False, then a proper coloring exists:
-          \begin{center}
-            \begin{tikzpicture}[boolean graph]
-              \pic{semi-or graph};
-              \coordinate[vertex, fill=ks-true]() at (i1);
-              \coordinate[vertex, fill=ks-false]() at (i2);
-              \coordinate[vertex, fill=ks-false]() at (i1');
-              \coordinate[vertex, fill=ks-aux]() at (i2');
-              \coordinate[vertex, fill=ks-aux]() at (a);
-              \coordinate[vertex, fill=ks-true]() at (t);
-            \end{tikzpicture}
-          \end{center}
-
-    \end{itemize}
-    Together, these observations reveal that the semi-\OR{} graph does not
-    \emph{compute} the \OR{} operation, but it has the property of being
-    \emph{properly-3-colorable} if and only if \(i_1\) or \(i_2\) is assigned
-    \True.
-
-
-  \end{aside}
-
-  Now, we are ready to construct a (``full'') \OR{} graph:
-
-  \begin{center}
-    \begin{tikzpicture}[boolean graph]
-      \pic{or graph};
-    \end{tikzpicture}
-  \end{center}
-
-  %\todo[inline]{i made two versions of this graph diagram---the above has less
-  %  vertex duplication and is laid out more like a ``gate'', but the below
-  %  graph more explicitly/clearly illustrates the parts and may be easier to
-  %  explain, at the expense of many more duplicated vertices. @nick, do you
-  %find one nicer than the other?}
-
-  \begin{center}
-    \begin{tikzpicture}[boolean graph]
-
-      \coordinate[vertex](i1);
-      \coordinate[vertex](i2) at (0,-1);
-      \coordinate[vertex](a) at (0,-1/2);
-      \coordinate[vertex](i') at (2,0);
-      \coordinate[vertex](a') at (2,-1/2);
-      \coordinate[vertex](no') at (2,-1);
-      \coordinate[vertex](no'') at (3,-1);
-      \coordinate[vertex](i'') at (3,0);
-      \coordinate[vertex](to) at (4,0);
-
-      \coordinate[vertex](in1) at (0,-2);
-      \coordinate[vertex](in2) at (0,-4);
-
-      \coordinate[vertex](on) at (0,-6);
-      \coordinate[vertex](no) at (1,-6);
-      \coordinate[vertex](ao) at (0,-7);
-
-
-      \foreach \i in {1,2} {
-        \coordinate[vertex](i\i') at ($ (i\i) + (1,0) $);
-        \node[vertex label, left] at (i\i) {\(i_{\i}\)};
-        \node[vertex label, left] at (in\i) {\(i_{\i}\)};
-
-        \coordinate[vertex](n\i) at ($ (in\i) + (1,0) $);
-        \coordinate[vertex](a\i) at ($ (in\i) + (0,-1) $);
-        \coordinate[vertex](n\i') at ($ (n\i) + (1,0) $);
-        \coordinate[vertex](an\i) at ($ (n\i) + (0,-1/2) $);
-        \coordinate[vertex](o\i) at ($ (n\i) + (0,-1) $);
-        \coordinate[vertex](o\i') at ($ (o\i) + (1,0) $);
-        \coordinate[vertex](t\i) at ($ (n\i') + (1,0) $);
-
-        \node[vertex label, above] at (n\i) {\(¬i_{\i}\)};
-        \node[vertex label, left] at (o\i) {\(o\)};
-        \node[vertex label, right] at (an\i) {\(s_\Aux\)};
-        \node[vertex label, right] at (t\i) {\(s_\True\)};
-
-        \draw
-          (in\i) -- (n\i) -- (a\i) -- (in\i)
-          (n\i) -- (an\i) -- (o\i) -- (o\i') -- (n\i') -- (n\i)
-          (n\i') -- (t\i) -- (o\i');
-      }
-
-      \foreach \v in {a,a1,a2,ao} {
-        \node[vertex label, left] at (\v) {\(s_\Aux\)};
-      }
-      \node[vertex label, right] at (a') {\(s_\Aux\)};
-
-      \node[vertex label, above] at (i') {\(i'\)};
-      \node[vertex label, left] at (on) {\(o\)};
-      \node[vertex label, left] at (no') {\(¬o\)};
-      \node[vertex label, right] at (no) {\(¬o\)};
-
-      \node[vertex label, right] at (to) {\(s_\True\)};
-
-      \draw
-        (i1) -- (a) -- (i2) -- (i2') -- (i1') -- (i1)
-        (i1') -- (i') -- (i2')
-        (i') -- (a') -- (no') -- (no'') -- (i'') -- (i')
-        (i'') -- (to) -- (no'')
-        (on) -- (no) -- (ao) -- (on);
-
-    \end{tikzpicture}
-  \end{center}
-
-  To see why this construction works,
-
-  %\todo{still not done}
-
-
-
-
-\item[\AND] To construct an \AND{} gate, we apply DeMorgan's law to rewrite
-  \AND{} in terms of \NOT{} and \OR:
-  \[
-    y=x₁∧x₂ ⟺ ¬y=¬x₁∨¬x₂.
-  \]
-
-  To that end, we implement an \AND{} graph by negating both the input
-  vertices and the output vertex in the \OR{} graph.  We do so by swapping
-  vertices
-  \[
-    i₁↔¬i₁, \qquad i₂↔¬i₂, \qquad o↔¬o
-  \]
-  in the \OR{} graph construction:
-
-  \begin{center}
-    \begin{tikzpicture}[boolean graph]
-      \pic{and graph};
-    \end{tikzpicture}
-  \end{center}
-
-
-\end{description}
+  Suppose towards a contradiction that \(κ(x)=κ(y)=\ColorId0\).  Then, \(x'\)
+  and \(y'\), which neighbor \(x\) and \(y\) respectively, cannot be colored
+  \(\ColorId0\).  Furthermore, \(x'\) and \(y'\) neighbor \(t\), which has color
+  \(κ(t)=\ColorId1\), so they also cannot be colored \(\ColorId1\).  Therefore,
+  both \(x'\) and \(y'\) can only be colored \ColorId2.  However, they also
+  neighbor each other, so they must receive different colors, a contradiction.
+  \qedhere
+
+  %First, suppose \(κ(x)=\ColorId0\).  Then \(x'\), which is adjacent to \(x\)
+  %(colored \ColorId0) and \(t\) (colored \ColorId1) must be colored \ColorId2, so \(y'\), adjacent to \(x'\) (colored \ColorId2) and \(t\) (colored \ColorId
 
 \end{proof}
 
-\begin{theorem}{}{circuit-to-graph}%
-  For any boolean circuit \(C\), there exists a boolean graph that computes
-  [the function defined by] \(C\).  Moreover, there exists a polynomial-time
-  algorithm that performs this conversion from boolean circuits to graphs.
+The semi-\OR{} graph doesn't yet behave like a \emph{real} \OR{} graph because,
+in a real \OR{} graph, coloring \(x,y\) both \ColorId0 should merely cause the
+output vertex to be colored \ColorId0, rather than rule out proper-colorability
+altogether.
+
+Multiple semi-\OR{} graphs can be ``stacked'' together to impose the the same
+\OR-like colorability constraint on three or more boolean vertices.  For
+example, we define below the semi-\OR{} graph on three vertices.
+
+\begin{definition}{semi-\OR{} graph on three vertices}{}
+
+  Let \(x,y,z\) be boolean vertices.  Construct the \Term{semi-\OR{} graph} on
+  \(x,y,z\) as follows:
+  \begin{itemize}
+    \item Create vertices labeled \(x',y',t₁\) and edges joining them in a
+      triangle.
+    \item Create edges \(x↔x'\) and \(y↔y'\).
+    \item Join \(t₁\) to another vertex pre-colored \ColorId2, thereby making
+      \(t₁\) a boolean vertex.  This step differs from the two-vertex semi-\OR{}
+      construction, wherein we would just pre-color \(t₁\) \ColorId1.
+    \item  Create a two-vertex semi-\OR{} graph on \(t₁\) and \(z\).
+  \end{itemize}
+
+  \begin{center}
+    \begin{tikzpicture}
+
+      \matrix[row sep=1em, column sep=1em]{
+        \coordinate[vertex](x); && \coordinate[vertex](x'); \\
+        & \coordinate[vertex, fill=ks2](a1); && \coordinate[vertex](t1); && \coordinate[vertex](t1'); \\
+        \coordinate[vertex](y); && \coordinate[vertex](y'); &&
+        \coordinate[vertex, fill=ks2](a2); && \coordinate[vertex, fill=ks1](t2); \\
+        &&& \coordinate[vertex](z); && \coordinate[vertex](z'); \\
+      };
+
+      \draw (x') -- (x) -- (a1) -- (y) -- (y') -- (x') -- (t1) -- (y');
+      \draw (t1') -- (t1) -- (a2) -- (z) -- (z') -- (t1') -- (t2) -- (z');
+
+      \node[above, vertex label] at (x.north) {\(x\)};
+      \node[below, vertex label] at (y.south) {\(y\)};
+      \node[below, vertex label] at (z.south) {\(z\)};
+      \node[vertex label, above=0pt of x'] {\(x'\)};
+      \node[vertex label, below=0pt of y'] {\(y'\)};
+      \node[vertex label, below=0pt of z'] {\(z'\)};
+      \node[vertex label, above=0pt of t1] {\(t₁\)};
+      \node[vertex label, above=0pt of t1'] {\(t₁'\)};
+      \node[vertex label, right=0pt of t2] {\(t₂\)};
+
+    \end{tikzpicture}
+  \end{center}
+
+\end{definition}
+
+Again, the three-vertex semi-\OR{} graph constrains at least one of its inputs
+to be \ColorId1.
+
+\begin{lemma}{}{semior3-constraint}
+
+  Let \(x,y,z\) be boolean vertices, and let \(κ\) be a proper coloring of the
+  semi-\OR{} graph on \(x,y,z\).  Then it is \emph{impossible} that
+  \(κ(x)=κ(y)=κ(z)=\ColorId0\).
+
+\end{lemma}
+
+\begin{proof}
+
+  Suppose towards a contradiction that \(κ(x)=κ(y)=κ(z)=\ColorId0\).  Then
+  \(x'\) and \(y'\), which neighbor \(x\) and \(y\) respectively, must be
+  colored \(\ColorId1\) or \(\ColorId2\).  Since they also neighbor each other,
+  they must receive different colors:
+  \begin{itemize}[nosep]
+    \item either \(κ(x')=\ColorId1\) and \(κ(y')=\ColorId2\),
+    \item or \(κ(x')=\ColorId2\) and \(κ(y')=\ColorId1\).
+  \end{itemize}
+  In either case, \(t₁\), which neighbors both \(x'\) and \(y'\), can only be
+  colored \ColorId0.  Therefore, observe that \(t₁\) and \(z\) both have color
+  \ColorId0.
+
+  By construction, \(t₁\) and \(z\) are constrained by a two-vertex semi-\OR{}
+  graph.  Thus \(κ(t₁)=κ(z)=\ColorId0\) violates \cref{lem:semior2-constraint},
+  a contradiction.  \qedhere
+
+\end{proof}
+
+We are now prepared to construct full-blown \OR{} gates.  To do so, we create
+three boolean vertices \(x,y,z\); the plan is to use combinations of \NOT{}
+graphs and semi-\OR{} graphs to \emph{constrain} \(x,y,z\) under the relation
+\[
+  z=x∨y,
+\]
+so that \(z\) corresponds to the output wire of the \OR{} gate with inputs \(x\)
+and \(y\).  To do so, first observe that the condition \(z=x∨y\) is equivalent
+to
+\[
+  z∧(x∨y) \quad∨\quad ¬z∧¬(x∨y).
+\]
+In other words, \(z=x∨y\) holds if and only if the values of \(z\) and of
+\(x∨y\) are both \True{} or both \False.  Using DeMorgan's identities and
+distributivity properties, we derive that this condition is equivalent to
+\begin{align*}
+  \Paren*{z∧(x∨y)}∨\Paren*{¬z∧¬(x∨y)}
+&= \xcancel{(z∨¬z)}\Paren[\big]{(z∨¬(x∨y)}\Paren[\big]{(x∨y)∨¬z}\xcancel{\Paren*{(x∨y)∨¬(x∨y)}} \\
+&= \Paren[\big]{(z∨(¬x∧¬y)}\Paren*{x∨y∨¬z} \\
+&= (z∨¬x)(z∨¬y)(x∨y∨¬z).
+\end{align*}
+Thus \(z=x∨y\) holds if and only if all three of the following conditions
+simultaneously hold:
+\begin{itemize}[nosep]
+  \item At least one of \(z\) and \(¬x\) is \ColorId1.
+  \item At least one of \(z\) and \(¬y\) is \ColorId1.
+  \item At least one of \(x,y\), and \(¬z\) is \ColorId1.
+\end{itemize}
+Thus we construct an \OR{} graph by using \NOT{} graphs to compute \(¬x,¬y,¬z\),
+and then constraining them using semi-\OR{} graphs on \(z,¬x\); \(z,¬y\); and
+\(x,y,¬z\).
+
+\tikzset{
+  %pics/fake or/.style n args={5}{code={
+  %    \coordinate[vertex, #4](#2) at ($ (#1) + (0,-2em) $);
+  %    \coordinate[vertex, fill=ks2](aux) at ($ (#1) + (1em,-1em) $);
+  %    \coordinate[vertex](#1') at ($ (#1) + (2em,0) $);
+  %    \coordinate[vertex](#2') at ($ (#1) + (2em,-2em) $);
+  %    \coordinate[vertex, #5](#3) at ($ (#1) + (3em,-1em) $);
+  %    \draw (#1') -- (#3) -- (#2') -- (#2) -- (aux) -- (#1) -- (#1') -- (#2');
+  %}},
+  pics/and or colored/.style n args={5}{code={
+
+      \pgfmathtruncatemacro\x{#3}
+      \pgfmathtruncatemacro\y{#4}
+      \pgfmathtruncatemacro\z{#5}
+
+      \pgfmathtruncatemacro\nx{not(\x)}
+      \pgfmathtruncatemacro\ny{not(\y)}
+      \pgfmathtruncatemacro\nz{not(\z)}
+
+      \pgfmathtruncatemacro\t{or(\x,\y)}
+
+      % 00: 12
+      % 01: 20
+      % 10: 02
+      % 11: 02
+
+      \pgfmathtruncatemacro\xx{\nx*(1+\y)}
+      \pgfmathtruncatemacro\yy{2*or(\x,\ny)}
+
+      \pgfmathtruncatemacro\tt{not(\t)*(1+\nz)}
+      \pgfmathtruncatemacro\nzz{2*or(\t,\z)}
+
+      \pgfmathtruncatemacro\nxx{\x*(1+\z)}
+      \pgfmathtruncatemacro\zx{2*or(\nx,\nz)}
+
+      \pgfmathtruncatemacro\nyy{\y*(1+\z)}
+      \pgfmathtruncatemacro\zy{2*or(\ny,\nz)}
+
+
+      %\pgfmathtruncatemacro\tt{2*not(\t)}
+      %\pgfmathtruncatemacro\nzz{2*not(\nz)-not(\t)}
+
+
+
+
+      \matrix[ampersand replacement=\&, row sep=1em/2, column sep=1em/2]{
+        \coordinate[vertex, fill=ks\x](x); \&\& \coordinate[vertex, fill=ks\xx](x'); \\
+        \& \coordinate[vertex, fill=ks2](axy); \&\& \coordinate[vertex, fill=ks\t](txy); \&\&
+        \coordinate[vertex, fill=ks\tt](txy'); \&\&
+        \coordinate[vertex, fill=ks\nx](nx); \&\& \coordinate[vertex, fill=ks\nxx](nx'); \&\&
+        \coordinate[vertex, fill=ks\ny](ny); \&\& \coordinate[vertex, fill=ks\nyy](ny'); \\
+        \coordinate[vertex, fill=ks\y](y); \&\& \coordinate[vertex, fill=ks\yy](y'); \&\&
+        \coordinate[vertex, fill=ks2](atz); \&\& \coordinate[vertex, fill=ks1](ttz); \&\&
+        \coordinate[vertex, fill=ks2](anx); \&\& \coordinate[vertex, fill=ks1](tnx); \&\&
+        \coordinate[vertex, fill=ks2](any); \&\& \coordinate[vertex, fill=ks1](tny); \\
+        \&\&\& \coordinate[vertex, fill=ks\nz](z); \&\& \coordinate[vertex, fill=ks\nzz](z'); \&\&
+        \coordinate[vertex, fill=ks\z](nzx); \&\& \coordinate[vertex, fill=ks\zx](nzx'); \&\&
+        \coordinate[vertex, fill=ks\z](nzy); \&\& \coordinate[vertex, fill=ks\zy](nzy'); \\
+      };
+
+      \draw[edge]
+      (x') -- (x) -- (axy) -- (y) -- (y') -- (txy) -- (x') -- (y')
+      (txy') -- (txy) -- (atz) -- (z) -- (z') -- (ttz) -- (txy') -- (z')
+      foreach \i in {x,y} {
+        (n\i') -- (n\i) -- (an\i) -- (nz\i) -- (nz\i') -- (tn\i) -- (n\i') -- (nz\i')
+      };
+
+      \node[above=0pt of x, vertex label]{\(#2i₁\)};
+      \node[below=0pt of y, vertex label]{\(#2i₂\)};
+      \node[below=0pt of z, vertex label]{\(#1o\)};
+      \node[below=0pt of nzx, vertex label]{\(#2o\)};
+      \node[below=0pt of nzy, vertex label]{\(#2o\)};
+      \node[above=0pt of nx, vertex label]{\(#1i₁\)};
+      \node[above=0pt of ny, vertex label]{\(#1i₂\)};
+
+
+  }},
+  pics/and or/.style 2 args={code={
+      \matrix[ampersand replacement=\&, row sep=1em, column sep=1em]{
+        \&\& \coordinate[vertex](x0); \&\& \coordinate[vertex](nx0); \&\&
+        \coordinate[vertex](y0); \&\& \coordinate[vertex](ny0); \&\&
+        \coordinate[vertex](z0); \&\& \coordinate[vertex](nz0); \\
+        \&\&\& \coordinate[vertex, fill=ks2](ax); \&\&\&\&
+        \coordinate[vertex, fill=ks2](ay); \&\&\&\&
+        \coordinate[vertex, fill=ks2](az); \\
+        \coordinate[vertex](x); \&\& \coordinate[vertex](x'); \\
+        \& \coordinate[vertex, fill=ks2](axy); \&\& \coordinate[vertex](txy); \&\&
+        \coordinate[vertex](txy'); \&\&
+        \coordinate[vertex](nx); \&\& \coordinate[vertex](nx'); \&\&
+        \coordinate[vertex](ny); \&\& \coordinate[vertex](ny'); \\
+        \coordinate[vertex](y); \&\& \coordinate[vertex](y'); \&\&
+        \coordinate[vertex, fill=ks2](atz); \&\& \coordinate[vertex, fill=ks1](ttz); \&\&
+        \coordinate[vertex, fill=ks2](anx); \&\& \coordinate[vertex, fill=ks1](tnx); \&\&
+        \coordinate[vertex, fill=ks2](any); \&\& \coordinate[vertex, fill=ks1](tny); \\
+        \&\&\& \coordinate[vertex](z); \&\& \coordinate[vertex](z'); \&\&
+        \coordinate[vertex](nzx); \&\& \coordinate[vertex](nzx'); \&\&
+        \coordinate[vertex](nzy); \&\& \coordinate[vertex](nzy'); \\
+        %\coordinate[vertex, "\(#1x\)" vertex label](x);
+        %\pic{fake or={x}{y}{t}{"\(#1y\)" vertex label}{}};
+        %\pic{fake or={t}{nz}{o}{"\(#2z\)" vertex label}{fill=ks1}}; \&
+        %\coordinate[vertex, "\(#2x\)" vertex label](nx) at (0,-1em);
+        %\pic{fake or={nx}{z}{o}{"\(#1z\)" vertex label}{fill=ks1}}; \&
+        %\coordinate[vertex, "\(#2y\)" vertex label](ny) at (0,-1em);
+        %\pic{fake or={ny}{z}{o}{"\(#1z\)" vertex label}{fill=ks1}}; \\
+      };
+
+      \draw[edge]
+      (x') -- (x) -- (axy) -- (y) -- (y') -- (txy) -- (x') -- (y')
+      (txy') -- (txy) -- (atz) -- (z) -- (z') -- (ttz) -- (txy') -- (z')
+      foreach \i in {x,y} {
+        (n\i') -- (n\i) -- (an\i) -- (nz\i) -- (nz\i') -- (tn\i) -- (n\i') -- (nz\i')
+      };
+
+      \foreach \i/\l in {x/i₁,y/i₂,z/o} {
+        \draw[edge] (\i0) -- (a\i) -- (n\i0) -- (\i0);
+        \node[above, vertex label] at (\i0.north) {\(\mathbfit\l\)};
+        \node[above, vertex label] at (n\i0.north) {\(\bar\l\)};
+      };
+
+      \node[above=0pt of x, vertex label]{\(#2i₁\)};
+      \node[below=0pt of y, vertex label]{\(#2i₂\)};
+      \node[below=0pt of z, vertex label]{\(#1o\)};
+      \node[below=0pt of nzx, vertex label]{\(#2o\)};
+      \node[below=0pt of nzy, vertex label]{\(#2o\)};
+      \node[above=0pt of nx, vertex label]{\(#1i₁\)};
+      \node[above=0pt of ny, vertex label]{\(#1i₂\)};
+  }},
+  assembled and or/.pic={
+
+    \matrix[row sep=1em, column sep=1em, ampersand replacement=\&]{
+      \&\& \coordinate[vertex, draw=none](); \& \coordinate[vertex](x'); \&\& \coordinate[vertex, fill=ks2](at); \\
+      \&\&\&\& \coordinate[vertex](txy); \&\& \coordinate[vertex, fill=ks1](txyn); \\
+      \& \coordinate[vertex](x); \&\& \coordinate[vertex](y'); \&\&
+      \coordinate[vertex](txy'); \&\& \coordinate[vertex](nz'); \\
+      \coordinate[vertex, fill=ks2](axy); \&\&\&\&\&\& \coordinate[vertex, fill=ks1](tx); \&\&
+      \coordinate[vertex](nz); \\
+      \& \coordinate[vertex](y); \&\& \coordinate[vertex](nx); \&\& \coordinate[vertex](nx'); \&\&
+      \coordinate[vertex](zx'); \&\& \coordinate[vertex, fill=ks2](az); \\
+      \&\&\&\& \coordinate[vertex, fill=ks2] (ann); \&\& \coordinate[vertex, fill=ks1](ty); \&\&
+      \coordinate[vertex](z); \\
+      \&\&\& \coordinate[vertex](ny); \&\& \coordinate[vertex](ny'); \&\& \coordinate[vertex](zy'); \\
+    };
+
+    \draw[edge]
+    (x) -- (axy) -- (y)
+    (y) -- (ny)
+    (nx) -- (ann) -- (ny)
+    (at) -- (txy) -- (x') -- (y') -- (txy) -- (txy') -- (nz') -- (txyn) -- (txy')
+    (nz) -- (z) -- (az) -- (nz) -- (nz')
+    foreach \i in {x,y} {
+      (n\i) -- (n\i') -- (z\i') -- (t\i) -- (n\i')
+      (z) -- (z\i')
+      (\i) -- (\i')
+    };
+
+    \draw[edge, over] (x) -- (nx);
+  },
+}
+
+\begin{definition}{\OR{} graph}{or-graph}
+
+  Let \(𝒊₁,𝒊₂\) be boolean vertices.  Construct an \Term{\OR{} graph} on inputs
+  \(𝒊₁,𝒊₂\) as follows:
+  \begin{itemize}[nosep]
+    \item Introduce a new vertex \(𝒐\), the output vertex.
+    \item Construct \NOT{} graphs on each of \(𝒊₁,𝒊₂,𝒐\); name their output
+      vertices \(\bar i₁,\bar i₂,\bar o\), respectively.
+    \item Construct two-vertex semi-\OR{} graphs on \(𝒐,\bar i₁\) and on
+      \(𝒐,\bar i₂\).
+    \item Construct a three-vertex semi-\OR{} graph on \(𝒊₁,𝒊₂,\bar o\).
+  \end{itemize}
+
+  A picture of this construction is shown below; for readability, some vertices
+  are drawn as duplicates sharing the same label to indicate that each copy
+  refers to the same vertex.
+  \begin{center}
+    \begin{tikzpicture}
+      \pic{and or={\bar}{\mathbfit}};
+    \end{tikzpicture}
+  \end{center}
+
+  \begin{aside}
+    Just for fun, here's what the fully-assembled \OR{} graph looks like.  This
+    isn't \emph{exactly} the same graph as the one above: some \ColorId2
+    vertices have been added/elided/rearranged, but the functional structure is
+    otherwise the same.
+
+    \begin{center}
+      \begin{tikzpicture}
+        \pic{assembled and or};
+
+        \node[vertex label, above=0pt of x]{\(𝒊₁\)};
+        \node[vertex label, below=0pt of y]{\(𝒊₂\)};
+        \node[vertex label, below=0pt of z]{\(𝒐\)};
+
+        \node[vertex label, above=0pt of nx]{\(\bar i₁\)};
+        \node[vertex label, below=0pt of ny]{\(\bar i₂\)};
+        \node[vertex label, above=0pt of nz]{\(\bar o\)};
+
+
+
+      \end{tikzpicture}
+
+    \end{center}
+  \end{aside}
+
+\end{definition}
+
+Finally, to construct an \AND{} graph, we leverage DeMorgan's identity to
+represent \AND{} operations in terms of \NOT{} and \OR{} operations, which we
+already know how to implement:
+\[
+  z=x∧y \qquad⟺\qquad ¬z=¬x∨¬y.
+\]
+Therefore we construct an \AND{} graph simply by switching the labels \(x,y,z\)
+with \(¬x,¬y,¬z\) in the construction of the \OR{} graph.
+
+\begin{definition}{\AND{} graph}{and-graph}
+
+  Let \(𝒊₁,𝒊₂\) be boolean vertices.  Construct an \Term{\AND{} graph} on inputs
+  \(𝒊₁,𝒊₂\) as follows:
+  \begin{itemize}[nosep]
+    \item Introduce a new vertex \(𝒐\), the output vertex.
+    \item Construct \NOT{} graphs on each of \(𝒊₁,𝒊₂,𝒐\); name their output
+      vertices \(\bar i₁,\bar i₂,\bar o\), respectively.
+    \item Construct two-vertex semi-\OR{} graphs on \(\bar o,𝒊₁\) and \(\bar
+      o,𝒊₂\).
+    \item Construct a three-vertex semi-\OR{} graph on \(\bar i₁,\bar i₂,𝒐\).
+  \end{itemize}
+
+  \begin{center}
+    \begin{tikzpicture}
+      \pic{and or={\mathbfit}{\bar}};
+    \end{tikzpicture}
+  \end{center}
+
+  \begin{aside}
+    Here's what the fully-assembled \AND{} graph looks like.
+    \begin{center}
+      \begin{tikzpicture}
+
+        \pic{assembled and or};
+
+        \node[vertex label, above=0pt of x]{\(\bar i₁\)};
+        \node[vertex label, below=0pt of y]{\(\bar i₂\)};
+        \node[vertex label, below=0pt of z]{\(\bar o\)};
+
+        \node[vertex label, above=0pt of nx]{\(𝒊₁\)};
+        \node[vertex label, below=0pt of ny]{\(𝒊₂\)};
+        \node[vertex label, above=0pt of nz]{\(𝒐\)};
+
+      \end{tikzpicture}
+    \end{center}
+  \end{aside}
+
+\end{definition}
+
+Thus we have defined graph encodings for all three logic gates.  We
+summarize this discussion by proving, per \cref{def:boolean-graph}, that these
+constructions actually compute the boolean operations correctly.
+
+\begin{theorem}{}{logic-graphs}
+
+  \begin{enumerate}[nosep]
+    \item The \NOT{} graph (\cref{def:not-graph}) computes the function
+      \(ϕ(x)=¬x\).
+    \item The \OR{} graph (\cref{def:or-graph}) computes the function
+      \(ϕ(x,y)=x∨y\).
+    \item The \AND{} graph (\cref{def:and-graph}) computes the function
+      \(ϕ(x,y)=x∧y\).
+  \end{enumerate}
+
 \end{theorem}
 
 \begin{proof}
-  We describe an algorithm that, given a circuit \(C\), generates a boolean
-  graph computing \(C\).
 
-  First, construct the special triangle \(s_\True,s_\False,s_\Aux\).
+  In each case, we wish to show that for each combination of input boolean
+  values, the following properties hold:
+  \begin{description}
+  \item[Attainability] There exists a proper total coloring \(κ\) of the graph
+    such that \(κ\) assigns those values to the input vertices.
+  \item[Consistency] Every coloring under this input combination assigns the
+    correct boolean value to the output vertex.
+  \end{description}
 
-  For each wire in \(C\) (including the input and output wires), create a
-  corresponding vertex and join it by an edge to \(s_\Aux\). (The color of this
-  vertex will correspond to the value carried by the wire.)
+  We prove each part separately.
+  \begin{enumerate}
 
-  Next, for each [\NOT, \OR, and \AND] gate \(g\) in \(C\), apply
-  \cref{lem:boolean-operation-graphs} to construct a subgraph \(γ\) computing
-  \(g\).  The input vertices of \(γ\) should exactly correspond to the input
-  wires of \(g\), and the output vertex of \(γ\) should correspond to the
-  output wire of \(g\).
+    \item Let \(𝒊\) be the input vertex and \(𝒐\) be the output vertex of a
+      \NOT{} graph.
 
-  %\todo{not done, need some induction to make precise}
+      \begin{description}
+      \item[Attainability] Both input settings are attained by some proper
+        coloring:
+
+        \begin{center}
+          \begin{tikzpicture}
+            \matrix[row sep=1em, column sep=1em, matrix of nodes]{ |[vertex,
+              fill=ks0](i0)| && |[vertex, fill=ks1](o0)| &[3em] |[vertex,
+              fill=ks1](i1)| && |[vertex, fill=ks0](o1)| \\
+              & |[vertex, fill=ks2](a0)| &&& |[vertex, fill=ks2](a1)| \\
+            };
+
+            \draw[edge] foreach \i in {0,1} { (i\i) -- (o\i) -- (a\i) -- (i\i) };
+            \foreach \i in {0,1} {
+              \pgfmathtruncatemacro\ni{1-\i}
+              \node[above=0pt of i\i]{\(𝒊↦\ColorId\i\)};
+              \node[above=0pt of o\i]{\(𝒐↦\ColorId\ni\)};
+            }
+          \end{tikzpicture}
+        \end{center}
+
+      \item[Consistency] We claim that the colorings shown above are the only
+        possible proper colorings (and therefore all proper colorings assign the
+        same output values).  This is straightforward to see.  Since \(𝒊\) and
+        \(𝒐\) are both boolean vertices (they are connected to a \ColorId2),
+        they can only take colors in \(\Set{\ColorId0,\ColorId1}\).  Then, since
+        \(𝒊\) and \(𝒐\) are joined to each other by an edge, their colors must
+        be opposite, so for every proper coloring \(κ\), we have \(κ(𝒐)=¬κ(𝒊)\),
+        as desired.
+
+      \end{description}
+
+      Thus the \NOT{} graph indeed computes \(ϕ(x)=¬x\).
+
+    \item Let \(𝒊₁,𝒊₂,𝒐\) be boolean vertices such that \(𝒐\) is the output
+      vertex of an \OR{} graph on input vertices \(𝒊₁\) and \(𝒊₂\).
+
+      \begin{description}
+      \item[Attainability] As shown in the diagrams below, each input
+        combination is properly attainable (this time, the colorings for each
+        combination are not necessarily unique).  In each diagram, the
+        \NOT-graphs joining \(x/¬x\), \(y/¬y\), and \(z/¬z\) have been omitted
+        to avoid visual cluttering; assume that they are implicitly present.
+
+        \tikzset{every picture/.style={baseline=(current bounding box.center)}}
+
+        \[
+          \begin{array}{cc|c|c}
+            𝒊₁↦x₁ & 𝒊₂↦x₂ & 𝒐↦x₁∨x₂ & \text{coloring} \\ \midrule
+            \False & \False & \False & \tikz{\pic{and or colored={\bar}{\mathbfit}{0}{0}{0}}} \\
+            \False & \True & \True & \tikz{\pic{and or colored={\bar}{\mathbfit}{0}{1}{1}}} \\
+            \True & \False & \True & \tikz{\pic{and or colored={\bar}{\mathbfit}{1}{0}{1}}} \\
+            \True & \True & \True & \tikz{\pic{and or colored={\bar}{\mathbfit}{1}{1}{1}}}
+          \end{array}
+        \]
+
+      \item[Consistency] Let \(κ\) be an arbitrary proper coloring of the \OR{}
+        graph.  We wish to show that \(κ(𝒐)=κ(𝒊₁)∨κ(𝒊₂)\) always holds.  In
+        other words, we will argue that \(κ(𝒐)=\True\) if and only if at least
+        one of \(κ(𝒊₁),κ(𝒊₂)\) is \True.
+
+        \begin{ifflist}
+
+        \item Suppose that \(κ(𝒐)=\True\).  Then consistency of the \NOT{} graph
+          implies that \(κ(\bar o)=\False\).  By construction of the \OR{}
+          graph, the vertices \(𝒊₁,𝒊₂,\bar o\) are constrained by a three-vertex
+          semi-\OR, which necessitates that at least one of \(𝒊₁,𝒊₂,\bar o\) is
+          colored \True. Since \(\bar o\) isn't, that means at least one of
+          \(𝒊₁,𝒊₂\) must be colored \True, as desired.
+
+        \item Suppose that at least one of \(𝒊₁,𝒊₂\) is colored \True; assume
+          without loss of generality that \(κ(𝒊₁)=\True\).  Consistency of the
+          \NOT{} graph implies \(κ(\bar i₁)=\False\).  There is a two-vertex
+          semi-\OR{} constraining \(\bar i₁\) and \(𝒐\), so at least one of them
+          must be colored \True; \(\bar i₁\) isn't, leaving \(κ(𝒐)=\True\), as
+          desired.
+
+        \end{ifflist}
+
+      \end{description}
+
+    \item Let \(𝒊₁,𝒊₂,𝒐\) be boolean vertices such that \(𝒐\) is the output
+      vertex of an \AND{} graph on input vertices \(𝒊₁\) and \(𝒊₂\).
+
+      \begin{description}
+      \item[Attainability] Each input combination is attainable, per the
+        diagrams below (again, not necessarily unique):
+
+        \tikzset{every picture/.style={baseline=(current bounding box.center)}}
+
+        \[
+          \begin{array}{cc|c|c}
+            𝒊₁↦x₁ & 𝒊₂↦x₂ & 𝒐↦x₁∧x₂ & \text{coloring} \\ \midrule
+            \False & \False & \False & \tikz{\pic{and or colored={\mathbfit}{\bar}{0}{0}{1}}} \\
+            \False & \True & \False & \tikz{\pic{and or colored={\mathbfit}{\bar}{0}{1}{1}}} \\
+            \True & \False & \False & \tikz{\pic{and or colored={\mathbfit}{\bar}{1}{0}{1}}} \\
+            \True & \True & \True & \tikz{\pic{and or colored={\mathbfit}{\bar}{1}{1}{0}}}
+          \end{array}
+        \]
+
+      \item[Consistency] Note that the \AND{} graph is constructed by swapping
+        each boolean vertex \(𝒊₁,𝒊₂,𝒐\) with its negation \(¬𝒊₁,¬𝒊₂,¬𝒐\),
+        respectively.  Thus consistency of the \AND{} graph follows from
+        consistency of the \OR{} graph (proven above) and DeMorgan's identities:
+        for any proper coloring \(κ\),
+        \[
+          κ(\bar o)=κ(\bar i₁)∨κ(\bar i₂)
+          ⟺ ¬κ(𝒐)=¬κ(𝒊₁)∨¬κ(𝒊₂)
+          ⟺ κ(𝒐)=κ(𝒊₁)∧κ(𝒊₂).  \qedhere
+        \]
+
+      \end{description}
+
+  \end{enumerate}
 
 \end{proof}
 
-\begin{example}{}{}
-  Conversion of an example circuit (e.g., XOR gate?  or something simpler, like
-  \(x₁∧¬x₂\)) to graph.
 
-  TODO
-\end{example}
 
-\subsection{Proofs of sigmap completeness of graph coloring games}
+%We summarize this discussion by proving that the \NOT, \OR{}, and \AND{} graphs
+%actually compute their corresponding logic gates.
+%
+%\begin{theorem}{\NOT, \OR, \AND{} graphs compute their logic gates}{logic-graphs}
+%
+%  \begin{itemize}[nosep]
+%    \item The \NOT{} graph on input \(x\) 
+%  \end{itemize}
+%  
+%  
+%\end{theorem}
+
+Finally, any circuit can now be converted to a boolean 3-coloring graph
+computing it, by converting each gate in the circuit to its corresponding graph.
+We define this construction exactly below.
+
+\begin{definition}{boolean graph of a circuit}{circuit-to-graph}
+
+  Let \(C\) be a boolean circuit.  The \Term{boolean graph of \(C\)}, denoted
+  \(Γ_C\), is constructed as follows:
+  \begin{itemize}
+    \item For each wire \(w\) in \(C\), construct a corresponding boolean vertex
+      \(v_w\).
+
+      If \(w\) is an input wire of \(C\), then label \(v_w\) an input vertex of
+      \(Γ_C\).  Similarly, if \(w\) is the output wire, then label \(v_w\) the
+      output vertex of \(Γ_C\).
+    \item For each \NOT{} gate with input wire \(w₁\) and output wire \(w₂\),
+      construct a \NOT{} graph (\cref{def:not-graph}) on input vertex \(v_{w₁}\)
+      and output vertex \(v_{w₂}\).
+    \item For each \AND/\OR{} gate with input wires \(w₁,w₂\) and output wire
+      \(w₃\), construct a corresponding \AND/\OR{} graph
+      (\cref{def:and-graph,def:or-graph}) on input vertices \(v_{w₁},v_{w₂}\)
+      and output vertex \(v_{w₃}\).
+  \end{itemize}
+  For each logic gate \(g\) in \(C\), let \(Γ_g\) denote its corresponding
+  subgraph in \(Γ_C\).
+
+\end{definition}
+
+First, observe that this definition directly describes an algorithm that takes a
+circuit \(C\) and returns its boolean graph \(Γ_C\).  This algorithm runs in
+polynomial-time, because constructing each subgraph ``component'' (boolean
+vertices, logic-gate subgraphs) incurs a constant amount of work (plus some
+polynomial-time bookkeeping), and the total number of component-construction
+iterations is bounded by the size of \(C\) itself.
+
+Next, we prove that \(Γ_C\) correctly computes \(C\); this result follows
+straightforwardly from correctness of each logic-gate subgraph
+(\cref{th:logic-graphs}).
+
+\begin{theorem}{}{gc-computes-c}
+
+  Let \(C\) be a boolean circuit, and let \(Γ_C\) be the boolean graph of \(C\)
+  (\cref{def:circuit-to-graph}).  Then \(Γ\) \emph{computes}
+  (\cref{def:boolean-graph}) \(C\).
+
+\end{theorem}
+
+\begin{proof}
+
+  Assume that the input wires of \(C\) are \(w₁^*,\dotsc,wₙ^*\), and that the
+  corresponding boolean vertices in \(Γ_C\) are \(𝒊ⱼ=v_{wⱼ^*}\) for each
+  \(j=1,\dotsc,n\).
+
+  We wish to show that any input combination \(X∈\TF[n]\) is attainable by some
+  proper coloring on \(Γ_C\), and that all proper colorings generate outputs
+  consistent with \(C\).
+
+  \begin{description}
+  \item[Attainability] Let \(X∈\TF[n]\) be arbitrary. We describe a procedure to
+    construct a proper coloring on \(Γ_C\) attaining \(X\) on the input
+    vertices.
+
+    Initially, for each wire \(w\) in \(C\), its boolean vertex \(v_w\) is
+    uncolored; correspondingly, mark \(w\) as ``unvisited''.  Start by assigning
+    \(X\), as colors, to the input vertices \(𝒊₁,\dotsc,𝒊ₙ\), and
+    correspondingly mark each input wire \(w₁^*,\dotsc,wₙ^*\) as ``visited''.
+
+    Next, as long as there remain unvisited wires in \(C\), repeatedly color
+    logic-gate subgraphs in \(Γ\) as follows. \(C\) contains no cyclic
+    dependencies, so there must exist at least one gate \(g\) with
+    already-visited input wire(s) \(wᵢ\) and unvisited output wire \(w'\). Then
+    the corresponding vertex/vertices \(v_{wᵢ}\) is/are colored, while
+    \(v_{w'}\) remains uncolored.  By consistency of each logic-gate subgraph
+    (\cref{th:logic-graphs}), there exists a proper coloring of \(Γ_g\)
+    extending the pre-existing coloring on \(v_{wᵢ}\); assign those colors to
+    \(Γ_g\), and mark the wire \(w'\) as visited.  This assignment preserves
+    properness of the partial coloring because, by construction of \(Γ_C\),
+    there are never any edges joining the internal or output vertices across
+    different logic-gate subgraphs, so we may freely color \(Γ_g\) without
+    worrying about introducing improper edges with neighbors \emph{outside}
+    \(Γ_g\).  By induction on the number of visited wires, this procedure
+    preserves properness at each iteration, thereby resulting in a proper total
+    coloring of \(Γ_C\).
+
+  \item[Consistency] Consistency of each logic-gate subgraph
+    (\cref{th:logic-graphs}) implies that the boolean relations at each logic
+    gate in \(C\) are exactly matched by the boolean colorings at each
+    logic-gate subgraph in \(Γ_C\).  Thus by induction on the structure of
+    \(C\), the output vertex in \(Γ_C\) must always have the same boolean value
+    as the output wire in \(C\).  \qedhere
+
+  \end{description}
+
+\end{proof}
+
+The takeaway here, intuitively, is that 3-coloring graphs are as computationally
+powerful as circuits are.  If any algorithm can be encoded as a sequence of
+circuit computations, and circuits can be embedded in graph 3-colorings, then
+effectively, any algorithm is essentially a graph 3-coloring computation—with
+data stored as colors, and logic being carried out by properness constraints.
+Therefore, we would be unsurprised to find, as we discuss in the next
+subsection, that every circuit game is also just a graph 3-coloring game, under
+the appropriate translations of terminology/game-rules.
+
+%Finally, we are now equipped to discuss the complexity of graph-coloring
+%\emph{games}
+
+%\begin{theorem}{}{circuit-to-graph}%
+%  For any boolean circuit \(C\), there exists a boolean graph that computes
+%  [the function defined by] \(C\).  Moreover, there exists a polynomial-time
+%  algorithm that performs this conversion from boolean circuits to graphs.
+%\end{theorem}
+%
+%\begin{proof}
+%  We describe an algorithm that, given a circuit \(C\), generates a boolean
+%  graph computing \(C\).
+%
+%  First, construct the special triangle \(s_\True,s_\False,s_\Aux\).
+%
+%  For each wire in \(C\) (including the input and output wires), create a
+%  corresponding vertex and join it by an edge to \(s_\Aux\). (The color of this
+%  vertex will correspond to the value carried by the wire.)
+%
+%  Next, for each [\NOT, \OR, and \AND] gate \(g\) in \(C\), apply
+%  \cref{lem:boolean-operation-graphs} to construct a subgraph \(γ\) computing
+%  \(g\).  The input vertices of \(γ\) should exactly correspond to the input
+%  wires of \(g\), and the output vertex of \(γ\) should correspond to the
+%  output wire of \(g\).
+%
+%  %\todo{not done, need some induction to make precise}
+%
+%\end{proof}
+%
+
+
+
+
+
+
+%suppose we assign to vertex
+%\(x\) the color \ColorId0.  Then \(x'\) is adjacent to a \ColorId0 (\(x\)) and a
+%\ColorId1 (rightmost vertex), so \(x'\) can only be colored \ColorId2. 
+%Consequently, \(y'\) neighbors a \ColorId2 (\(x'\)) and a \ColorId1 (rightmost),
+%so \(y'\) must be colored \ColorId0.  Finally, that means \(y\) neighbors a
+%\ColorId0 (\(y'\)) and a \ColorId2 (``middle'' vertex), so \(y\) must be \ColorId1.
+
+
+
+
+
+
+%\begin{lemma}{\NOT, \OR, and \AND{} graphs}{boolean-operation-graphs}%
+%  There exist graphs computing each of the basic boolean operations \NOT, \OR,
+%  and \AND.
+%\end{lemma}
+%
+%\begin{proof}
+%
+%  \tikzset{
+%    boolean graph/.style={x=3em, y=3em},
+%    over/.style={
+%      preaction={draw=white, line width=3pt},
+%    },
+%    triangle/.pic={
+%      \draw (0,0) -- (0,-1) -- (1,0) -- cycle
+%      (0,0) coordinate[vertex, fill=ks-true] node[left]{\(s_\True\)}
+%      (1,0) coordinate[vertex, fill=ks-false] node[right]{\(s_\False\)}
+%      (0,-1) coordinate[vertex, fill=ks-aux] node[left]{\(s_\Aux\)};
+%    },
+%    semi-or graph/.pic={
+%      \coordinate[vertex](i1);
+%      \coordinate[vertex](i2) at (0,-1);
+%      \coordinate[vertex](i1') at (1,0);
+%      \coordinate[vertex](i2') at (1,-1);
+%      \coordinate[vertex](t) at (2,0);
+%      \coordinate[vertex](a) at (0,-1/2);
+%
+%      \node[vertex label, left] at (i1){\(i_1\)};
+%      \node[vertex label, left] at (i2){\(i_2\)};
+%      \node[vertex label, left] at (a){\(s_\Aux\)};
+%      \node[vertex label, right] at (t){\(s_\True\)};
+%
+%      \draw (i2') -- (i2) -- (a) -- (i1) -- (i1') -- (t) -- (i2') -- (i1');
+%    },
+%    and-or graph/.pic={
+%      \coordinate[vertex](i1) at (-1,-1);
+%      \coordinate[vertex](ai) at (0,-3/2);
+%      \coordinate[vertex](i2) at (-1,-2);
+%
+%      \coordinate[vertex](i1') at (1,1);
+%      \coordinate[vertex](i2') at (1,0);
+%
+%      \coordinate[vertex](i') at (2,1);
+%      \coordinate[vertex](a') at (2,0);
+%
+%      \coordinate[vertex](n1) at (1,-1);
+%      %\coordinate[vertex](an) at (1,-3/2);
+%      \coordinate[vertex](n2) at (1,-2);
+%
+%      \coordinate[vertex](no) at (5,1);
+%      \coordinate[vertex](o) at (6,0);
+%      \coordinate[vertex](ao) at (6,1);
+%
+%      \coordinate[vertex](i'') at (3,1);
+%      \coordinate[vertex](n1') at (2,-1);
+%      \coordinate[vertex](n2') at (2,-2);
+%
+%      \coordinate[vertex](no') at (4,1);
+%      \coordinate[vertex](o1') at (4,-1);
+%      \coordinate[vertex](o2') at (4,-2);
+%
+%      \coordinate[vertex](to) at (3,0);
+%      \coordinate[vertex](ti) at (3,-3/2);
+%
+%      \node[vertex label, below] at (ai) {\(s_\Aux\)};
+%      \node[vertex label, below] at (a') {\(s_\Aux\)};
+%
+%      \node[vertex label, below] at (to) {\(s_\True\)};
+%      \node[vertex label, below] at (ti) {\(s_\True\)};
+%
+%      \node[vertex label, above] at (ao) {\(s_\Aux\)};
+%
+%      \node[vertex label, above] at (i') {\(i'\)};
+%
+%
+%      \draw
+%      (i1) -- (ai) -- (i2) (n1) -- (ai) -- (n2)
+%      (i1) -- (n1) -- (n1') -- (o1') -- (o) (n1') -- (ti) -- (o1')
+%      (i2) -- (n2) -- (n2') -- (o2') -- (o) (n2') -- (ti) -- (o2')
+%      %(n1) -- (an) -- (n2)
+%      (o) -- (no) -- (ao) -- (o)
+%      (i1) -- (i1') -- (i2') -- (i') -- (i1')
+%      (a') -- (i') -- (i'') -- (no') -- (no) (no') -- (to) -- (i'');
+%
+%      \draw[over] (i2) -- (i2');
+%
+%
+%    },
+%    or graph/.pic={
+%
+%      \pic{and-or graph};
+%      \node[vertex label, left] at (i1) {\(i₁\)};
+%      \node[vertex label, left] at (i2) {\(i₂\)};
+%      \node[vertex label, below] at (n1) {\(¬i₁\)};
+%      \node[vertex label, below] at (n2) {\(¬i₂\)};
+%      \node[vertex label, right] at (o) {\(o\)};
+%      \node[vertex label, above] at (no) {\(¬o\)};
+%
+%    },
+%    and graph/.pic={
+%
+%      \pic{and-or graph};
+%      \node[vertex label, left] at (i1) {\(¬i₁\)};
+%      \node[vertex label, left] at (i2) {\(¬i₂\)};
+%      \node[vertex label, below] at (n1) {\(i₁\)};
+%      \node[vertex label, below] at (n2) {\(i₂\)};
+%      \node[vertex label, right] at (o) {\(¬o\)};
+%      \node[vertex label, above] at (no) {\(o\)};
+%
+%    },
+%    not graph/.pic={
+%      \coordinate[vertex](i);
+%      \coordinate[vertex](o) at (1,0);
+%      \coordinate[vertex](a) at (0,-1);
+%
+%      \node[vertex label, left] at (a) {\(s_\Aux\)};
+%      \node[vertex label, left] at (i) {\(i₁\)};
+%      \node[vertex label, right] at (o) {\(o\)};
+%      \draw (i) -- (o) -- (a) -- (i);
+%    },
+%  }
+%
+%  We demonstrate constructions of graphs computing each of the boolean
+%  operations.
+%
+%  To improve readability, we adopt the following conventions in the
+%  illustrations below:
+%  \begin{itemize}
+%    \item Assume implicitly the presence of special vertices
+%      \(s_\True,s_\False,s_\Aux\) joined by a triangle.  We omit them from the
+%      diagrams, using them only when needed.
+%    \item To avoid excessive edge crossings, we sometimes illustrate one vertex
+%      as multiple ``duplicate'' vertices with the same label.
+%  \end{itemize}
+%
+%  \begin{description}
+%
+%  \item[\NOT] The following graph computes the boolean \NOT{} operation:
+%
+%    \begin{center}
+%      \begin{tikzpicture}[boolean graph]
+%        \pic{not graph};
+%      \end{tikzpicture}
+%    \end{center}
+%
+%    Since \(i₁\) neighbors \(o\) (and both neighbor \(s_\Aux\)), they
+%    necessarily have opposite colors.  Below we show colorings for both
+%    possible input values (unique up to permutation of colors):
+%
+%    \[
+%      \begin{array}{c|c}
+%        x₁=\True & x₁=\False \\ \midrule
+%        \begin{tikzpicture}[boolean graph]
+%          \pic{not graph};
+%          \coordinate[vertex, fill=ks-true]() at (i);
+%          \coordinate[vertex, fill=ks-false]() at (o);
+%          \coordinate[vertex, fill=ks-aux]() at (a);
+%
+%          \pic at (3,0) {triangle};
+%        \end{tikzpicture}
+%        &
+%        \begin{tikzpicture}[boolean graph]
+%          \pic{not graph};
+%          \coordinate[vertex, fill=ks-false]() at (i);
+%          \coordinate[vertex, fill=ks-true]() at (o);
+%          \coordinate[vertex, fill=ks-aux]() at (a);
+%
+%          \pic at (3,0) {triangle};
+%        \end{tikzpicture}
+%      \end{array}
+%    \]
+%
+%  \item[\OR] Our construction of the boolean \OR{} gate is slightly
+%    complicated.  To that end, before giving that construction, we first
+%    introduce a \emph{helper} graph, which we call the ``semi-\OR'' graph.
+%
+%    \begin{aside}
+%
+%      \begin{center}
+%        \begin{tikzpicture}[boolean graph]
+%          \pic{semi-or graph};
+%        \end{tikzpicture}
+%      \end{center}
+%
+%      Notice that this graph does not yet define a boolean graph, because it has
+%      no output vertex.  However, it has some useful properties resembling that
+%      of an \OR-gate.  Examine each of the possible input combinations:
+%      \begin{itemize}
+%        \item When \(i_1\) and \(i_2\) are both assigned \True, a proper
+%          coloring exists:
+%          \begin{center}
+%            \begin{tikzpicture}[boolean graph]
+%              \pic{semi-or graph};
+%              \coordinate[vertex, fill=ks-true]() at (i1);
+%              \coordinate[vertex, fill=ks-true]() at (i2);
+%              \coordinate[vertex, fill=ks-false]() at (i1');
+%              \coordinate[vertex, fill=ks-aux]() at (i2');
+%              \coordinate[vertex, fill=ks-aux]() at (a);
+%              \coordinate[vertex, fill=ks-true]() at (t);
+%
+%              \pic at (4,0){triangle};
+%            \end{tikzpicture}
+%          \end{center}
+%
+%        \item When \(i_1\) and \(i_2\) are both assigned \False, then no proper
+%          coloring exists:
+%          \begin{center}
+%            \begin{tikzpicture}[boolean graph]
+%              \pic{semi-or graph};
+%              \coordinate[vertex, fill=ks-false]() at (i1);
+%              \coordinate[vertex, fill=ks-false]() at (i2);
+%              %\coordinate[vertex, fill=ks-false]() at (i1');
+%              %\coordinate[vertex, fill=ks-aux]() at (i2');
+%              \coordinate[vertex, fill=ks-aux]() at (a);
+%              \coordinate[vertex, fill=ks-true]() at (t);
+%              %\node[above] at (i1') {\(i₁'\)};
+%              %\node[below] at (i2') {\(i₂'\)};
+%
+%              \pic at (4,0) {triangle};
+%            \end{tikzpicture}
+%          \end{center}
+%
+%          Each of the two uncolored vertices neighbor \(s_\True\) and an input
+%          vertex \(i₁\) or \(i₂\), whose color matches \(s_\False\).  Thus the
+%          uncolored vertices would have to be colored same as \(s_\Aux\).
+%          However, they neighbor each other as well, forcing them to share a
+%          color.  Thus there is no proper coloring.
+%
+%        \item When exactly one of \(i_1,i_2\) is assigned \True{} and the other
+%          \False, then a proper coloring exists:
+%          \begin{center}
+%            \begin{tikzpicture}[boolean graph]
+%              \pic{semi-or graph};
+%              \coordinate[vertex, fill=ks-true]() at (i1);
+%              \coordinate[vertex, fill=ks-false]() at (i2);
+%              \coordinate[vertex, fill=ks-false]() at (i1');
+%              \coordinate[vertex, fill=ks-aux]() at (i2');
+%              \coordinate[vertex, fill=ks-aux]() at (a);
+%              \coordinate[vertex, fill=ks-true]() at (t);
+%            \end{tikzpicture}
+%          \end{center}
+%
+%    \end{itemize}
+%    Together, these observations reveal that the semi-\OR{} graph does not
+%    \emph{compute} the \OR{} operation, but it has the property of being
+%    \emph{properly-3-colorable} if and only if \(i_1\) or \(i_2\) is assigned
+%    \True.
+%
+%
+%  \end{aside}
+%
+%  Now, we are ready to construct a (``full'') \OR{} graph:
+%
+%  \begin{center}
+%    \begin{tikzpicture}[boolean graph]
+%      \pic{or graph};
+%    \end{tikzpicture}
+%  \end{center}
+%
+%  %\todo[inline]{i made two versions of this graph diagram---the above has less
+%  %  vertex duplication and is laid out more like a ``gate'', but the below
+%  %  graph more explicitly/clearly illustrates the parts and may be easier to
+%  %  explain, at the expense of many more duplicated vertices. @nick, do you
+%  %find one nicer than the other?}
+%
+%  \begin{center}
+%    \begin{tikzpicture}[boolean graph]
+%
+%      \coordinate[vertex](i1);
+%      \coordinate[vertex](i2) at (0,-1);
+%      \coordinate[vertex](a) at (0,-1/2);
+%      \coordinate[vertex](i') at (2,0);
+%      \coordinate[vertex](a') at (2,-1/2);
+%      \coordinate[vertex](no') at (2,-1);
+%      \coordinate[vertex](no'') at (3,-1);
+%      \coordinate[vertex](i'') at (3,0);
+%      \coordinate[vertex](to) at (4,0);
+%
+%      \coordinate[vertex](in1) at (0,-2);
+%      \coordinate[vertex](in2) at (0,-4);
+%
+%      \coordinate[vertex](on) at (0,-6);
+%      \coordinate[vertex](no) at (1,-6);
+%      \coordinate[vertex](ao) at (0,-7);
+%
+%
+%      \foreach \i in {1,2} {
+%        \coordinate[vertex](i\i') at ($ (i\i) + (1,0) $);
+%        \node[vertex label, left] at (i\i) {\(i_{\i}\)};
+%        \node[vertex label, left] at (in\i) {\(i_{\i}\)};
+%
+%        \coordinate[vertex](n\i) at ($ (in\i) + (1,0) $);
+%        \coordinate[vertex](a\i) at ($ (in\i) + (0,-1) $);
+%        \coordinate[vertex](n\i') at ($ (n\i) + (1,0) $);
+%        \coordinate[vertex](an\i) at ($ (n\i) + (0,-1/2) $);
+%        \coordinate[vertex](o\i) at ($ (n\i) + (0,-1) $);
+%        \coordinate[vertex](o\i') at ($ (o\i) + (1,0) $);
+%        \coordinate[vertex](t\i) at ($ (n\i') + (1,0) $);
+%
+%        \node[vertex label, above] at (n\i) {\(¬i_{\i}\)};
+%        \node[vertex label, left] at (o\i) {\(o\)};
+%        \node[vertex label, right] at (an\i) {\(s_\Aux\)};
+%        \node[vertex label, right] at (t\i) {\(s_\True\)};
+%
+%        \draw
+%          (in\i) -- (n\i) -- (a\i) -- (in\i)
+%          (n\i) -- (an\i) -- (o\i) -- (o\i') -- (n\i') -- (n\i)
+%          (n\i') -- (t\i) -- (o\i');
+%      }
+%
+%      \foreach \v in {a,a1,a2,ao} {
+%        \node[vertex label, left] at (\v) {\(s_\Aux\)};
+%      }
+%      \node[vertex label, right] at (a') {\(s_\Aux\)};
+%
+%      \node[vertex label, above] at (i') {\(i'\)};
+%      \node[vertex label, left] at (on) {\(o\)};
+%      \node[vertex label, left] at (no') {\(¬o\)};
+%      \node[vertex label, right] at (no) {\(¬o\)};
+%
+%      \node[vertex label, right] at (to) {\(s_\True\)};
+%
+%      \draw
+%        (i1) -- (a) -- (i2) -- (i2') -- (i1') -- (i1)
+%        (i1') -- (i') -- (i2')
+%        (i') -- (a') -- (no') -- (no'') -- (i'') -- (i')
+%        (i'') -- (to) -- (no'')
+%        (on) -- (no) -- (ao) -- (on);
+%
+%    \end{tikzpicture}
+%  \end{center}
+%
+%  To see why this construction works,
+%
+%  %\todo{still not done}
+%
+%
+%
+%
+%\item[\AND] To construct an \AND{} gate, we apply DeMorgan's law to rewrite
+%  \AND{} in terms of \NOT{} and \OR:
+%  \[
+%    y=x₁∧x₂ ⟺ ¬y=¬x₁∨¬x₂.
+%  \]
+%
+%  To that end, we implement an \AND{} graph by negating both the input
+%  vertices and the output vertex in the \OR{} graph.  We do so by swapping
+%  vertices
+%  \[
+%    i₁↔¬i₁, \qquad i₂↔¬i₂, \qquad o↔¬o
+%  \]
+%  in the \OR{} graph construction:
+%
+%  \begin{center}
+%    \begin{tikzpicture}[boolean graph]
+%      \pic{and graph};
+%    \end{tikzpicture}
+%  \end{center}
+%
+%
+%\end{description}
+%
+%\end{proof}
+%
+%\begin{theorem}{}{circuit-to-graph}%
+%  For any boolean circuit \(C\), there exists a boolean graph that computes
+%  [the function defined by] \(C\).  Moreover, there exists a polynomial-time
+%  algorithm that performs this conversion from boolean circuits to graphs.
+%\end{theorem}
+%
+%\begin{proof}
+%  We describe an algorithm that, given a circuit \(C\), generates a boolean
+%  graph computing \(C\).
+%
+%  First, construct the special triangle \(s_\True,s_\False,s_\Aux\).
+%
+%  For each wire in \(C\) (including the input and output wires), create a
+%  corresponding vertex and join it by an edge to \(s_\Aux\). (The color of this
+%  vertex will correspond to the value carried by the wire.)
+%
+%  Next, for each [\NOT, \OR, and \AND] gate \(g\) in \(C\), apply
+%  \cref{lem:boolean-operation-graphs} to construct a subgraph \(γ\) computing
+%  \(g\).  The input vertices of \(γ\) should exactly correspond to the input
+%  wires of \(g\), and the output vertex of \(γ\) should correspond to the
+%  output wire of \(g\).
+%
+%  %\todo{not done, need some induction to make precise}
+%
+%\end{proof}
+%
+%%\begin{example}{}{}
+%%  Conversion of an example circuit (e.g., XOR gate?  or something simpler, like
+%%  \(x₁∧¬x₂\)) to graph.
+%%
+%%  TODO
+%%\end{example}
+
+\subsection{Translating \Problem{Circuit Satisfiability} games to \Problem{3-Colorability} games}
+
+Recall that in a \CircSat[k] game, two players alternate turns assigning inputs
+to a circuit, with victory decided by the final output of the circuit: \True{}
+means the first player wins; \False{} means the second player wins. We now wish
+to encode these objectives in the language of 3-colorings and properness.
+
+To start with, we are given a circuit \(C\), with inputs partitioned into \(k\)
+groups, \(I₁,\dotsc,Iₖ\).  Naturally, we start by converting \(C\) to a boolean
+graph \(Γ_C\), mapping the groups of circuit inputs directly to groups of
+vertices,
+\[
+  Uᵢ=\SetBuilder{v_w}{w∈Iᵢ}
+\]
+for \(i∈\Set{1,2,\dotsc,k}\).  So far, this doesn't define a valid \Col[k] game
+yet, as \(U₁,\dotsc,Uₖ\) don't partition all vertices in \(Γ_C\)—the uncolored
+internal vertices are unaccounted for.
+
+In choosing who colors the remaining vertices, we wish to ensure that, whatever
+coloring gets assigned to the internals of \(Γ_C\), it should be consistent with
+the wire values in \(C\), so that \cref{th:gc-computes-c} applies.  The easiest
+way to do so is to wait until all \emph{input} vertices have been colored before
+coloring the internal vertices.  To this end, we place all internal vertices in
+the last group, \(Uₖ\).  Of course, in the special case that \(k=0\), there are
+no turns to be played, so we include the full coloring of the graph (computable
+by simply evaluating the circuit and filling in the proper colorings at each
+gate, per \cref{th:logic-graphs}) in the pre-coloring.
+
+Finally, we translate the winning condition as follows.  In \CircSat[k], the
+winning condition is that the \emph{first} player wins if and only if the final
+output is \True.  Meanwhile, in \Col[k], the winning condition is that the
+\emph{last} player wins if and only if all turns finish, resulting in a proper
+total coloring.  The asymmetry between \CircSat[k] and \Col[k] is the difference
+in who wins according to the parity of the number of turns:
+\begin{itemize}
+
+  \item The first player plays on odd-numbered turns, so when \(k\) is odd, the
+    first player is the last player.  Thus for odd \(k\) the winning incentive
+    of the first player in \CircSat[k], should exactly match that of the last
+    player in \(\Col[k]\): a proper total coloring should be obtained if and
+    only if the circuit finally outputs \True.
+
+  \item When \(k\) is even, the second player is the last player.  Thus for even
+    \(k\) the winning incentive of the first player should be opposite that of
+    the last player: the final coloring is proper if and only if the circuit
+    outputs \False.
+
+\end{itemize}
+In all cases, we enforce the winning condition in all cases by appending \(k\)
+\NOT-graphs to the output vertex of the graph and pre-coloring the \emph{final}
+output vertex to \False.
+
+
+We summarize this \emph{reduction} from \CircSat[k] to \Col[k], including the
+steps of the circuit-to-graph conversion (\cref{def:circuit-to-graph}), in the
+algorithm below.
+
+\begin{algorithm}{reduction from \CircSat[k] to \Col[k]}{circsat-to-3col}
+  \begin{algorithmic}
+    \Given{a circuit \(C\) with inputs partitioned as \(I₁⊔\dotsb⊔Iₖ\)}
+    \LComment{construct the boolean graph of \(C\)}
+    \State{create a blank graph \(Γ\) and partial-coloring \(κ\)}
+    \State{introduce (in \(Γ\)) a special vertex \(v_{\mathbf 2}\)}
+    \State{pre-color \(κ(v_{\mathbf 2})=\ColorId2\)}
+    \ForEach{wire \(w\) in \(C\)}
+    \State{introduce a vertex \(v_w\)}
+    \State{introduce an edge \(v_w↔v_{\mathbf 2}\)}
+    \EndFor
+    \ForEach{logic gate \(g\) in \(C\)}
+    \If{\(g\) is a \NOT{} gate with input wire \(w₁\) and output wire \(w₂\)}
+    \State{add to \(Γ\) a \NOT{} graph on input \(v_{w₁}\) and output \(v_{w₂}\), following \cref{def:not-graph}}
+    \ElsIf{\(g\) is an \AND{} gate with inputs \(w₁,w₂\) and output \(w₂\)}
+    \State{add to \(Γ\) an \AND{} graph on inputs \(v_{w₁},v_{w₂}\) and output \(v_{w₃}\), per \cref{def:and-graph}}
+    \ElsIf{\(g\) is an \OR{} gate with inputs \(w₁,w₂\) and output \(w₂\)}
+    \State{add to \(Γ\) an \OR{} graph on inputs \(v_{w₁},v_{w₂}\) and output \(v_{w₃}\), per \cref{def:or-graph}}
+    \EndIf
+    \EndFor
+    \If{\(k=0\)}
+    \LComment{no turns, pre-color all vertices}
+    \ForEach{logic gate \(g\) in \(C\)}
+    \State{evaluate \(g\) and color \(Γ_g\) accordingly, per \cref{th:logic-graphs}}
+    \EndFor
+    %\State{run \cref{alg:circval-solver} (\CircVal{} solver) to evaluate all wire values in \(C\)}
+    %\ForEach{wire \(w\)}
+    %\State{pre-color \(v_w\) with the boolean value of \(w\)}
+    %\EndFor
+    %\ForEach{logic gate \(g\)}
+    %\State{pre-color all internal vertices of \(Γ_g\), per \cref{th:logic-graphs}}
+    %\EndFor
+    \Else
+    \LComment{partition uncolored vertices by turn}
+    \State{\(U₁←\Set{}; U₂←\Set{}; \dotsc; Uₖ←\Set{}\)}
+    \ForEach{\(i∈\Set{1,2,\dotsc,k}\)}
+    \ForEach{wire \(w∈Iᵢ\)}
+    \State{add \(v_w\) to \(Uᵢ\)}
+    \EndFor
+    \EndFor
+    \ForEach{remaining (unused) vertex \(v\) in \(Γ\)}
+    \If{\(v\) is not pre-colored}
+    \State{add \(v\) to \(Uₖ\)}
+    \EndIf
+    \EndFor
+    \EndIf
+    \LComment{encode parity of winning condition via \(k\) \NOT{} graphs}
+    \State{\(w←\text{output wire of \(C\)}\)}
+    \ForEach{\(i=1,2,\dotsc,k\)}
+    \State{introduce a new vertex \(w'\)}
+    \State{introduce an edge \(w'↔v_{\mathbf 2}\)}
+    \State{introduce an edge \(w↔w'\)}
+    \State{\(w←w'\)}
+    \EndFor
+    \State{\Return \((Γ,κ,(U₁,\dotsc,Uₖ))\)}
+  \end{algorithmic}
+\end{algorithm}
+
+We prove the correctness of this reduction below, thereby showing that
+\(\CircSat[k]≤\Col[k]\).
+
+\begin{theorem}{\(\CircSat[k]≤\Col[k]\)}{}
+
+  For any \CircSat[k] instance \((C,(I₁,\dotsc,Iₖ))\), let
+  \((Γ,κ,(U₁,\dotsc,Uₖ))\) denote the \Col[k] instance obtained by running
+  \cref{alg:circsat-to-3col} on \((C,(I₁,\dotsc,Iₖ))\); then
+  \[
+    (C,(I₁,\dotsc,Iₖ))∈\CircSat[k] ⟺ (Γ,κ,(U₁,\dotsc,Uₖ))∈\Col[k].
+  \]
+
+\end{theorem}
+
+\begin{proof}
+
+  By induction on \(k\).
+  \begin{itemize}
+
+    \item In the base case, \(k=0\), the \(\CircSat[0]=\CircVal\) instance has
+      no inputs (all inputs are already specified as constants).  Thus the
+      resulting \(\Col[0]=\ColProp\Complement\) instance has no uncolored
+      vertices; \((Γ,κ)\) is a totally-colored graph.  Since \(k=0\) additional
+      parity-adjusting \NOT{}-graphs are appended at the output, \(Γ\) is
+      exactly same as the boolean graph \(Γ_C\) of \(C\).
+
+      By construction of the pre-coloring, \(κ\) is internally consistent. Thus
+      \cref{th:gc-computes-c} implies that the output color is forced, under
+      properness, to be same as the output value of \(C\).  But by construction
+      the output is pre-colored \ColorId0, so the coloring \(κ\) is proper if
+      and only if \(C\) outputs \False{} to match that pre-coloring.
+      Equivalently, \(κ\) is \emph{improper} if and only if \(C\) outputs \True,
+      or
+      \[
+        (Γ,κ)∈\ColProp\Complement ⟺ C∈\CircVal,
+      \]
+      as desired.
+
+    \item Assume \(k>1\).  We show both directions of the implication
+      separately.
+
+      \begin{ifflist}
+
+      \item Suppose that \((C,(Iᵢ))∈\CircSat[k]\); we wish to show that
+        \((Γ,κ,(Uᵢ))∈\Col[k]\).
+
+        \((C,(I₁,\dotsc,Iₖ))∈\CircSat[k]\) means that there exists
+        \(X∈\TF[\Abs{I₁}]\) such that \(¬C[I₁≔X]\), with remaining inputs
+        partitioned as \(I₂,\dotsc,Iₖ\), is in
+        \(\Paren*{\CircSat[k-1]}\Complement\).
+
+        Construct \(δ\colon U₁→\Colors\) by interpreting the boolean-value
+        assignment \(I₁≔X\) as an assignment of colors to \(U₁\):
+        \[
+          δ(v_{wᵢ}) =
+          \begin{cases}
+            \ColorId1 & xᵢ=\True, \\
+            \ColorId0 & xᵢ=\False
+          \end{cases}.
+        \]
+        Then, observe that the remaining \((k-1)\)-turn game instance,
+        comprising \(Γ\), the augmented coloring \(κ[δ]\), and with uncolored
+        vertices partitioned as \(U₂,\dotsc,Uₖ\), is \emph{exactly} same as that
+        obtained by the reduction \cref{alg:circsat-to-3col} on
+        \((¬C[I₁≔X],(I₂,\dotsc,Iₖ))\).  To see this, recall that:
+        \begin{itemize}[nosep]
+          \item In the \(k\)-turn game, \(Γ\) is formed by appending \(k\)
+            \NOT-graphs to \(Γ_C\).
+          \item In the \((k-1)\)-turn game, \(Γ\) is formed by appending \(k-1\)
+            \NOT-graphs to \(Γ_{¬C}\).
+        \end{itemize}
+        In both instances, the original circuit \(C\) gets negated a total of
+        \(k\) additional times.
+
+        Therefore, by induction,
+        \[
+          \Paren*{¬C[I₁≔X],(I₂,\dotsc,Iₖ)}∈\Paren*{\CircSat[k-1]}\Complement
+          ⟺
+          \Paren*{Γ,κ[δ],(U₂,\dotsc,Uₖ)}∈\Paren*{\Col[k-1]}\Complement.
+        \]
+        Consequently, \(δ\) is indeed a winning move for the original \(k\)-turn
+        game; it \emph{certifies} that
+        \[
+          (Γ,κ,(U₁,\dotsc,Uₖ))∈\Col[k],
+        \]
+        as desired.
+
+      \item Suppose that \((Γ,κ,(Uᵢ))∈\Col[k]\); we wish to show that
+        \((C,(Iᵢ))∈\CircSat[k]\).
+
+        \((Γ,κ,(Uᵢ))∈\Col[k]\) means that either \(κ\) is improper, or there
+        exists a ``winning'' coloring \(δ\colon U₁→\Colors\) such that
+        \[
+          (Γ,κ[δ],(U₂,\dotsc,Uₖ))∈\Paren*{\Col[k-1]}\Complement.
+        \]
+
+        By construction, \(κ\) is proper, because the only pre-colored vertices
+        are the special vertex \(v_{\mathbf2}↦\ColorId2\) and the output vertex
+        \(𝒐↦\ColorId0\).  Thus it must be that a winning \(δ\) exists.
+
+        Note that if \(κ[δ]\) were improper, we would immediately have
+        \[
+          (Γ,κ[δ],(U₂,\dotsc,Uₖ))∈\Col[k-1]
+        \]
+        (the responding player automatically wins).  But by assumption, that is
+        not the case: we actually have
+        \[
+          (Γ,κ[δ],(U₂,\dotsc,Uₖ))∈\Paren*{\Col[k-1]}\Complement
+        \]
+        (\(δ\) leads to a guaranteed \emph{loss} for the responding player). 
+        Thus \(κ[δ]\) must be proper.
+
+        Therefore, for each vertex \(𝒊ⱼ∈U₁\), we know that \(κ[δ]\) only assigns
+        colors \ColorId0 or \ColorId1 to \(𝒊ⱼ\) since by construction \(𝒊ⱼ\)
+        neighbors \(v_{\mathbf2}\), which is pre-colored \ColorId2.  Thus
+        construct a boolean assignment
+        \(X=\Paren*{x₁,\dotsc,x_{\Abs{I₁}}}∈\TF[\Abs{I₁}]\) by
+        \[
+          xⱼ =
+          \begin{cases}
+            \True & δ(𝒊ⱼ)=\ColorId1 \\
+            \False & δ(𝒊ⱼ)=\ColorId0
+          \end{cases}.
+        \]
+
+        As before, note that \((Γ,κ[δ],(U₂,\dotsc,Uₖ))\) is exactly the
+        same \((k-1)\)-turn instance as obtained by \cref{alg:circsat-to-3col}
+        on \((¬C[I₁≔X],(I₂,\dotsc,Iₖ))\).  Thus by induction
+        \[
+          (Γ,κ[δ],(U₂,\dotsc,Uₖ))∈\Paren*{\Col[k-1]}\Complement
+        \]
+        implies that
+        \[
+          (¬C[I₁≔X],(I₂,\dotsc,Iₖ))∈\Paren*{\CircSat[k-1]}\Complement,
+        \]
+        and therefore \(X\) certifies that
+        \[
+          (C,(I₁,\dotsc,Iₖ))∈\CircSat[k],
+        \]
+        as desired.  \qedhere
+
+      \end{ifflist}
+
+  \end{itemize}
+
+\end{proof}
+
+Finally, the correctness of this reduction implies the big theorem of this
+chapter: \SigmaP k-completeness of \Col[k] games.
+
+\begin{theorem}{yay!}{yayay}
+
+  \(\Col[k]\) is \SigmaP k-hard.  Together with \cref{cor:col-in-sigma}, this
+  implies that \(\Col[k]\) is \SigmaP k-complete.
+
+\end{theorem}
+
 
 %\begin{definition}{The graph 3-colorability problem (\Problem{})}{}
 %
@@ -1158,65 +2332,106 @@ First, we define what it means for a graph to \emph{emulate} boolean functions.
 %  \Problem{3col} is \NP-complete.
 %\end{theorem}
 
-\begin{proof}
-  It is straightforward to see that \(\Problem{3col}∈\NP\), since it is
-  solvable by polynomial-time guess-and-check: guess a color assignment for
-  each vertex, then verify that, for each edge \(e\), the two vertices joined
-  by \(e\) have distinct colors.  The ``check'' procedure takes
-  \(\O(\Abs{\Edges[G]})\) time, which is polynomial with respect to the size of
-  the graph.
-
-  To show that \(\Problem{3col}\) is \NP-hard, we show
-  \(\CircSat≤\Problem{3col}\) by reducing \CircSat{} to \Problem{3col}.
-  Specifically, given a circuit \(C\) with inputs \(x₁,\dotsc,xₙ\), we wish to
-  construct a corresponding graph \(G\) such that \(G\) is 3-colorable if and
-  only if \(C\) is satisfiable.
-
-  Let such a circuit \(C\) be given.  Apply the algorithm from
-  \cref{th:circuit-to-graph} to produce a graph \(G\) that computes the boolean
-  function \(C\), such that the inputs \(x₁,\dotsc,xₙ\) of \(C\) correspond
-  respectively to input vertices \(i₁,\dotsc,iₙ\), and the output of \(C\)
-  corresponds to the output vertex \(o\).
-
-  Force the output vertex of \(G\) to take on the boolean value \(\True\) by
-  ``merging'' vertices \(o\) and \(s_\True\) into one vertex, keeping all of
-  their connections to other vertices.  (Equivalently, if we wish to avoid such
-  a ``merging'' operation, we may construct \(G\) assuming \emph{a priori} that
-  \(o=s_\True\).  Yet another alternative is to create edges joining \(o\) with
-  \(s_\False\) and \(s_\Aux\), thereby forcing it to share a color with
-  \(s_\True\).)
-
-  We claim that this resulting graph \(G\) is 3-colorable if and only if \(C\)
-  is satisfiable.
-  \begin{itemize}
-    \item[(\(⟹\))] Suppose that \(G\) is 3-colorable.  Then let \(κ\) be a
-      proper 3-coloring of \(G\).  Let \(x₁,\dotsc,xₙ\) be the respective
-      boolean values assigned by \(κ\) to the input vertices \(i₁,\dotsc,iₙ\)
-      of \(G\). Since \(G\) computes \(C\)
-      (\cref{def:boolean-graph-functions}), we know that
-      \(κ(o)=C(x₁,\dotsc,xₙ)\).  At the same time, we have also ensured by
-      construction that \(κ(o)=\True\).  Thus \(x₁,\dotsc,xₙ\) is a satisfying
-      assignment for \(C\).  Thus \(C\) is satisfiable.
-
-    \item[(\(⟸\))] Suppose that \(C\) is satisfiable.  Then let
-      \(x₁,\dotsc,xₙ\) be a satisfying assignment for \(C\).  We construct a
-      3-coloring for \(G\) as follows:
-      \begin{itemize}
-        \item Arbitrarily color the special vertices
-          \(s_\True,s_\False,s_\Aux\).  Call those colors \(\True,\False,\Aux\)
-          respectively.
-        \item For each input TODO unfinished
-      \end{itemize}
-
-
-  \end{itemize}
-
-
-\end{proof}
+%\begin{proof}
+%  It is straightforward to see that \(\Problem{3col}∈\NP\), since it is
+%  solvable by polynomial-time guess-and-check: guess a color assignment for
+%  each vertex, then verify that, for each edge \(e\), the two vertices joined
+%  by \(e\) have distinct colors.  The ``check'' procedure takes
+%  \(\O(\Abs{\Edges[G]})\) time, which is polynomial with respect to the size of
+%  the graph.
+%
+%  To show that \(\Problem{3col}\) is \NP-hard, we show
+%  \(\CircSat≤\Problem{3col}\) by reducing \CircSat{} to \Problem{3col}.
+%  Specifically, given a circuit \(C\) with inputs \(x₁,\dotsc,xₙ\), we wish to
+%  construct a corresponding graph \(G\) such that \(G\) is 3-colorable if and
+%  only if \(C\) is satisfiable.
+%
+%  Let such a circuit \(C\) be given.  Apply the algorithm from
+%  \cref{th:circuit-to-graph} to produce a graph \(G\) that computes the boolean
+%  function \(C\), such that the inputs \(x₁,\dotsc,xₙ\) of \(C\) correspond
+%  respectively to input vertices \(i₁,\dotsc,iₙ\), and the output of \(C\)
+%  corresponds to the output vertex \(o\).
+%
+%  Force the output vertex of \(G\) to take on the boolean value \(\True\) by
+%  ``merging'' vertices \(o\) and \(s_\True\) into one vertex, keeping all of
+%  their connections to other vertices.  (Equivalently, if we wish to avoid such
+%  a ``merging'' operation, we may construct \(G\) assuming \emph{a priori} that
+%  \(o=s_\True\).  Yet another alternative is to create edges joining \(o\) with
+%  \(s_\False\) and \(s_\Aux\), thereby forcing it to share a color with
+%  \(s_\True\).)
+%
+%  We claim that this resulting graph \(G\) is 3-colorable if and only if \(C\)
+%  is satisfiable.
+%  \begin{itemize}
+%    \item[(\(⟹\))] Suppose that \(G\) is 3-colorable.  Then let \(κ\) be a
+%      proper 3-coloring of \(G\).  Let \(x₁,\dotsc,xₙ\) be the respective
+%      boolean values assigned by \(κ\) to the input vertices \(i₁,\dotsc,iₙ\)
+%      of \(G\). Since \(G\) computes \(C\)
+%      (\cref{def:boolean-graph-functions}), we know that
+%      \(κ(o)=C(x₁,\dotsc,xₙ)\).  At the same time, we have also ensured by
+%      construction that \(κ(o)=\True\).  Thus \(x₁,\dotsc,xₙ\) is a satisfying
+%      assignment for \(C\).  Thus \(C\) is satisfiable.
+%
+%    \item[(\(⟸\))] Suppose that \(C\) is satisfiable.  Then let
+%      \(x₁,\dotsc,xₙ\) be a satisfying assignment for \(C\).  We construct a
+%      3-coloring for \(G\) as follows:
+%      \begin{itemize}
+%        \item Arbitrarily color the special vertices
+%          \(s_\True,s_\False,s_\Aux\).  Call those colors \(\True,\False,\Aux\)
+%          respectively.
+%        \item For each input TODO unfinished
+%      \end{itemize}
+%
+%
+%  \end{itemize}
+%
+%
+%\end{proof}
 
 \section{Can we avoid pre-coloring vertices?}
 
+\label{sec:precolor}
 
+Yes!  For sake of brevity, we give no formalisms/proofs in this chapter;
+instead, we focus only on the intuition of why un-colored graphs, despite
+seeming more limited at first glance, are basically equivalent to pre-colored
+graphs.  That is, the choice to work with pre-colored graphs makes virtually no
+practical difference; it is only a convenient device to simplify discourse.
+
+At the start of this chapter, we assumed a specific convention for representing
+boolean values as colors: \True{} is \ColorId1 and \False{} is \ColorId0,
+leaving \ColorId2 unused.  Aside from being intuitively convenient, this
+convention is entirely arbitrary.  In the context of proper 3-colorings, none of
+the three colors are special in any way; properness/improperness is preserved
+under any permutation of colors.
+
+Therefore, when we start with an uncolored graph, there is no association
+\emph{a priori} between specific colors and boolean values.  However, an
+association is \emph{induced} as soon as some vertices are colored in.  For
+example, whatever color is received by the special \(v_{\mathbf 2}\) vertex
+represents the ``not-a-boolean'' color.  It doesn't matter what exactly that
+color is—red, yellow, green—by permuting the names of the colors, we can always
+\emph{call} that color \ColorId2, without loss of generality.  Similarly, the
+\AND-graphs and \OR-graphs link to a pre-colored \ColorId1 vertex.  Here, that
+vertex starts out uncolored, but as soon as it becomes colored, we call that
+color \ColorId1.  Finally, we call the last remaining color \ColorId0.
+
+To ensure that these induced pre-coloring associations are consistent—e.g., that
+\ColorId1 and \ColorId2 don't accidentally coincide—we start out by constructing
+a special triangle comprising vertices
+\(v_{\mathbf0},v_{\mathbf1},v_{\mathbf2}\).  Because these special vertices are
+joined by a triangle, they must receive all three distinct colors (under any
+proper coloring).  Regardless of which specific hues the players choose to color
+this triangle, we simply call the colors of this triangle by the names
+\(\ColorId0,\ColorId1,\ColorId2\), respectively.
+
+In the original construction, wherever we would have made connections to a
+pre-colored vertex, we instead make connections to one of the special vertices
+instead.  Finally, in \Col[k] games, we ensure that the triangle actually
+functions as a \emph{pre-}coloring, by including special vertices in the first
+group of vertices \(U₁\), so that they are the first to be colored, and
+subsequent properness constraints imply that all other colorings must be
+consistent with the special pre-colorings.
 
 %\section{Set covering games}
 %

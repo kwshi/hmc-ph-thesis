@@ -43,35 +43,63 @@ one version of a proof below.
 \end{theorem}
 
 \begin{proof}
-  We give a polynomial-time algorithm solving \Problem{Circuit Value} below.
-  (Note that this is not the most efficient algorithm doing so; we choose it
-  here only for its simplicity.)
 
-  \begin{algorithm}{a polynomial-time \CircVal{} solver}{}
+  We give a straightforward polynomial-time algorithm for \Problem{Circuit
+  Value}.  By our definition (\cref{def:circuit}), a boolean circuit is
+  specified by listing out its logic gates in an order sorted by (acyclic)
+  dependencies, so that each logic gate operates only on outputs of previous
+  gates, or the circuit-level input wires.  Thus, to evaluate any circuit, we
+  simply iterate through and evaluate each gate, in the order that they are
+  specified.
+
+  %(Note that this is not the most efficient algorithm doing so; we choose it
+  %here only for its simplicity.)
+
+  \begin{algorithm}{a polynomial-time \CircVal{} solver}{circval-solver}
     \begin{algorithmic}
       \Given{\(C\), a boolean circuit with all inputs fully specified}
       \LComment{Call a wire \emph{finished} if it has been assigned a boolean
         value. Initially, all the input wires are finished, since their values
-      were given, and all intermediate and output wires are unfinished.}%
-      \While{final output wire is not finished}%
-      \ForEach{unfinished logic gate \(g\) in \(C\)}%
-      \If{all input wires of \(g\) are finished}%
-      \State{compute and assign the output value of \(g\) to its output wire}%
-      \EndIf%
-      \EndFor%
-      \EndWhile%
-      \State \Return value assigned to final output wire%
+      were given, and all output wires are unfinished.}%
+      \ForEach{logic gate \(g\) in \(C\)}
+      \If{\(g\) is a \NOT{} gate with input \(w\) and output \(w'\)}
+      \State{assign the value \(¬w\) to \(w'\), thereby marking \(w'\) as \emph{finished}}
+      \ElsIf{\(g\) is an \AND{} gate with inputs \(w₁,w₂\) and output \(w\)}
+      \State{assign \(w₁∧w₂\) to \(w\), marking \(w\) as \emph{finished}}
+      \ElsIf{\(g\) is an \OR{} gate with inputs \(w₁,w₂\) and output \(w\)}
+      \State{assign \(w₁∨w₂\) to \(w\), marking \(w\) as \emph{finished}}
+      \EndIf
+      \EndFor
+      \State{\Return the boolean value assigned to the circuit-level output wire of \(C\)}
+      %\LComment{Call a wire \emph{finished} if it has been assigned a boolean
+      %  value. Initially, all the input wires are finished, since their values
+      %were given, and all intermediate and output wires are unfinished.}%
+      %\While{final output wire is not finished}%
+      %\ForEach{unfinished logic gate \(g\) in \(C\)}%
+      %\If{all input wires of \(g\) are finished}%
+      %\State{compute and assign the output value of \(g\) to its output wire}%
+      %\EndIf%
+      %\EndFor%
+      %\EndWhile%
+      %\State \Return value assigned to final output wire%
     \end{algorithmic}
   \end{algorithm}
 
-  We argue that this algorithm terminates in polynomial time.  On each
-  iteration of the ``while'' loop, at least one logic gate is guaranteed to
-  have all of its inputs done, since there are no cyclic dependencies in the
-  circuit.  Thus each iteration of the ``while'' loop finishes at least one
-  additional wire.  Therefore, the number of ``while'' iterations is at most
-  the number of wires in the circuit, and the work done within each iteration
-  is also polynomial with respect to the size of the circuit, so the overall
-  algorithm terminates in polynomial time.
+  The number of iterations done by the algorithm is the number of logic gates in
+  \(C\), which by definition is bounded by the size of \(C\).  Each iteration
+  performs only a constant-time amount of work, plus some (insubstantial)
+  polynomial-time bookkeeping factor—e.g., keeping track of how many gates have
+  been visited, marking wires with their values, etc.  Thus the overall running
+  time of the algorithm is polynomial.
+
+  %We argue that this algorithm terminates in polynomial time.  On each
+  %iteration of the ``while'' loop, at least one logic gate is guaranteed to
+  %have all of its inputs done, since there are no cyclic dependencies in the
+  %circuit.  Thus each iteration of the ``while'' loop finishes at least one
+  %additional wire.  Therefore, the number of ``while'' iterations is at most
+  %the number of wires in the circuit, and the work done within each iteration
+  %is also polynomial with respect to the size of the circuit, so the overall
+  %algorithm terminates in polynomial time.
 \end{proof}
 
 To kickstart the puzzles-and-games perspective, we think of \Problem{Circuit
@@ -111,12 +139,12 @@ called \Problem{Circuit Satisfiability}, or \Problem{CircSat} for short:
 
 \begin{problem}{\Problem{Circuit Satisfiability} / \CircSat}{circsat}
 
-  Given a boolean circuit \(C\), determine whether there exists some assignment
-  to its inputs causing its output to be set to \True.  Such an assignment is
-  called a \Term{satisfying assignment of \(C\)}.
-%
-%  \tcblower
-%  \CircSat = \SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{∃X∈\TF[n]\Q C(X)=\True}
+  Given a circuit \(C\), determine whether there exists some assignment to its
+  inputs causing its output to be set to \True.  Such an assignment is called a
+  \Term{satisfying assignment of \(C\)}.
+  %
+  %  \tcblower
+  %  \CircSat = \SetBuilder{\text{circuit \(C\) with \(n\) inputs}}{∃X∈\TF[n]\Q C(X)=\True}
 \end{problem}
 
 Briefly: how (computationally) difficult is \Problem{CircSat}?  As it turns
@@ -126,10 +154,10 @@ force with optimizations that enhance performance on ``practical'', real-world
 inputs but do not save them from performing poorly in the worst case.
 Tentatively, then, most computer scientists suspect that
 \(\Problem{CircSat}∉\P\)---i.e., there is no polynomial-time solution for
-\Problem{CircSat}.
+\Problem{CircSat} \citep{gasarch.pnp}.
 
-TODO: here's a survey to cite on on pnp opinion:
-\url{https://dl.acm.org/doi/10.1145/564585.564599}.  cite it correctly later.
+%TODO: here's a survey to cite on on pnp opinion:
+%\url{https://dl.acm.org/doi/10.1145/564585.564599}.  cite it correctly later.
 % https://www.researchgate.net/publication/292393040_The_PNP_poll
 
 % TODO maybe cite an up-to-date result about how good the bound is, but whatever
@@ -269,7 +297,7 @@ of \NP.
 
 
 
-\subsection{\Problem{CircSat} is \NP-complete}
+\subsection{\Problem{Circuit Satisfiability} is \NP-complete}
 
 %We can also think of problems in \NP, or puzzles, as problems solvable by
 %guess-and-check: guess a move \(Y\), and check whether it meets the winning
@@ -278,7 +306,7 @@ of \NP.
 What makes \CircSat{} especially interesting, compared to all the other puzzles
 in \NP, is that \CircSat{} is \NP-\emph{complete}.  In other words, \CircSat{}
 is the hardest of the \NP{} puzzles: any other \NP{} problem reduces to
-\CircSat. This result is known as the Cook--Levin theorem:
+\CircSat. This result is known as the Cook--Levin theorem \citep{cook.np,levin.np}:
 
 \begin{theorem}{Cook--Levin}{cook-levin}
 
@@ -377,10 +405,10 @@ every \(1\)-turn game is really just a \emph{special case} of the
 Recall, in the \(1\)-turn game \CircSat, a single player assigns inputs to a
 given circuit, with the goal of getting the circuit to output \True.  Now, we
 introduce a second player, an \emph{antagonist}, working towards the opposite
-goal.  The two players now take turns assigning inputs in the circuit; when all
+goal.  The two players take turns assigning inputs in the circuit; when all
 inputs have been assigned, the circuit's final output dictates the winner
-(\(\True⟹\text{first player wins}\), \(\False⟹\text{second player wins}\)).
-Now, framing this game as a decision problem, we ask the yes/no question,
+(\(\True⟹\text{first player wins}\), \(\False⟹\text{second player wins}\)). Now,
+framing this as a decision problem, we ask the yes/no question,
 \begin{center}
   Does the \emph{first} player have a winning strategy?
 \end{center}
@@ -557,13 +585,12 @@ We formulate this game inductively as follows.
 \end{problem}
 
 Finally, we can generalize this construction to arbitrary games beyond those
-player on circuits.  Consider an arbitrary game of \(k\) turns, played on some
+played on circuits.  Consider an arbitrary game of \(k\) turns, played on some
 game board \(X∈\Strings\).  Two players take turns making moves
-\(Y₁,Y₂,\dotsc,Yₖ∈\Strings\).  At the end, an efficient algorithm determines
-which player wins.  Stating this inductively:
+\(Y₁,Y₂,\dotsc,Yₖ∈\Strings\).  At the end, an efficient algorithm determines who
+wins.  Stating this inductively:
 \begin{itemize}
-  \item \(0\)-turn games (winning conditions) are (see \cref{def:balance})
-    problems in \P.
+  \item \(0\)-turn games (winning conditions) are problems in \P.
   \item \(k\)-turn games start with a game board \(X∈\Strings\).  The first
     player makes a move \(Y∈\Strings\), and then wins if and only if the
     ``augmented'' \((k-1)\)-turn game, \((X,Y)\), is a losing game for the

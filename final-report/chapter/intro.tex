@@ -2,7 +2,7 @@
 
 The basic question of computational complexity---``how hard is this problem for
 a computer to solve?''---is central to nearly every topic in computer science.
-And yet, the formalisms of complexity theory often seem, in my own experience,
+And yet the formalisms of complexity theory often seem, in my own experience,
 intimidatingly abstract, phrased in terms of intangible models of computation
 such as non-deterministic Turing machines and oracles.
 
@@ -18,19 +18,60 @@ This thesis emphasizes that approach in its exploration of a particularly
 foundational, yet often overlooked, ladder of complexity classes known as the
 \emph{polynomial hierarchy}.  \NP{} is the class of (one-player) ``puzzles'',
 and \PSPACE{} is the class of (two-player) ``games'' of polynomial length; the
-polynomial hierarchy, then, encompasses games of fixed length.  Through this
-lens, the (in)famous \P-vs-\NP{} question is but the first in a ladder of
-questions that are, arguably, just as crucial and impactful.
+polynomial hierarchy, then, lies in the middle, encompassing games of
+\emph{fixed} length.  Through this lens, the (in)famous \P-vs-\NP{} question is
+but the first in a ladder of questions that are, arguably, just as crucial and
+impactful.
 
 %The polynomial hierarchy is as central to
 %complexity theory as the \P-vs-\NP{} problem is well-known.
 
-TODO: outline/overview of chapters, after those chapters are written
+\section{Overview}
 
-TODO: also give general citations here, e.g. papadimitriou for many
-foundational background info, etc.
+This document is structured as follows.  First, \cref{ch:background,ch:boolean}
+establish preliminary background concepts and conventions adopted throughout
+this thesis.  Next, \cref{ch:circuit} lays the central theoretical groundwork,
+defining the \emph{polynomial hierarchy} through a fundamental family of
+problems known as the \Problem{Circuit Satisfiability} games.  Next,
+\cref{ch:misc} explores a novel family of games generalized from the
+\Problem{Graph 3-Colorability} puzzle and establishes \emph{hardness} bounds on
+each of those games.  Finally, \cref{ch:conclusion} concludes by discussing the
+future directions of this work and its broader implications.
 
-TODO: notation table also belongs in this chapter i think
+\section{Prior work and inspirations}
+
+Much of the background exposition on complexity theory referenced in this thesis
+is reproduced from Christos Papadimitriou's textbook,
+\citet{papadimitriou.cc} (though many of the foundational ideas were
+originally introduced/proven elsewhere, e.g.
+\citet{cook.np,levin.np,stockmeyer.ph}), reframed through the
+puzzles-and-games perspective and supplemented with a few comments on intuition.
+
+The main family of games explored in this thesis, fixed-turn
+\Problem{3-Colorability} games (\cref{ch:misc}), is a generalization of
+(one-turn) \Problem{3-Colorability}, a well-known \NP-complete puzzle originally
+proven \NP-complete by \citet{karp.np}.  Others have studied (multi-turn)
+game generalizations of \Problem{3-Colorability}, but all versions that I've
+encountered are \PSPACE-complete, in which the number of turns played during the
+game scales proportionally with the size of the graph
+\citep{bodlaender.coloring,bh.placement,kbd.impartial,cpss.coloring,schaefer.games}. As far as I'm aware, the variations I explore here—with fixed
+numbers of turns regardless of the size of the graph—is unexplored, and the main
+theorem about its \SigmaP k-completeness (\cref{th:yayay}) is novel.  The basic
+idea underlying my proof is the composition of two well-known results:
+\begin{itemize}[nosep]
+  \item \citet{karp.np}'s classic proof of the \NP-hardness of the \Problem{3-Colorability} puzzle, via a reduction from \Problem{3CNF-Satisfiability};
+  \item 's transformation from boolean circuits to equivalent 3CNF-clauses.
+\end{itemize}
+
+Without further ado, let's begin.
+
+
+%TODO: outline/overview of chapters, after those chapters are written
+
+%TODO: also give general citations here, e.g. papadimitriou for many
+%foundational background info, etc.
+%
+%TODO: notation table also belongs in this chapter i think
 
 %p-vs-np well known, polynomial-hierarchy central
 

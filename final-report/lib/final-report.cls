@@ -2,7 +2,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{final-report}[2022/01/25 kshi thesis final report]
 
-\LoadClass{book}
+\LoadClass[11pt]{book}
 
 % TODO consider using titlesec for hdr configs
 \RequirePackage{geometry}
@@ -16,7 +16,23 @@
   top=.5in,
   bottom=1in,
   footskip=.5in,
+  headheight=3em,
+  headsep=1em,
 }
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \renewcommand\headrule{}%
+  %\fancyhead[LE,RO]{\leftmark}%
+  %\fancyhead[LO,RE]{\rightmark}%
+  % https://en.wikipedia.org/wiki/Page_numbering
+  \fancyfoot[LE,RO]{%
+    \color{gray!50!black}\small%
+    %\textsc{page \thepage{} of \pageref{LastPage}}%
+    %\textsc{page \thepage{} of \pageref{LastPage}}%
+    \textsc{page \thepage}%
+  }%
+}
+
 \fancypagestyle{thesis}{%
   \fancyhf{}%
   \renewcommand\headrule{}%
@@ -25,7 +41,8 @@
   % https://en.wikipedia.org/wiki/Page_numbering
   \fancyfoot[LE,RO]{%
     \color{gray!50!black}\small%
-    \textsc{page \thepage{} of \pageref{LastPage}}%
+    %\textsc{page \thepage{} of \pageref{LastPage}}%
+    \textsc{page \thepage}%
   }%
 }
 \pagestyle{thesis}
@@ -37,6 +54,7 @@
 }
 \renewcommand{\chaptermark}[1]{\markboth{\FormatMark{\chaptername{} \thechapter}{#1}}{}}
 \renewcommand{\sectionmark}[1]{\markright{\FormatMark{section \thesection}{#1}}}
+
 %\pagestyle{thesis}
 
 \RequirePackage{tikz}
@@ -104,8 +122,9 @@
     \vspace{\stretch{2}}%
     {\Large\@author}\par%
     \vspace{\stretch{2}}%
-    {\large\@advisor, Advisor}\par%
-    {\large\@reader, Reader}\par%
+    {\color{gray}\hrule}{\large\@advisor, Advisor}\par%
+    \vspace{4em}%
+    {\color{gray}\hrule}{\large\@reader, Reader}\par%
     \vspace{\stretch{3}}%
     {\raggedleft%
       {\includegraphics[width=1.5in]{hmclogo}}\par%
@@ -129,6 +148,9 @@
 \RequirePackage{complexity}
 \RequirePackage{ks-stuff}
 
+\RequirePackage{colortbl}
+\arrayrulecolor{gray}
+
 \RequirePackage{transparent}
 
 %\tcbuselibrary{hooks}
@@ -140,24 +162,27 @@
 \newtcbtheorem[%
   crefname={definition}{definitions},%
   number within=chapter,
-]{definition}{Definition}{theorem=green!50!teal, separator sign=.}{def}
+]{definition}{Definition}{theorem=green!50!brown}{def}
 
 \newtcbtheorem[crefname={algorithm}{algorithms},number within=chapter]{algorithm}{Algorithm}{theorem=gray}{alg}
 
-\newtcbtheorem[]{example}{Example}{theorem=orange}{ex}
+%\newtcbtheorem[]{example}{Example}{theorem=orange}{ex}
 
 \newtcbtheorem[%
   crefname={theorem}{theorems},%
   number within=chapter,%
-]{theorem}{Theorem}{theorem=green!50!blue}{th}
+]{theorem}{Theorem}{theorem=teal}{th}
 
-\newtcbtheorem[crefname={lemma}{lemmas}]{lemma}{Lemma}{theorem=teal}{lem}
+\newtcbtheorem[
+  crefname={lemma}{lemmas},%
+  use counter from=theorem,%
+]{lemma}{Lemma}{theorem=teal}{lem}
 
 \newtcbtheorem[%
   crefname={corollary}{corollaries},%
   use counter from=theorem,
   %number within=chapter,%
-]{corollary}{Corollary}{theorem=green!50!blue!50}{cor}
+]{corollary}{Corollary}{theorem=teal}{cor}
 
 \newtcbtheorem[
   crefname={problem}{problems},

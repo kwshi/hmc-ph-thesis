@@ -5,7 +5,7 @@
 \RequirePackage{mathtools}
 \RequirePackage{bookmark}
 
-\RequirePackage[indLines=true, rightComments=false]{algpseudocodex}
+\RequirePackage[indLines=false, rightComments=false, noEnd=false]{algpseudocodex}
 % https://tex.stackexchange.com/questions/150184/how-to-avoid-uppercase-function-name-while-using-function
 \algrenewcommand\textproc{}
 \algrenewcommand\algorithmicforall{\textbf{for each}}
@@ -176,6 +176,10 @@
     column sep=2em,
     matrix of nodes,
   },
+  gate/.style={
+    draw,
+    rounded corners=1em/8,
+  },
   every circuit symbol/.style={
     fill,
     fill opacity=1/8,
@@ -187,15 +191,17 @@
     minimum size=1em/2,
     inner sep=0pt,
   },
+  every label quotes/.style={
+    vertex label,
+  },
   vertex label/.style={
-    text height=2em/3,
-    text depth=1em/3,
+    text height=1em/2,
+    text depth=1em/8,
   },
   edge/.style={
   },
   wire/.style={
     rounded corners=1em/4,
-    thick,
     to path={
       -- ($ (\tikztostart)!2em/3!(\tikztostart -| \tikztotarget) $)
       -- ($ (\tikztotarget)!2em/3!(\tikztostart |- \tikztotarget) $)
@@ -203,7 +209,7 @@
     },
   },
   over/.style={
-    preaction={draw=white, line width=3pt},
+    preaction={draw=white, line width=2pt},
   },
 }
 

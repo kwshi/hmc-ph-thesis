@@ -1,4 +1,5 @@
 \chapter{Basic concepts in complexity theory}
+\label{ch:background}
 
 The fundamental question driving the study of computational complexity theory
 is, ``how difficult are certain problems for computers to solve?''  In order to
@@ -12,15 +13,15 @@ steps.  For the purposes of this thesis, we avoid delving into the formalism of
 Turing machines.  Instead, we assume an informal notion of computers given by
 any algorithm or procedure straightforwardly implementable in modern,
 high-level programming languages such as C/C++, Python, Java, etc.  Detailed
-treatment of the relevant formalisms may be found in \textcite[Chapter
-2]{papadimitriou.cc}.  In particular, there are theorems \parencite[Theorem
+treatment of the relevant formalisms may be found in \citet[Chapter
+2]{papadimitriou.cc}.  In particular, there are theorems \citep[Theorem
 2.5]{papadimitriou.cc} showing that modern CPU/RAM-based computer architectures
 are, for our purposes, equivalent to Turing machines, thereby justifying the
 informal approach we take here.
 
-In the following sections, we discuss what exactly constitutes a
-\emph{problem}, how we describe the complexity (i.e., difficulty) of problems,
-and how we categorize problems by difficulty into \emph{complexity classes}.
+In the following sections, we discuss what exactly constitutes a \emph{problem},
+how we describe the complexity (i.e., difficulty) of problems, and how we
+categorize them into \emph{complexity classes}.
 
 %emphasize intuitive descriptions of
 %algorithms in terms of modern, ``high-level'' programming concepts exhibited by
@@ -161,30 +162,30 @@ this idea in the definition of the complexity class \P{} below.
   solvable in polynomial time.
 
   \begin{aside}
-    For contrast, we say an algorithm is \Term{super-polynomial} if its running
-    time cannot be bounded by some polynomial.  Examples of super-polynomial
-    functions include \(n^{\log n}\), \(2ⁿ\), etc.
+    For contrast, an algorithm is \Term{super-polynomial} if its running time
+    isn't bounded by any polynomial.  Examples of super-polynomial functions
+    include \(n^{\log n}\), \(2ⁿ\), etc.
   \end{aside}
 
 \end{definition}
 
 To be clear, taking polynomials to mean ``easy'' is a very crude rule-of-thumb:
 there are important practical subdivisions \emph{within} \P{} that this
-categorization plainly ignores (e.g., linear-time vs quadratic-time); there are
+categorization plainly ignores (e.g., linear-time vs. quadratic-time); there are
 also a few notable examples of super-polynomial-time algorithms that are, by
 this rule, slow, but quite efficient \emph{in practice} (e.g., the simplex
 algorithm for linear programming).  Nevertheless, this delineation remains an
-extremely useful (and arguably elegant) starting point for the classification
-of problems.
+extremely useful (and arguably elegant) starting point for the classification of
+problems.
 
-\subsection{How to tell when an algorithm is polynomial-time}
-
-TODO: examples of \P{} problems, some basic facts and intuition about closure
-of polynomials under multiplication, composition, etc.
-
-ALSO TODO for earlier: may need to briefly remark on what's allowed as
-algorithm, i.e. determinism, no randomness, etc.
-
+% \subsection{How to tell when an algorithm is polynomial-time}
+%
+% TODO: examples of \P{} problems, some basic facts and intuition about closure
+% of polynomials under multiplication, composition, etc.
+%
+% ALSO TODO for earlier: may need to briefly remark on what's allowed as
+% algorithm, i.e. determinism, no randomness, etc.
+%
 % TODO examples of 𝐏 problems, and perhaps discuss papadimitriou theorem 2.5
 % again with more precision?
 
@@ -255,24 +256,24 @@ them to each other.  To illustrate, consider the following two problems:
     \end{center}
   \end{figure}
 
-\item[\Problem{Graph Coloring}] Given a positive integer \(k\), and a graph
+\item[\Problem{Graph Colorability}] Given a positive integer \(k\), and a graph
   with \(n>k\) vertices, some of which are assigned a number (a.k.a. ``color'')
   in \(\Set{1,\dotsc,k}\), is it possible to assign numbers to the remaining
   cells so that no neighboring vertices receive the same assignment?
 
-  \begin{figure}[H]
-    \begin{center}
-      \begin{tikzpicture}
+  %\begin{figure}[H]
+  %  \begin{center}
+  %    \begin{tikzpicture}
 
 
-      \end{tikzpicture}
-    \end{center}
-  \end{figure}
+  %    \end{tikzpicture}
+  %  \end{center}
+  %\end{figure}
 
 
-  TODO diagram illustrations.  also i wish i could think of simpler-to-state
-  examples with easy reductions, but nothing comes to mind, so this is the best
-  i've got for now.
+  %TODO diagram illustrations.  also i wish i could think of simpler-to-state
+  %examples with easy reductions, but nothing comes to mind, so this is the best
+  %i've got for now.
 
 \end{description}
 
@@ -338,12 +339,12 @@ same yes/no answer.  Formally, we call this conversion a \Term{reduction}:
 \end{definition}
 
 Revisiting the above example, the existence of a reduction from \Problem{Latin
-Square} to \Problem{Graph Coloring} captures the idea that \Problem{Latin
-Square} is easier than \Problem{Graph Coloring} in the following sense.
-Suppose that we already know how to solve \Problem{Graph Coloring}.  Then, we
+Square} to \Problem{Graph Colorability} captures the idea that \Problem{Latin
+Square} is easier than \Problem{Graph Colorability} in the following sense.
+Suppose that we already know how to solve \Problem{Graph Colorability}.  Then, we
 automatically also know how to solve \Problem{Latin Square}: given an arbitrary
 \Problem{Latin Square} input, apply the reduction to convert it into a
-\Problem{Graph Coloring} input, feed that input into the known \Problem{Graph
+\Problem{Graph Colorability} input, feed that input into the known \Problem{Graph
 Coloring} solver, then directly return its answer.
 
 However, in order to authentically capture the idea of \emph{easiness}, we must
@@ -384,10 +385,10 @@ a \emph{class} of problems:
   \C-hard and \(Π∈\C\).
 
   \begin{aside}
-    Following the intuition that reducibility (\(≤\)) defines a (partial)
-    ordering of problems by difficulty, \C-hard problems are just those that
-    are (non-strictly) harder than all problems in \C, and \C-complete problems
-    are just the \emph{maximal/hardest} problems within \C.
+    Following the intuition that reducibility (\(≤\)) orders/compares problems
+    by difficulty, \C-hard problems are just those that are (non-strictly)
+    harder than all problems in \C, and \C-complete problems are just the
+    \emph{maximal/hardest} problems within \C.
   \end{aside}
 
 \end{definition}
@@ -427,9 +428,28 @@ given integer \(n\) (encoded in binary) is prime, then \(Π\Complement\) returns
   \]
 
   \begin{aside}
+    In practice, what we call ``complement'' problems aren't \emph{exactly} set
+    complements; rather, they are complements \emph{within} a space of strings
+    following a particular format.
 
-    TODO finer discussion about complement not being exactly complement, see
-    papadimitriou 142
+    For instance, in the two examples given earlier—\Problem{Latin Square} and
+    \Problem{Graph Colorability}—the input strings encode more complicated data
+    structures, such as tuples, arrays, and graphs.  In these cases, the literal
+    set complement would therefore also include all invalidly-formatted strings
+    in addition to validly-formatted-but-condition-failing strings, even though
+    in practice we use \emph{complement} to refer only to the validly-formatted
+    instances.
+
+    Thankfully, this difference is inconsequential: assuming that string
+    formattings/encodings can be checked and parsed in polynomial time, as is
+    almost always the case, then it is easy to distinguish, in the complement
+    problem, between invalid and valid-but-failing strings; thus the \emph{true}
+    set complement (which includes invalid strings) is equivalent to the
+    \emph{practical} set complement (which excludes invalid strings).
+    Therefore, we can conflate the two modes of complement without repercussion.
+
+    %TODO finer discussion about complement not being exactly complement, see
+    %papadimitriou 142
 
   \end{aside}
 
@@ -468,8 +488,8 @@ complement of each problem in \C{} is denoted \(\co\C\).
 
 \begin{definition}{\co{} of a complexity class}{co}
 
-  Let \C{} be a complexity class.  The complexity class \(\co\C\) comprises the
-  complement of each problem in \C:
+  Let \C{} be a complexity class.  The complexity class \(\co\C\) comprises
+  the complement of each problem in \C:
   \[
     \co\C = \SetBuilder*{Π\Complement}{Π∈\C}.
   \]
@@ -479,9 +499,8 @@ complement of each problem in \C{} is denoted \(\co\C\).
 Note that \(\co\C\) is \emph{not} the same thing as the set complement of \C{}
 (the complements are of \emph{elements in} \C, not \C{} itself).
 
-In general,
-
-omplementation \emph{preserves} reducibility, in the following sense:
+In general, complementation \emph{preserves} reducibility, in the following
+sense:
 \begin{theorem}{}{complement-reduction}
 
   Let \(Π₁\) and \(Π₂\) be decision problems.  \(Π₁≤Π₂\) under some

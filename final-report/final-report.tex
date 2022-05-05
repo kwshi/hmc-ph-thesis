@@ -7,10 +7,13 @@
 \author{Kye Shi}
 \advisor{Nicholas Pippenger}
 \reader{Arthur T. Benjamin}
-\date{2021 November}
+\date{May 2022}
 
-\bibliography{bibliography.bib}
-\bibliography{newbib.bib}
+
+
+\usepackage{natbib}
+%\bibliography{bibliography.bib}
+%\bibliography{newbib.bib}
 
 \tikzset{
   gates/.style={
@@ -29,12 +32,10 @@
     minimum size=1em/2,
     inner sep=0pt,
   },
-  vertex label/.style={
-    text height=2em/3,
-    text depth=1em/3,
-  },
-  edge/.style={
-  },
+  %vertex label/.style={
+  %  text height=2em/3,
+  %  text depth=1em/3,
+  %},
   wire/.style={
     rounded corners=1em/4,
     to path={
@@ -47,44 +48,50 @@
 
 \begin{document}
 
+\pagenumbering{roman}
 \frontmatter
 \maketitle
+
+\pagestyle{plain}
 \tableofcontents
+\cleardoublepage
+\pagenumbering{arabic}
+\pagestyle{thesis}
 
-draft outline:
+%draft outline:
+%
+%\begin{itemize}
+%  \item Introduction and overview.
+%  \item Basic complexity background: P, reductions, completeness
+%  \item More complexity background---NP, PSPACE, polynomial hierarchy as games,
+%    etc. Haven't made up my mind yet about whether to introduce this abstractly
+%    on its own, or introduce it concurrently with CSAT games to keep things
+%    concrete/tangible.  I'm leaning the latter.
+%    \begin{itemize}
+%      \item Circuit value, satisfiability games
+%    \end{itemize}
+%  \item SAT variation games
+%    \begin{itemize}
+%      \item Circuits could just as well be plain boolean formulae, or CNF
+%        formulae, etc.; list some prior work on other known SAT games in
+%        PSPACE, polynomial-hierarchy, etc.  (paper on this in ann. bib.)
+%    \end{itemize}
+%  \item Graph coloring games
+%    \begin{itemize}
+%      \item Intro---overview of existing results: NP-completeness of graph
+%        coloring, col and snort as PSPACE-complete games.
+%      \item Custom presentation of NP-completeness proof via circuit reduction
+%      \item Introduction of 2-turn game, 3-turn game, k-turn game, etc.
+%      \item Complexity claims and proofs
+%    \end{itemize}
+%  \item Exact-covering games
+%  \item three-dimensional matching games
+%  \item Conclusion % only a few of countlessly many problems introduced/explored
+%\end{itemize}
 
-\begin{itemize}
-  \item Introduction and overview.
-  \item Basic complexity background: P, reductions, completeness
-  \item More complexity background---NP, PSPACE, polynomial hierarchy as games,
-    etc. Haven't made up my mind yet about whether to introduce this abstractly
-    on its own, or introduce it concurrently with CSAT games to keep things
-    concrete/tangible.  I'm leaning the latter.
-    \begin{itemize}
-      \item Circuit value, satisfiability games
-    \end{itemize}
-  \item SAT variation games
-    \begin{itemize}
-      \item Circuits could just as well be plain boolean formulae, or CNF
-        formulae, etc.; list some prior work on other known SAT games in
-        PSPACE, polynomial-hierarchy, etc.  (paper on this in ann. bib.)
-    \end{itemize}
-  \item Graph coloring games
-    \begin{itemize}
-      \item Intro---overview of existing results: NP-completeness of graph
-        coloring, col and snort as PSPACE-complete games.
-      \item Custom presentation of NP-completeness proof via circuit reduction
-      \item Introduction of 2-turn game, 3-turn game, k-turn game, etc.
-      \item Complexity claims and proofs
-    \end{itemize}
-  \item Exact-covering games
-  \item three-dimensional matching games
-  \item Conclusion % only a few of countlessly many problems introduced/explored
-\end{itemize}
-
-TODO: table of contents for figures, or theorems, definitions, etc.
-
-TODO: at some point i also need to figure out whether/how to make a glossary/index
+%TODO: table of contents for figures, or theorems, definitions, etc.
+%
+%TODO: at some point i also need to figure out whether/how to make a glossary/index
 
 
 \mainmatter
@@ -101,6 +108,10 @@ TODO: at some point i also need to figure out whether/how to make a glossary/ind
 %\include{chapter/future}
 %\include{chapter/bib}
 
-\printbibliography[heading=bibnumbered]
+\bibliographystyle{hmcmath}
+%\bibliography{newbib.bib}
+\bibliography{shitbib.bib}
+
+%\printbibliography[heading=bibintoc]
 
 \end{document}

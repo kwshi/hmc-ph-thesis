@@ -30,14 +30,28 @@
 
 
 \RequirePackage{enumitem}
-\setlist{
+\setlist[enumerate]{
   font=\color{gray!50!black},
+}
+\setlist[itemize]{
+  font=\color{gray!50!black},
+  left=1em .. 2em,
 }
 \setlist[enumerate, 1]{
   label=[\arabic*],
+  left=.5em .. 2em,
 }
 \setlistdepth{10}
 
+\newcommand\ks@math@IffLabel[1]{\ifcase#1\or\ensuremath{⇒}\or\ensuremath{⇐}\else\fi}
+\newcommand\IffLabel[1]{\ks@math@IffLabel{\value{#1}}}
+\AddEnumerateCounter{\IffLabel}{\ks@math@IffLabel}{1}
+\newlist{ifflist}{enumerate}{1}
+\setlist[ifflist]{
+  font=\color{gray!50!black},
+  label=[\IffLabel*],
+  left=.5em .. 2em,
+}
 
 \RequirePackage{amsthm}
 \RequirePackage{thmtools}
@@ -69,10 +83,12 @@
   theorem/.style={
     enhanced jigsaw,
     sharp corners,
-    boxrule=0pt,
+    boxrule=1pt/2,
+    colframe=#1,
     colback=#1,
-    opacityback=1/8,
-    opacityframe=0,
+    opacityback=0,%1/8,
+    %opacityframe=0,
+    opacityframe=1/2,
     colbacktitle=#1,
     opacitybacktitle=1/4,
     coltitle=black,
@@ -86,6 +102,8 @@
     bottomtitle=1em/2,
     parbox=false,
     breakable,
+    separator sign={\ \textcolor{#1!50!black!50}{\(▶\)}},
+    %separator sign={\ \tikz[baseline={(0,0)}]{\node[opacity=1/2, inner ysep=0pt, inner xsep=1em/4, outer sep=0pt, anchor=base]{\(▶\)}}},
   },
 }
 
@@ -97,9 +115,10 @@
   breakable,
   parbox=false,
   boxsep=0pt,
-  opacityframe=1/8,
-  opacityback=1/16,
-  colframe=black,
+  opacityframe=1/2,
+  %opacityback=1/16,
+  opacityback=0,
+  colframe=teal,
   enhanced jigsaw,
 }
 
@@ -190,12 +209,17 @@
 \Crefname{figure}{Figure}{Figures}
 
 \RequirePackage{titlesec}
-\RequirePackage{cancel}
+\RequirePackage[Smaller]{cancel}
+
 \RequirePackage{array}
+
 \RequirePackage{booktabs}
 \RequirePackage{xfrac}
 \RequirePackage{xpatch}
 \RequirePackage{etoolbox}
-\RequirePackage[style=authoryear]{biblatex}
+%\RequirePackage[style=authoryear]{biblatex}
 
 
+
+
+\renewcommand\CancelColor{\color{red!50!orange}}

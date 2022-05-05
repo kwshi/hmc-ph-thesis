@@ -1,10 +1,87 @@
 \chapter{Conclusion}
 
-future work: general framework to convert NP-complete problems to
-sigmap-complete games.  basic idea--there is a consistency/properness condition
-enforced at each step of the players' moves, and a completion condition (all
-things have been filled in).  if the consistency condition is violated at any
-step, the violating player loses.  otherwise, if the completion condition is
-attained, the last player wins.  finally, map two conditions onto circuits.
+\label{ch:conclusion}
 
-other future work: explore more games/problems
+In this thesis, I explore the computational complexity of fixed-turn games under
+the \emph{polynomial hierarchy}, with \SigmaP k representing the class of ``can
+the first player guarantee a win?'' decision problems for all games with \(k\)
+turns, and \(\PiP k\) representing the class of complement decision problems,
+``is the first player doomed to lose?''.  Using the foundational
+\Problem{Circuit Satisfiability} games as a starting point, we search for other
+\SigmaP k/\PiP k-\emph{complete} games—games that are maximally hard for each
+class and are therefore ideal representatives characterizing the difficulty of
+each class.  Finally, we introduce the \(k\)-turn \Problem{Graph 3-Colorability}
+games on graphs, and by embedding circuits in graph 3-colorings show that
+\(k\)-turn \Problem{3-Colorability} is \SigmaP k-complete.
+
+Unfortunately, in a mere half year of thesis (having spent the first half
+figuring out only \emph{what} question to explore), I had time to include in my
+thesis the full treatment of only one flavor of
+game—\Problem{3-Colorability}—even though I am absolutely confident there are
+tons more.
+
+For instance, consider the \Problem{Exact Set Covering} problem, which I like to
+informally call the ``sushi problem'': you run an eccentric sushi restaurant
+serving \(n\) distinct flavors of sushi, numbered \(1,\dotsc,n\); your
+restaurant's menu contains a list of \emph{combos}, each a subset of
+\(\Set{1,\dotsc,n}\); is there a way to order certain combos such that each
+sushi flavor is included \emph{exactly} once?  This is a well-known \NP-complete
+problem, and it can be straightforwardly extended into a \(k\)-turn game by
+partitioning the combos into \(k\) groups and having players take turns choosing
+whether or not to order each combo, subject at each turn to the ``properness''
+constraint that ordering a previously-ordered sushi flavor causes immediate
+defeat.  There is a straightforward way to map logic gates to sushi flavors and
+combos, and this game is therefore \SigmaP k-complete—though there is no room
+for me to detail this treatment here.
+
+Moreover, my success with these two problems leads me to suspect that there
+should be a straightforward way to extend almost any well-known \NP-complete
+\emph{puzzle} into interesting \SigmaP k-complete games.  To this end, I can
+think of two overarching future directions for this work:
+\begin{itemize}
+
+  \item Explore a ton of \NP-complete problems (perhaps starting with Karp's
+    famous 21 \citep{karp.np}), and try to see how naturally they extend to
+    \(\SigmaP k\)-complete multi-turn games.
+
+  \item Drawing on commonalities between the 3-colorability games explored in
+    \cref{ch:misc} and the sushi games sketched above, come up with a general
+    framework for lifting \(1\)-turn puzzles into \(k\)-turn games.
+
+    For instance, both the 3-colorability games and the sushi games share a
+    \emph{properness} constraint: in 3-colorings, it is that no two neighboring
+    vertices may share a color; in sushi orders, it is that no two selected
+    combos may share a flavor.  Likewise, both games have a condition indicating
+    the total completion of the game: in 3-colorings, it is totality of the
+    coloring after all vertices have been filled in; in sushi orders, it is that
+    each flavor is ordered at least once.  Together, totality \emph{and}
+    properness result in successful ``emulation'' of circuits.
+
+    Perhaps there is some way to define general notions of \emph{turn},
+    \emph{properness}, \emph{totality}, and \emph{emulation} in order to
+    streamline the process of showing \SigmaP k-completeness of games.
+
+\end{itemize}
+
+Finally, to recap it all, the most important question surrounding this thesis
+(and really any work) is, why is it interesting?  To this, I say: everybody
+knows about \P-vs-\NP—the pervasion of \NP-completeness among interesting
+real-world puzzles makes the \P-vs-\NP{} question extremely impactful, both
+theoretically and practically.  Taking the perspective of this thesis, we view
+\P{} as the class of \(0\)-turn games and \(\NP\) the class of \(1\)-turn games;
+why stop at \P-vs-\NP?  Why not ask about \(\NP\)-vs-\SigmaP 2?
+\SigmaP2-vs-\SigmaP3?  The central question really boils down (or boils
+\emph{up}, perhaps?) to, \emph{does the number of turns in a game make a
+difference}?  The answers to this question, at \emph{every} level, not just
+\(0\)-vs-\(1\), are worth exploring, and together, they give resounding insight
+on the general structure of puzzles and games.
+
+
+%future work: general framework to convert NP-complete problems to
+%sigmap-complete games.  basic idea--there is a consistency/properness condition
+%enforced at each step of the players' moves, and a completion condition (all
+%things have been filled in).  if the consistency condition is violated at any
+%step, the violating player loses.  otherwise, if the completion condition is
+%attained, the last player wins.  finally, map two conditions onto circuits.
+%
+%other future work: explore more games/problems

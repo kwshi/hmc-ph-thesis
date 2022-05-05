@@ -152,7 +152,7 @@ The equivalence of these two expressions gives rise to an identity: for all
   ¬x∧¬y = ¬(x∨y).
 \]
 
-Similarly, the statement ``at least one of \(x,y\) are \False'' can be
+Similarly, the statement ``at least one of \(x,y\) is \False'' can be
 expressed in two ways,
 \begin{itemize}[nosep]
   \item \(x\) is \False, or \(y\) is \False: \(¬x∨¬y\).
@@ -173,9 +173,9 @@ terms of the other two:
   x∨y = ¬(¬x∧¬y).
 \]
 
-We make use of this convenience later in chapters TODO, when we try to embed
-boolean logic within other ``computer-like'' systems such as graph colorings
-and exact set coverings, etc.
+We make use of this convenience later in chapter \cref{ch:misc}, when we try to
+embed boolean logic within other ``boolean-like'' systems such as graph
+3-colorings.
 
 % The usefulness of this redundancy
 %
@@ -204,7 +204,8 @@ example expression:
 Notice that each \((□₁∨□₂)\) term appears twice in the expression, making the
 expression inefficient to evaluate (each repeated term would be unnecessarily
 recomputed), not to mention cumbersome to specify.  A more elegant way to
-specify this computation is to store and reuse the intermediate terms:
+specify this computation is to store and reuse intermediate terms in the
+expression:
 \begin{align*}
   X &= x₁∨x₂, \\
   Y &= y₁∨y₂, \\
@@ -231,20 +232,14 @@ This chain of assignments may be visualized as a sort of data-processing
       rounded corners=1em/2,
       to path={
         (\tikztostart)
-        -- ($ (\tikztostart -| \tikztotarget)!3em!(\tikztostart) $)
+        -- ($ (\tikztostart -| \tikztotarget)!1/2!(\tikztostart) $)
         %-- ($ (\tikztotarget)!1em!(\tikztostart |- \tikztotarget) $)
         -- (\tikztotarget)
       },
       ->,
     },
-    over/.style={
-      preaction={
-        draw=white,
-        line width=2pt,
-      },
-    },
     gates/.style={
-      row sep=2em, column sep=6em, matrix of math nodes, nodes=gate,
+      row sep=2em, column sep=4em, matrix of math nodes, nodes=gate,
     },
     wires/.pic={
 
@@ -275,7 +270,7 @@ This chain of assignments may be visualized as a sort of data-processing
   \begin{center}
     \begin{tikzpicture}
       \matrix[gates, ampersand replacement=\&]{
-        |(x)|∨ \&[2em] |(xy)|∧ \\
+        |(x)|∨ \&[4em] |(xy)|∧ \\
         |(y)|∨ \& |(yz)|∧ \& |(out)|∨ \\
         |(z)|∨ \& |(zx)|∧ \\
       };
@@ -301,7 +296,7 @@ This chain of assignments may be visualized as a sort of data-processing
   \begin{center}
     \begin{tikzpicture}
       \matrix[gates, ampersand replacement=\&]{
-        |(x)|∨ \&[2em] |(xy)|∧ \\
+        |(x)|∨ \&[5em] |(xy)|∧ \\
         |(y)|∨ \& |(yz)|∧ \&\& |(or')|∨ \\
         |(z)|∨ \& |(zx)|∧ \\
       };
@@ -324,14 +319,52 @@ This chain of assignments may be visualized as a sort of data-processing
 %Lastly, we use the algebraic symbols \(∨,∧\) to denote the logic gates in the
 %circuit diagram above
 
-Below, we give a precise definition of boolean circuits and introduce some
+Below, we state a precise definition of boolean circuits and introduce some
 relevant terminology.
 
-\begin{definition}{boolean circuits, logic gates}{}
+\begin{definition}{boolean circuits}{circuit}
 
-  A \Term{boolean circuit}
+  A \Term{boolean circuit} \(C\) consists of:
+  \begin{itemize}
+    \item A set of \Term{(circuit-level) input wires}.
+    \item A sequence of \Term{logic gates}.  Each logic gate computes a logical
+      operation on one or two previously-computed wires and produces its output
+      on a new wire.  More precisely, each logic gate defines a new
+      (intermediate) \Term{output wire} \(w\), related to previously-defined
+      wires by one of the following:
+      \begin{itemize}[nosep]
+        \item \NOT{} gate: \(w=¬w₁\), where \(w₁\) is an input wire or an the
+          output wire of another logic gate specified earlier in the sequence.
+        \item \AND{} gate: \(w=w₁∧w₂\), where \(w₁,w₂\) are earlier-defined
+          wires.
+        \item \OR{} gate: \(w=w₁∨w₂\), where \(w₁,w₂\) are earlier-defined
+          wires.
+      \end{itemize}
+  \end{itemize}
+  Finally, exactly one of the output wires is labeled the \Term{circuit-level
+  output wire} of \(C\), representing the overall/final output of the circuit.
 
-  TODO precise definition
+  Assume the circuit-level input wires are ordered as \(w₁,w₂,\dotsc,wₙ\).  Then
+  the circuit \(C\) defines a boolean function \(ϕ_C\colon\TF[n]→\TF\) as
+  follows.  Given \((x₁,x₂,\dotsc,xₙ)∈\TF[n]\), assign \(xⱼ\) to \(wⱼ\) for each
+  \(j=1,\dotsc,n\).  Then, for each logic gate, in order of specification,
+  evaluate the gate's boolean operation on its inputs to compute its output
+  value, assigning that value to its output wire.  Finally, after all gates have
+  been evaluated, the boolean value of the circuit-level output wire is the
+  final output, \(ϕ(x₁,\dotsc,xₙ)\).
+
+  To assist discourse, we say a wire \(w\) \emph{(directly) depends on} another
+  wire \(w'\), or that \(w'\) is a \Term{(direct) dependency of} \(w\), if there
+  exists some logic gate with \(w'\) as one of its inputs and \(w\) as its
+  output.
+
+  \begin{aside}
+    We require that logic gates be specified sequentially, operating only on
+    previous gate-outputs, to ensure that there are no cyclic dependencies,
+    which give rise to ill-defined computations such as \(x=¬x\) (contradictory)
+    or \(x=¬y,y=¬x\) (not contradictory, but ill-defined because the output of a
+    computation must be unique/deterministic), etc.
+  \end{aside}
 
 \end{definition}
 
